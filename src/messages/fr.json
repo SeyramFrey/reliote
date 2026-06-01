@@ -1,0 +1,20 @@
+{
+  "nav": {
+    "architects": "Architectes",
+    "approach": "Approche",
+    "projects": "Projets",
+    "journal": "Journal",
+    "about": "À propos",
+    "cta": "Initier un projet",
+    "account": "Espace client"
+  },
+  "footer": {
+    "tagline": "Reliote relie les porteurs de projets en France aux meilleurs architectes de Côte d'Ivoire.",
+    "explore": "Explorer",
+    "account": "Compte",
+    "joinAsArchitect": "Rejoindre Reliote",
+    "login": "Se connecter",
+    "register": "Créer un compte",
+    "colophon": "Plateforme premium — Paris ⇄ Abidjan"
+  }
+}
