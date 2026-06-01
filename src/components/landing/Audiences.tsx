@@ -9,7 +9,7 @@ export async function Audiences() {
     <section id="apropos" className="bg-paper">
       <div className="page-edge py-32 grid grid-cols-1 md:grid-cols-2 gap-[var(--gutter)]">
         {ks.map((k) => (
-          <article key={k} className="border border-[var(--hairline)] p-10 flex flex-col">
+          <article key={k} className="border border-[var(--hairline)] p-6 md:p-10 flex flex-col">
             <p className="eyebrow">{t(`${k}.eyebrow`)}</p>
             <h3 className="font-light text-4xl mt-4 leading-tight">{t(`${k}.title`)}</h3>
             <p className="text-concrete-1 mt-4">{t(`${k}.body`)}</p>

@@ -18,7 +18,7 @@ export function Pillars() {
         </h2>
         <p className="text-concrete-1 max-w-[60ch] mt-6">{t("kicker")}</p>
         <div
-          className="mt-16 grid grid-cols-1 md:grid-cols-5 min-h-[420px] border-t border-[var(--hairline)]"
+          className="mt-16 grid grid-cols-1 md:grid-cols-5 md:min-h-[420px] border-t border-[var(--hairline)]"
           onMouseLeave={() => setActive(0)}
         >
           {KEYS.map((k, i) => {

@@ -24,7 +24,8 @@ export default async function AdminProjects() {
     <>
       <p className="eyebrow">Admin · Projets</p>
       <h1 className="font-light text-4xl mt-4">{rows.length} projets</h1>
-      <table className="w-full mt-10 text-sm">
+      <div className="mt-10 overflow-x-auto">
+      <table className="w-full text-sm">
         <thead className="text-left">
           <tr className="border-b border-[var(--hairline)]">
             <th className="eyebrow py-3">Client</th>
@@ -48,6 +49,7 @@ export default async function AdminProjects() {
           ))}
         </tbody>
       </table>
+      </div>
     </>
   );
 }

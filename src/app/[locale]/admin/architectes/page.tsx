@@ -23,7 +23,8 @@ export default async function AdminArchitects() {
     <>
       <p className="eyebrow">Admin · Architectes</p>
       <h1 className="font-light text-4xl mt-4">{rows.length} architectes</h1>
-      <table className="w-full mt-10 text-sm">
+      <div className="mt-10 overflow-x-auto">
+      <table className="w-full text-sm">
         <thead className="text-left">
           <tr className="border-b border-[var(--hairline)]">
             <th className="eyebrow py-3">Nom</th>
@@ -69,6 +70,7 @@ export default async function AdminArchitects() {
           ))}
         </tbody>
       </table>
+      </div>
     </>
   );
 }

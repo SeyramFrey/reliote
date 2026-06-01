@@ -22,9 +22,9 @@ export function Process() {
         </h2>
         <p className="text-concrete-1 max-w-[60ch] mt-6">{t("kicker")}</p>
         <div className="relative mt-16">
-          <div className="absolute left-0 right-0 top-[44px] h-px bg-[var(--hairline)]" />
+          <div className="hidden md:block absolute left-0 right-0 top-[44px] h-px bg-[var(--hairline)]" />
           <div
-            className="absolute left-0 top-[44px] h-px bg-green transition-[width] duration-[800ms]"
+            className="hidden md:block absolute left-0 top-[44px] h-px bg-green transition-[width] duration-[800ms]"
             style={{ width: `${((active + 1) / STEPS.length) * 100}%` }}
           />
           <div className="grid grid-cols-1 md:grid-cols-4 gap-[var(--gutter)]">
