@@ -16,5 +16,303 @@
     "login": "Sign in",
     "register": "Create account",
     "colophon": "Premium platform — Paris ⇄ Abidjan"
+  },
+  "lang": {
+    "fr": "FR",
+    "en": "EN",
+    "switchTo": "Switch to {target}"
+  },
+  "hero": {
+    "eyebrow": "01 — Cross-border architecture · Paris ⇄ Abidjan",
+    "titlePre": "Exceptional architects, ",
+    "titleItalic": "chosen",
+    "titleRest": "with method.",
+    "sub": "Reliote connects clients in France with the most rigorous architects in Côte d'Ivoire. Verified profiles, structured introductions, framed collaboration — for the decisions that deserve care.",
+    "primary": "Start a project",
+    "secondary": "Browse architects",
+    "liveLabel": "Featured this week",
+    "liveName": "Atelier Faïdhèrbe — Cocody"
+  },
+  "stats": {
+    "a": { "num": "84", "label": "Verified architects" },
+    "b": { "num": "27", "label": "Live projects" },
+    "c": { "num": "92%", "label": "Reply in 48 h" },
+    "d": { "num": "2", "label": "Countries · One standard" }
+  },
+  "pillars": {
+    "eyebrow": "02",
+    "titlePre": "A platform built on ",
+    "titleItalic": "trust.",
+    "kicker": "Five principles structuring every collaboration. None of them is optional.",
+    "p1": {
+      "n": "01",
+      "t": "Selection",
+      "b": "Each architect is admitted by application, portfolio and interview. Fewer than 1 in 6 candidates make it through.",
+      "statNum": "1",
+      "statDenom": " / 6",
+      "statLabel": "applicants admitted"
+    },
+    "p2": {
+      "n": "02",
+      "t": "Verification",
+      "b": "Diplomas, professional registration, references and delivered projects are checked before any profile goes live.",
+      "statNum": "100",
+      "statDenom": "%",
+      "statLabel": "diplomas verified"
+    },
+    "p3": {
+      "n": "03",
+      "t": "Method",
+      "b": "Structured brief, scope of work, milestones and deliverables are written into the platform from the first exchange.",
+      "statNum": "8",
+      "statDenom": " steps",
+      "statLabel": "structured brief"
+    },
+    "p4": {
+      "n": "04",
+      "t": "Transparency",
+      "b": "Fees, timelines, scope and clauses are stated clearly — no cost is surfaced halfway through.",
+      "statNum": "0",
+      "statDenom": " surprise",
+      "statLabel": "fixed fees"
+    },
+    "p5": {
+      "n": "05",
+      "t": "Stewardship",
+      "b": "A Reliote duo follows the engagement through handover. Mediation included, on-site or remote.",
+      "statNum": "365d",
+      "statDenom": "",
+      "statLabel": "dedicated duo"
+    }
+  },
+  "architects": {
+    "eyebrow": "03",
+    "titlePre": "Architects ",
+    "titleItalic": "in light.",
+    "kicker": "A short index — every profile is admitted by hand. You speak directly to principals, never to a sales rep.",
+    "filterAll": "All",
+    "count": "profiles"
+  },
+  "process": {
+    "eyebrow": "04",
+    "titlePre": "From first intuition to ",
+    "titleItalic": "handover.",
+    "kicker": "Four checkpoints. You always know where you are — and where you're going.",
+    "s1": {
+      "n": "01",
+      "t": "Brief",
+      "days": "Day 1 — 3",
+      "verb": "We listen, we write, we structure.",
+      "b": "You describe the project across eight questions. Our team turns it into a structured scope of work.",
+      "deliverables": ["Signed brief", "Scope of work", "Intent charter"]
+    },
+    "s2": {
+      "n": "02",
+      "t": "Selection",
+      "days": "Day 3 — 7",
+      "verb": "We shortlist, we compare, we argue.",
+      "b": "Up to three architects, picked on fit, availability and experience. Each shortlist is argued, never random.",
+      "deliverables": ["Three portfolios", "Reasoned shortlist", "Availabilities"]
+    },
+    "s3": {
+      "n": "03",
+      "t": "Conversations",
+      "days": "Day 7 — 21",
+      "verb": "We orchestrate, you decide, in full knowledge.",
+      "b": "Video interviews, method samples, client references. You compare on equal footing.",
+      "deliverables": ["Framed video calls", "Client references", "Fees estimate"]
+    },
+    "s4": {
+      "n": "04",
+      "t": "Engagement",
+      "days": "Month 1 +",
+      "verb": "We protect, we hold milestones, until handover.",
+      "b": "Reliote-framed contract, shared milestones, sequenced payments. Continuous mediation through delivery.",
+      "deliverables": ["Framed contract", "Shared milestones", "Reliote mediation"]
+    }
+  },
+  "featured": {
+    "eyebrow": "05",
+    "titlePre": "Case study — ",
+    "titleItalic": "Rives de la Lagune.",
+    "kicker": "A 480 m² villa on the Ebrié lagoon, conducted remotely between Paris and Abidjan.",
+    "quote": "\"Reliote turned a process I dreaded into a clean collaboration. I signed in confidence, 5,000 km away, without conceding a thing.\"",
+    "cite": "M. R. — Paris · Reliote client · 2025",
+    "stats": {
+      "area": "480 m² · Useful area",
+      "duration": "18 mo · Studies + works",
+      "craftsmen": "23 · Local craftspeople",
+      "milestones": "100% · Milestones held"
+    },
+    "hotspots": {
+      "h1": { "t": "Board-formed concrete" },
+      "h2": { "t": "Raking daylight" },
+      "h3": { "t": "Reflecting pool" }
+    }
+  },
+  "audiences": {
+    "client": {
+      "eyebrow": "For · clients",
+      "title": "Decide from afar with the same rigour you'd want next door.",
+      "body": "You're running a project in Côte d'Ivoire from France. You want a frame, proof, and a single structuring contact for each step.",
+      "cta": "Start a project"
+    },
+    "architect": {
+      "eyebrow": "For · architects & studios",
+      "title": "Sound projects, in a professional frame.",
+      "body": "You're a practising architect in Côte d'Ivoire. Reliote brings you serious, qualified clients aligned with your fees.",
+      "cta": "Join the index"
+    }
+  },
+  "journal": {
+    "eyebrow": "07",
+    "title": "Journal & readings.",
+    "j1": {
+      "date": "12.05.26",
+      "read": "Method",
+      "title": "The eight-question brief — why those.",
+      "excerpt": "Decomposing a project without reducing it: the grid we use to translate intent into scope."
+    },
+    "j2": {
+      "date": "28.04.26",
+      "read": "Site",
+      "title": "Building on the lagoon — the climate's truths.",
+      "excerpt": "Humidity, salt, raking light: three variables that quietly decide a coastal villa's quality."
+    },
+    "j3": {
+      "date": "14.04.26",
+      "read": "Practice",
+      "title": "Fees & milestones — transparency as a tool.",
+      "excerpt": "How Reliote sequences payments to protect the mission, the project and the relationship."
+    }
+  },
+  "ctaBand": {
+    "eyebrow": "08",
+    "titlePre": "A calm platform, for decisions ",
+    "titleItalic": "that hold.",
+    "button": "Start a project"
+  },
+  "auth": {
+    "loginEyebrow": "Client area",
+    "loginTitle": "Sign in",
+    "registerEyebrow": "Create account",
+    "registerClientTitle": "Join Reliote — as a client",
+    "registerArchitectTitle": "Join Reliote — as an architect",
+    "forgotEyebrow": "Forgotten password",
+    "forgotTitle": "Receive a reset link",
+    "forgotHint": "Enter the address tied to your account. A secure link will reach you within minutes.",
+    "email": "Email address",
+    "password": "Password",
+    "fullName": "Full name",
+    "signIn": "Sign in",
+    "createAccount": "Create my account",
+    "sendLink": "Send the link",
+    "noAccount": "No account yet?",
+    "forgot": "Forgotten password?"
+  },
+  "wizardClient": {
+    "eyebrow": "Start a project",
+    "next": "Continue",
+    "back": "Back",
+    "submit": "Send my brief",
+    "titles": {
+      "1": "Your intent",
+      "2": "The program",
+      "3": "Site and budget",
+      "4": "Preferred timeline",
+      "5": "Your details"
+    },
+    "fields": {
+      "project_type": "Project type",
+      "project_description": "Describe your project in a few lines",
+      "required_specialties": "Required specialties",
+      "notes": "Additional notes",
+      "project_location": "Project location",
+      "budget_range": "Budget range",
+      "timeline": "Start horizon",
+      "client_name": "Full name",
+      "email": "Email address",
+      "phone": "Phone"
+    },
+    "thanks": {
+      "eyebrow": "Brief received",
+      "title": "Thank you. Your brief is in our hands.",
+      "body": "A Reliote duo is now reading your project. A first human reply will reach you within 48 business hours.",
+      "matches": "First matches",
+      "cta": "Back to home"
+    },
+    "match": "Match"
+  },
+  "wizardArchitect": {
+    "eyebrow": "Apply to the index",
+    "next": "Continue",
+    "back": "Back",
+    "submit": "Submit my application",
+    "titles": {
+      "1": "Identity",
+      "2": "Studio and location",
+      "3": "Practice and specialties",
+      "4": "Experience",
+      "5": "Portfolio and availability",
+      "6": "Commitment"
+    },
+    "fields": {
+      "full_name": "Full name",
+      "email": "Email address",
+      "phone": "Phone",
+      "photo_url": "Link to a professional photo",
+      "country": "Country",
+      "city": "City",
+      "specialties": "Specialties",
+      "languages": "Spoken languages",
+      "project_types": "Project types handled",
+      "years_experience": "Years of experience",
+      "description": "Description of your practice",
+      "portfolio_url": "Portfolio URL",
+      "availability": "Current availability",
+      "fee_from": "Fees from",
+      "terms": "I confirm the accuracy of this information and accept the Reliote charter."
+    },
+    "availability": {
+      "available": "Available",
+      "busy": "Limited capacity",
+      "unavailable": "Unavailable"
+    },
+    "thanks": {
+      "eyebrow": "Application received",
+      "title": "Thank you. Your application is being read.",
+      "body": "Our committee reviews every application in depth. You will receive a considered reply within ten business days.",
+      "cta": "Back to home"
+    }
+  },
+  "admin": {
+    "overviewTitle": "Overview",
+    "overviewEyebrow": "Reliote console",
+    "architectsTitle": "Architects",
+    "projectsTitle": "Projects",
+    "matchesTitle": "Matches",
+    "statuses": {
+      "pending": "Pending",
+      "verified": "Verified",
+      "rejected": "Rejected",
+      "paused": "Paused",
+      "new": "New",
+      "matched": "Matched",
+      "in_review": "In review",
+      "closed": "Closed"
+    },
+    "actions": {
+      "validate": "Validate",
+      "reject": "Reject",
+      "pause": "Pause",
+      "recalc": "Recalculate",
+      "details": "Details"
+    },
+    "nav": {
+      "overview": "Overview",
+      "architects": "Architects",
+      "projects": "Projects",
+      "matches": "Matches"
+    }
   }
 }
