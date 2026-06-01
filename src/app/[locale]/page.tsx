@@ -1,16 +1,29 @@
-import { useTranslations } from "next-intl";
 import { Nav } from "@/components/shared/Nav";
+import { Hero } from "@/components/landing/Hero";
+import { StatsBar } from "@/components/landing/StatsBar";
+import { Pillars } from "@/components/landing/Pillars";
+import { ArchitectIndex } from "@/components/landing/ArchitectIndex";
+import { Process } from "@/components/landing/Process";
+import { FeaturedCase } from "@/components/landing/FeaturedCase";
+import { Audiences } from "@/components/landing/Audiences";
+import { Journal } from "@/components/landing/Journal";
+import { CtaBand } from "@/components/landing/CtaBand";
+import { Footer } from "@/components/landing/Footer";
 
 export default function Page() {
-  const t = useTranslations("nav");
   return (
     <>
-      <Nav />
-      <main className="page-edge pt-32 pb-16">
-        <p className="eyebrow">01 — Reliote</p>
-        <h1 className="serif-i text-6xl mt-4">{t("cta")}</h1>
-        <div style={{ height: "200vh" }} />
-      </main>
+      <Nav dark />
+      <Hero />
+      <StatsBar />
+      <Pillars />
+      <ArchitectIndex />
+      <Process />
+      <FeaturedCase />
+      <Audiences />
+      <Journal />
+      <CtaBand />
+      <Footer />
     </>
   );
 }
