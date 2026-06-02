@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "db:types": "bash scripts/gen-types.sh"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.4.0",
