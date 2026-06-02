@@ -21,4 +21,8 @@ for f in "${SQL_FILES[@]}"; do
     psql -U "$DB_USER" -d postgres -v ON_ERROR_STOP=1 -f "$f"
 done
 
+echo "Reload PostgREST schema cache so it sees the new tables and FKs..."
+MSYS_NO_PATHCONV=1 docker compose exec -T -e PGPASSWORD="$PGPASSWORD" db \
+  psql -U "$DB_USER" -d postgres -c "notify pgrst, 'reload schema';"
+
 echo "Reliote migrations + seed applied."

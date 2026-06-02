@@ -17,6 +17,19 @@ values (
   now(), now()
 ) on conflict (id) do nothing;
 
+-- GoTrue v2.177 cannot scan NULL into the *_token varchar columns. Initialise them
+-- to '' for any seeded auth.users row (re-runnable; only affects rows where the field is NULL).
+update auth.users
+  set confirmation_token         = coalesce(confirmation_token, ''),
+      recovery_token             = coalesce(recovery_token, ''),
+      email_change_token_new     = coalesce(email_change_token_new, ''),
+      email_change_token_current = coalesce(email_change_token_current, ''),
+      email_change               = coalesce(email_change, ''),
+      phone_change               = coalesce(phone_change, ''),
+      phone_change_token         = coalesce(phone_change_token, ''),
+      reauthentication_token     = coalesce(reauthentication_token, '')
+  where email = 'admin@reliote.test';
+
 update public.profiles set role = 'admin', full_name = 'Reliote Admin'
   where id = '00000000-0000-0000-0000-00000000a001';
 
