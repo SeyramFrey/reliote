@@ -13,9 +13,11 @@ services:
       JWT_EXP: ${JWT_EXPIRY:-3600}
     volumes:
       - reliote-db-data:/var/lib/postgresql/data
-      - ./migrations:/docker-entrypoint-initdb.d/migrations:ro
-      - ./seed.sql:/docker-entrypoint-initdb.d/zz-seed.sql:ro
-      - ./init/00-init.sql:/docker-entrypoint-initdb.d/00-init.sql:ro
+      - ./init/99-reliote-perms.sql:/docker-entrypoint-initdb.d/99-reliote-perms.sql:ro
+      # Reliote schema + seed mounted but NOT auto-applied — applied via apply-migrations.sh
+      # after GoTrue has run its own auth-schema migrations.
+      - ./migrations:/reliote/migrations:ro
+      - ./seed.sql:/reliote/seed.sql:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
       interval: 5s
@@ -30,6 +32,7 @@ services:
       db:
         condition: service_healthy
     environment:
+      API_EXTERNAL_URL: http://localhost:54321
       GOTRUE_API_HOST: 0.0.0.0
       GOTRUE_API_PORT: 9999
       GOTRUE_DB_DRIVER: postgres
@@ -84,7 +87,7 @@ services:
       - ./kong.yml:/var/lib/kong/kong.yml:ro
 
   studio:
-    image: supabase/studio:20250106-eeacd2c
+    image: supabase/studio:2026.06.01-sha-a4334a2
     container_name: reliote-studio
     restart: unless-stopped
     depends_on:

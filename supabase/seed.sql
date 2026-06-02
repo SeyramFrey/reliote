@@ -1,6 +1,9 @@
 -- supabase/seed.sql
 -- Idempotent: re-runnable.
 
+-- pgcrypto lives in the `extensions` schema in supabase/postgres; make functions discoverable.
+set search_path = public, extensions, auth;
+
 -- Admin: insert into auth.users directly.
 insert into auth.users (id, instance_id, aud, role, email, encrypted_password, email_confirmed_at, raw_user_meta_data, created_at, updated_at)
 values (
