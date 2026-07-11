@@ -17,8 +17,11 @@ export function Nav({ dark = false }: { dark?: boolean }) {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // "Architectes" est désormais "Sélection" — la section publique présente la
+  // méthode + preuves agrégées, pas un catalogue. La route /architectes existe
+  // toujours mais c'est privé (espace client matché).
   const links: { id: string; href: string }[] = [
-    { id: "architects", href: `/${locale}/architectes` },
+    { id: "architects", href: `/${locale}#architectes` },
     { id: "approach",   href: `/${locale}#approche` },
     { id: "projects",   href: `/${locale}#projets` },
     { id: "journal",    href: `/${locale}#journal` },

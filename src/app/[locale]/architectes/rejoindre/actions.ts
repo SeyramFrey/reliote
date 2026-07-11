@@ -27,16 +27,39 @@ export async function submitArchitect(input: ArchitectInput) {
     return { error: "Vous avez déjà un dossier architecte en cours. Reliote vous a contacté(e) sous 48h." };
   }
 
-  // Strip the `terms` field (not a column) before insert
-  const { terms: _terms, photo_url, portfolio_url, phone, fee_from, ...rest } = parsed.data;
+  // Strip non-column fields (`terms`, `phone_country`) and coerce empty strings to null
+  // for optional URL/text columns. The phone_country code is informational only — the
+  // E.164 `phone` value already carries the country prefix.
+  const {
+    terms: _terms,
+    phone_country: _phone_country,
+    photo_url,
+    portfolio_url,
+    phone,
+    structure,
+    ordre_number,
+    diploma,
+    fee_currency,
+    fee_amount,
+    ...rest
+  } = parsed.data;
+
   const row = {
     ...rest,
     user_id: user.id,
-    // Coerce empty strings to null for optional URLs
     photo_url: photo_url || null,
     portfolio_url: portfolio_url || null,
     phone: phone || null,
-    fee_from: fee_from || null,
+    structure: structure || null,
+    ordre_number: ordre_number || null,
+    diploma: diploma || null,
+    fee_currency: fee_currency ?? null,
+    fee_amount: fee_amount ?? null,
+    // Charte de non-contournement v1 — l'architecte l'a acceptée en cochant
+    // la case `terms` au step 6 (la case cumule confirmation des infos +
+    // acceptation de la charte). On horodate côté serveur, pas côté client.
+    charter_version: "v1",
+    charter_signed_at: new Date().toISOString(),
   };
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

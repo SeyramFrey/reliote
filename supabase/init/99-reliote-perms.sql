@@ -15,11 +15,14 @@ do $$ begin
     then create role authenticator noinherit login password 'reliote_dev_pwd'; end if;
   if not exists (select 1 from pg_roles where rolname = 'supabase_auth_admin')
     then create role supabase_auth_admin noinherit login password 'reliote_dev_pwd'; end if;
+  if not exists (select 1 from pg_roles where rolname = 'supabase_storage_admin')
+    then create role supabase_storage_admin noinherit login password 'reliote_dev_pwd' createrole; end if;
 end $$;
 
 -- Reset passwords every boot to guarantee they match docker-compose env
-alter role authenticator       with login password 'reliote_dev_pwd';
-alter role supabase_auth_admin with login password 'reliote_dev_pwd';
+alter role authenticator          with login password 'reliote_dev_pwd';
+alter role supabase_auth_admin    with login password 'reliote_dev_pwd';
+alter role supabase_storage_admin with login password 'reliote_dev_pwd';
 
 grant anon, authenticated, service_role to authenticator;
 
@@ -66,3 +69,17 @@ create table if not exists auth.users (
 -- and other helpers from its own migrations on first boot.
 alter table auth.users owner to supabase_auth_admin;
 grant all on table auth.users to supabase_auth_admin, service_role;
+
+-- ---------- storage schema ----------
+-- supabase/storage-api runs its own Knex migrations on boot to populate this schema;
+-- we just need the role + schema to exist with the right owner first, and the role
+-- needs CREATE on the postgres database so its migrations can create extensions etc.
+create schema if not exists storage authorization supabase_storage_admin;
+grant create on database postgres to supabase_storage_admin;
+alter role supabase_storage_admin createdb;
+grant usage on schema storage to anon, authenticated, service_role, supabase_storage_admin;
+grant all   on schema storage to supabase_storage_admin;
+alter default privileges in schema storage grant all on tables    to anon, authenticated, service_role;
+alter default privileges in schema storage grant all on functions to anon, authenticated, service_role;
+alter default privileges in schema storage grant all on sequences to anon, authenticated, service_role;
+alter role supabase_storage_admin set search_path = storage, public;

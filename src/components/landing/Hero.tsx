@@ -1,32 +1,134 @@
-import { getLocale, getTranslations } from "next-intl/server";
+"use client";
 import Link from "next/link";
-import { Eyebrow } from "@/components/shared/Eyebrow";
+import { useLocale, useTranslations } from "next-intl";
+import { useEffect, useRef } from "react";
 
-export async function Hero() {
-  const locale = await getLocale();
-  const t = await getTranslations("hero");
+export function Hero() {
+  const locale = useLocale();
+  const t = useTranslations("hero");
+  const lt = useTranslations("landing.hero");
+  const bgRef = useRef<HTMLDivElement>(null);
+
+  // Subtle parallax on the background image.
+  useEffect(() => {
+    const on = () => {
+      if (!bgRef.current) return;
+      const y = Math.min(window.scrollY, 800);
+      bgRef.current.style.transform = `scale(1.04) translateY(${y * 0.18}px)`;
+    };
+    window.addEventListener("scroll", on, { passive: true });
+    return () => window.removeEventListener("scroll", on);
+  }, []);
+
+  const trust = lt.raw("trust") as { k: string; v: string }[];
+
   return (
-    <section id="top" className="relative min-h-screen bg-water text-paper overflow-hidden">
-      <div className="absolute inset-0 bg-[url('/assets/img-courtyard-pool.jpg')] bg-cover bg-[center_30%] brightness-[0.62] contrast-[1.05] saturate-[0.7] scale-[1.04]" />
-      <div className="absolute inset-0 bg-gradient-to-b from-water/55 via-water/20 to-water" />
-      <div className="absolute inset-0 [background-image:radial-gradient(rgba(255,255,255,0.04)_1px,transparent_1px)] [background-size:3px_3px] mix-blend-overlay opacity-60 pointer-events-none" />
-      <div className="absolute top-[120px] left-[var(--edge)] mono text-[10px] tracking-[0.18em] uppercase text-paper/60">48°51′24″N — Paris</div>
-      <div className="absolute bottom-[120px] right-[var(--edge)] mono text-[10px] tracking-[0.18em] uppercase text-paper/60">5°20′08″N — Abidjan</div>
-      <div className="relative z-10 min-h-screen flex flex-col pt-[120px] pb-8 page-edge">
-        <Eyebrow className="text-paper/70">{t("eyebrow")}</Eyebrow>
-        <h1 className="font-light text-[clamp(48px,7.5vw,116px)] leading-[0.96] tracking-[-0.025em] mt-8 text-balance">
-          {t("titlePre")}<em className="serif-i tracking-[-0.005em]">{t("titleItalic")}</em><br />
-          {t("titleRest")}
-        </h1>
-        <p className="text-[15px] leading-[1.55] text-paper/80 max-w-[38ch] mt-7 mb-9">{t("sub")}</p>
-        <div className="flex gap-4 flex-wrap">
-          <Link href={`/${locale}/projets/initier`} className="inline-flex items-center gap-2.5 px-5 py-3 bg-green text-paper text-[13px] hover:bg-green-deep transition-colors">{t("primary")}<span className="inline-block w-[9px] h-[9px] border-r border-t border-current rotate-45" /></Link>
-          <Link href={`/${locale}/architectes`} className="inline-flex items-center gap-2.5 px-5 py-3 border border-current text-paper/90 text-[13px] hover:bg-white/5 transition-colors">{t("secondary")}</Link>
+    <section className="hero" id="top">
+      <div
+        className="hero-bg"
+        ref={bgRef}
+        style={{ backgroundImage: "url(/assets/img-courtyard-pool.jpg)" }}
+      />
+      <div className="hero-grain" />
+
+      <div className="hero-corner tl">
+        <span className="val">{lt("ref")}</span>
+      </div>
+      <div className="hero-corner br">
+        <span className="label">{lt("updatedLabel")}</span>
+        <span className="val">{lt("updatedVal")}</span>
+      </div>
+
+      <Link
+        href={`/${locale}#architectes`}
+        className="hero-spotlight"
+        aria-label={lt("spotlightTitle")}
+      >
+        <div
+          className="thumb"
+          style={{ backgroundImage: "url(/assets/img-courtyard-pool.jpg)" }}
+        />
+        <div className="meta">
+          <span className="lbl">
+            <span className="live-dot" />
+            {lt("spotlightLabel")}
+          </span>
+          <span className="title">{lt("spotlightTitle")}</span>
+          <span className="sub">{lt("spotlightSub")}</span>
         </div>
-        <div className="mt-auto flex items-center gap-8 mono text-[11px] tracking-[0.16em] uppercase text-paper/70">
-          <span><span className="inline-block w-1.5 h-1.5 rounded-full bg-brass align-middle mr-2 animate-pulse" />{t("liveLabel")}</span>
-          <span>{t("liveName")}</span>
+        <span className="open-arrow" />
+      </Link>
+
+      <div
+        className="hero-frame page-edge grid-12"
+        style={{ alignContent: "center", flex: 1 }}
+      >
+        <div style={{ gridColumn: "1 / span 8" }}>
+          <div
+            className="eyebrow"
+            style={{ color: "rgba(243,241,236,0.62)", marginBottom: 28 }}
+          >
+            {t("eyebrow")}
+          </div>
+          <h1 className="hero-headline">
+            {t("titlePre")}
+            <em>{t("titleItalic")}</em>
+            <br />
+            {t("titleRest")}
+          </h1>
+          <p className="hero-sub">{t("sub")}</p>
+          <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+            <Link
+              href={`/${locale}/projets/initier`}
+              className="btn btn-primary"
+              style={{ background: "var(--paper)", color: "var(--ink)" }}
+            >
+              {t("primary")} <span className="btn-arrow" />
+            </Link>
+            <a href="#architectes" className="btn btn-ghost on-dark">
+              {t("secondary")} <span className="btn-arrow" />
+            </a>
+          </div>
         </div>
+
+        <aside
+          style={{ gridColumn: "10 / span 3", alignSelf: "end", marginBottom: 8 }}
+        >
+          <div
+            className="eyebrow"
+            style={{ color: "rgba(243,241,236,0.62)", marginBottom: 14 }}
+          >
+            {lt("trustEyebrow")}
+          </div>
+          <div style={{ borderTop: "1px solid rgba(243,241,236,0.16)" }}>
+            {trust.map((r) => (
+              <div
+                key={r.k}
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  padding: "12px 0",
+                  borderBottom: "1px solid rgba(243,241,236,0.12)",
+                  fontSize: 13,
+                  color: "rgba(243,241,236,0.85)",
+                }}
+              >
+                <span
+                  style={{
+                    color: "rgba(243,241,236,0.55)",
+                    fontFamily: "var(--f-mono)",
+                    fontSize: 10.5,
+                    letterSpacing: "0.14em",
+                    textTransform: "uppercase",
+                  }}
+                >
+                  {r.k}
+                </span>
+                <span>{r.v}</span>
+              </div>
+            ))}
+          </div>
+        </aside>
       </div>
     </section>
   );

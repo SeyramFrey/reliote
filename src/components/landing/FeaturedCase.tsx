@@ -1,143 +1,206 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import Image from "next/image";
-import { useTranslations } from "next-intl";
-import { Eyebrow } from "@/components/shared/Eyebrow";
+import { useLocale, useTranslations } from "next-intl";
+import Link from "next/link";
+import { SectionHead } from "./SectionHead";
 
-const IMGS = [
+const SLIDES = [
+  "/assets/img-stairs-water.jpg",
   "/assets/img-courtyard-pool.jpg",
   "/assets/img-redrock-pool.jpg",
-  "/assets/img-museum-mist.jpg",
+];
+const HOTSPOTS = [
+  { x: 28, y: 38 },
+  { x: 68, y: 30 },
+  { x: 42, y: 72 },
 ];
 
-function useCounter(target: number, run: boolean) {
-  const [v, setV] = useState(0);
+function useInView(ref: React.RefObject<HTMLElement | null>, threshold: number) {
+  const [seen, setSeen] = useState(false);
   useEffect(() => {
-    if (!run) return;
-    let raf = 0;
-    const t0 = performance.now();
-    const d = 1400;
-    const step = (t: number) => {
-      const p = Math.min(1, (t - t0) / d);
-      const e = 1 - Math.pow(1 - p, 3);
-      setV(Math.round(target * e));
-      if (p < 1) raf = requestAnimationFrame(step);
-    };
-    raf = requestAnimationFrame(step);
-    return () => cancelAnimationFrame(raf);
-  }, [run, target]);
-  return v;
+    const el = ref.current;
+    if (!el || seen) return;
+    const io = new IntersectionObserver(
+      ([e]) => {
+        if (e.isIntersecting) setSeen(true);
+      },
+      { threshold }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [ref, seen, threshold]);
+  return seen;
 }
 
-const HOTSPOTS = [
-  { x: 28, y: 38, k: "h1" as const },
-  { x: 68, y: 30, k: "h2" as const },
-  { x: 42, y: 72, k: "h3" as const },
-];
-
-function StatCard({
-  n,
-  suf,
-  label,
-  run,
-}: {
-  n: number;
-  suf: string;
-  label: string;
-  run: boolean;
-}) {
-  const v = useCounter(n, run);
+function Counter({ target, suffix }: { target: number; suffix: string }) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const inView = useInView(ref, 0.4);
+  const [val, setVal] = useState(0);
+  useEffect(() => {
+    if (!inView) return;
+    let raf = 0;
+    const start = performance.now();
+    const tick = (now: number) => {
+      const p = Math.min(1, (now - start) / 1500);
+      const eased = 1 - Math.pow(1 - p, 3);
+      setVal(Math.round(target * eased));
+      if (p < 1) raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [inView, target]);
   return (
-    <div className="border-t border-paper/20 pt-4">
-      <span className="font-display text-5xl">
-        {v}
-        {suf}
-      </span>
-      <p className="eyebrow text-paper/60 mt-2">{label}</p>
-    </div>
+    <span ref={ref}>
+      {val}
+      <small>{suffix}</small>
+    </span>
   );
 }
 
+type Stat = { n: number; suf: string; l: string };
+type Hotspot = { t: string; b: string };
+
 export function FeaturedCase() {
+  const locale = useLocale();
   const t = useTranslations("featured");
+  const lt = useTranslations("landing.featured");
+  const slides = lt.raw("slides") as string[];
+  const stats = lt.raw("stats") as Stat[];
+  const hotspots = lt.raw("hotspots") as Hotspot[];
+  const rows = lt.raw("rows") as Record<string, string>;
   const [idx, setIdx] = useState(0);
-  const [run, setRun] = useState(false);
-  const ref = useRef<HTMLElement | null>(null);
+
   useEffect(() => {
-    const io = new IntersectionObserver(
-      ([e]) => e.isIntersecting && setRun(true),
-      { threshold: 0.4 },
-    );
-    if (ref.current) io.observe(ref.current);
-    return () => io.disconnect();
-  }, []);
-  useEffect(() => {
-    const id = setInterval(() => setIdx((i) => (i + 1) % IMGS.length), 6000);
+    const id = setInterval(() => setIdx((i) => (i + 1) % SLIDES.length), 6000);
     return () => clearInterval(id);
   }, []);
 
-  const stats: { n: number; suf: string; label: string }[] = [
-    { n: 480, suf: " m²", label: t("stats.area") },
-    { n: 18, suf: " mois", label: t("stats.duration") },
-    { n: 23, suf: "", label: t("stats.craftsmen") },
-    { n: 100, suf: "%", label: t("stats.milestones") },
-  ];
+  const prev = () => setIdx((i) => (i - 1 + SLIDES.length) % SLIDES.length);
+  const next = () => setIdx((i) => (i + 1) % SLIDES.length);
 
   return (
-    <section id="projets" ref={ref} className="bg-water text-paper">
-      <div className="page-edge py-32">
-        <Eyebrow className="text-paper/70">05 — {t("eyebrow")}</Eyebrow>
-        <h2 className="font-light text-[clamp(36px,5vw,72px)] leading-[1.05] tracking-[-0.02em] mt-6 max-w-[24ch]">
-          {t("titlePre")}
-          <em className="serif-i">{t("titleItalic")}</em>
-        </h2>
-        <p className="text-paper/70 max-w-[60ch] mt-6">{t("kicker")}</p>
-        <div className="mt-16 grid grid-cols-12 gap-[var(--gutter)]">
-          <div className="col-span-12 md:col-span-8 relative aspect-[16/10] overflow-hidden">
-            {IMGS.map((src, i) => (
-              <Image
-                key={src}
-                src={src}
-                alt=""
-                fill
-                className={`object-cover transition-opacity duration-[800ms] ${i === idx ? "opacity-100" : "opacity-0"}`}
-                sizes="800px"
-                priority={i === 0}
+    <section className="sect feat">
+      <SectionHead
+        num={t("eyebrow")}
+        titlePre={t("titlePre")}
+        titleItalic={t("titleItalic")}
+        kicker={t("kicker")}
+      />
+      <div className="feat-frame">
+        <div className="feat-stage">
+          {SLIDES.map((src, i) => (
+            <div
+              key={src}
+              className={`feat-slide ${i === idx ? "active" : ""}`}
+              style={{ backgroundImage: `url(${src})` }}
+            />
+          ))}
+
+          <div className="stage-corner tl">Rives de la Lagune · Bingerville</div>
+          <div className="stage-corner tr">{slides[idx]}</div>
+          <div className="stage-corner bl">5.34°N / 3.98°W</div>
+          <div className="stage-corner br">
+            <span>{String(idx + 1).padStart(2, "0")}</span>
+            <span style={{ opacity: 0.5 }}>/</span>
+            <span style={{ opacity: 0.6 }}>{String(SLIDES.length).padStart(2, "0")}</span>
+          </div>
+
+          {idx === 0 &&
+            hotspots.map((h, i) => (
+              <div
+                key={h.t}
+                className="hotspot"
+                style={{ left: `${HOTSPOTS[i].x}%`, top: `${HOTSPOTS[i].y}%` }}
+                aria-label={h.t}
+              >
+                <div className="hotspot-tip">
+                  <span className="ht">{h.t}</span>
+                  {h.b}
+                </div>
+              </div>
+            ))}
+
+          <button className="arrow prev" onClick={prev} aria-label="Previous">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+              <path d="M10 2 L4 8 L10 14" />
+            </svg>
+          </button>
+          <button className="arrow next" onClick={next} aria-label="Next">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+              <path d="M6 2 L12 8 L6 14" />
+            </svg>
+          </button>
+
+          <div className="pager">
+            {SLIDES.map((_, i) => (
+              <button
+                key={i}
+                className={i === idx ? "on" : ""}
+                onClick={() => setIdx(i)}
+                aria-label={`Slide ${i + 1}`}
               />
             ))}
-            {idx === 0 &&
-              HOTSPOTS.map((h) => (
-                <span
-                  key={h.k}
-                  className="absolute group"
-                  style={{ left: `${h.x}%`, top: `${h.y}%` }}
-                >
-                  <span className="block w-3 h-3 rounded-full bg-brass ring-4 ring-brass/30 animate-pulse" />
-                  <span className="absolute left-5 top-1 whitespace-nowrap text-[11px] mono uppercase tracking-[0.18em] opacity-0 group-hover:opacity-100 bg-water/80 px-2 py-1 transition-opacity">
-                    {t(`hotspots.${h.k}.t`)}
-                  </span>
-                </span>
-              ))}
-            <div className="absolute bottom-4 right-4 flex gap-2">
-              {IMGS.map((_, i) => (
-                <button
-                  key={i}
-                  onClick={() => setIdx(i)}
-                  aria-label={`Image ${i + 1}`}
-                  className={`w-8 h-px ${i === idx ? "bg-paper" : "bg-paper/40"} transition-colors`}
-                />
-              ))}
+          </div>
+        </div>
+
+        <div className="feat-counters">
+          {stats.map((s, i) => (
+            <div key={i} className="feat-counter">
+              <div className="n">
+                <Counter target={s.n} suffix={s.suf} />
+              </div>
+              <div className="l">{s.l}</div>
+            </div>
+          ))}
+        </div>
+
+        <div className="feat-grid-2">
+          <div>
+            <blockquote className="feat-quote">{t("quote")}</blockquote>
+            <div className="feat-quote-cite">{t("cite")}</div>
+            <div style={{ marginTop: 28, display: "flex", gap: 10, flexWrap: "wrap" }}>
+              <Link
+                href={`/${locale}/projets/initier`}
+                className="btn btn-ghost on-dark"
+                style={{ color: "var(--paper)", borderColor: "rgba(243,241,236,0.3)" }}
+              >
+                {lt("read")} <span className="btn-arrow" />
+              </Link>
+              <Link
+                href={`/${locale}/projets/initier`}
+                className="btn btn-primary"
+                style={{ background: "var(--paper)", color: "var(--ink)" }}
+              >
+                {lt("startSimilar")} <span className="btn-arrow" />
+              </Link>
             </div>
           </div>
-          <aside className="col-span-12 md:col-span-4 grid grid-cols-2 gap-4">
-            {stats.map((s, i) => (
-              <StatCard key={i} {...s} run={run} />
-            ))}
-            <div className="col-span-2 mt-6">
-              <p className="serif-i text-2xl leading-snug">«{t("quote")}»</p>
-              <p className="eyebrow mt-3 text-paper/60">{t("cite")}</p>
+          <div style={{ display: "flex", flexDirection: "column", justifyContent: "stretch" }}>
+            <div className="feat-row">
+              <span className="k">{rows.client}</span>
+              <span className="v">{rows.clientV}</span>
             </div>
-          </aside>
+            <div className="feat-row">
+              <span className="k">{rows.arch}</span>
+              <span className="v">{rows.archV}</span>
+            </div>
+            <div className="feat-row">
+              <span className="k">{rows.program}</span>
+              <span className="v">{rows.programV}</span>
+            </div>
+            <div className="feat-row">
+              <span className="k">{rows.site}</span>
+              <span className="v">{rows.siteV}</span>
+            </div>
+            <div className="feat-row">
+              <span className="k">{rows.duration}</span>
+              <span className="v">{rows.durationV}</span>
+            </div>
+            <div className="feat-row">
+              <span className="k">{rows.budget}</span>
+              <span className="v">{rows.budgetV}</span>
+            </div>
+          </div>
         </div>
       </div>
     </section>

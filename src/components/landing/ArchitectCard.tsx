@@ -1,42 +1,101 @@
 "use client";
-import Image from "next/image";
+import { useTranslations } from "next-intl";
 import type { ArchitectRow } from "./ArchitectIndex";
 
-export function ArchitectCard({ a, onOpen }: { a: ArchitectRow; onOpen: () => void }) {
+function Stars({ value }: { value: number }) {
+  const full = Math.round(value);
   return (
-    <button onClick={onOpen} className="text-left group">
-      <div className="relative aspect-[4/5] overflow-hidden bg-paper-2">
-        {a.photo_url && (
-          <Image
-            src={a.photo_url}
-            alt={a.full_name}
-            fill
-            className="object-cover transition-transform duration-[600ms] group-hover:scale-[1.04]"
-            sizes="(min-width: 768px) 25vw, 50vw"
-          />
-        )}
-        <span className="absolute top-3 left-3 mono text-[10px] tracking-[0.18em] uppercase text-paper/90 bg-water/40 px-2 py-1">
-          {a.years_experience} ans
+    <span className="stars">
+      {[1, 2, 3, 4, 5].map((i) => (
+        <span key={i} className={i <= full ? "" : "empty"}>
+          ★
         </span>
-        <span
-          className={`absolute top-3 right-3 inline-flex items-center gap-1.5 mono text-[10px] tracking-[0.18em] uppercase ${
-            a.availability === "available" ? "text-paper" : "text-paper/70"
-          } bg-water/40 px-2 py-1`}
-        >
-          <span
-            className={`inline-block w-1.5 h-1.5 rounded-full ${
-              a.availability === "available" ? "bg-brass animate-pulse" : "bg-concrete-3"
-            }`}
-          />
-          {a.availability === "available" ? "Disponible" : "Complet"}
+      ))}
+    </span>
+  );
+}
+
+export function ArchitectCard({
+  a,
+  index,
+  total,
+  onOpen,
+}: {
+  a: ArchitectRow;
+  index: number;
+  total: number;
+  onOpen: () => void;
+}) {
+  const t = useTranslations("landing.architects");
+  const available = a.availability === "available";
+  const rating = a.rating ?? 0;
+  const fullName = `${a.first_name} ${a.last_name}`.trim();
+  const studioLine = [a.structure, a.city].filter(Boolean).join(" · ");
+  const fromLabel =
+    a.fee_currency && a.fee_amount
+      ? new Intl.NumberFormat("fr-FR", {
+          style: "currency",
+          currency: a.fee_currency,
+          maximumFractionDigits: 0,
+        }).format(a.fee_amount)
+      : null;
+  const portrait = a.photo_url
+    ? `url(${a.photo_url}), linear-gradient(180deg, var(--concrete-4), var(--concrete-3))`
+    : "linear-gradient(180deg, var(--concrete-4), var(--concrete-3))";
+
+  return (
+    <button className="archi-card" onClick={onOpen}>
+      <div className="archi-portrait">
+        <div className="archi-portrait-img" style={{ backgroundImage: portrait }} />
+        <div className="badge-row">
+          <span className="idx-mark">
+            {String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
+          </span>
+          <span className={`avail-pill ${available ? "live" : "busy"}`}>
+            <span className="ad" />
+            {available ? t("available") : t("booked")}
+          </span>
+        </div>
+        <div className="bottom-tape">
+          <span className="rating-row">
+            <Stars value={rating} />
+            <span>{rating.toFixed(1)}</span>
+          </span>
+          <span>
+            {a.years_experience} {t("yrs")}
+          </span>
+        </div>
+      </div>
+      <div>
+        <div className="archi-meta-row">
+          <div>
+            <h3 className="archi-name">{fullName}</h3>
+            <div className="archi-studio">{studioLine || "—"}</div>
+          </div>
+          <span className="verified-pill">
+            <span className="verified-dot" />
+            {t("verified")}
+          </span>
+        </div>
+        <div className="archi-tags" style={{ marginTop: 10 }}>
+          {a.specialties.map((s) => (
+            <span key={s} className="tag">
+              {s}
+            </span>
+          ))}
+          <span className="lang-chips">
+            {a.languages.map((l) => (
+              <span key={l}>{l}</span>
+            ))}
+          </span>
+        </div>
+      </div>
+      <div className="archi-row-bottom">
+        <span>
+          {fromLabel ? `${t("from")} ${fromLabel}` : "—"}
         </span>
+        <span className="archi-cta">{t("view")}</span>
       </div>
-      <div className="mt-3 flex justify-between items-baseline">
-        <h4 className="font-medium text-[15px]">{a.full_name}</h4>
-        <span className="mono text-[12px]">{a.rating?.toFixed(1)}★</span>
-      </div>
-      <p className="eyebrow mt-1">{a.city}</p>
-      <p className="mt-2 text-[12px] text-concrete-1">{a.specialties.join(" · ")}</p>
     </button>
   );
 }

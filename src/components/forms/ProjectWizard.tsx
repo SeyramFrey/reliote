@@ -53,6 +53,10 @@ export function ProjectWizard({ defaultEmail }: { defaultEmail?: string }) {
 
   const Current = STEPS[step - 1];
   const title = t(`titles.${step}` as "titles.1");
+  const steps = [1, 2, 3, 4, 5].map((n) => ({
+    n: String(n).padStart(2, "0"),
+    t: t(`titles.${n}` as "titles.1"),
+  }));
   return (
     <FormProvider {...form}>
       <WizardShell
@@ -60,6 +64,7 @@ export function ProjectWizard({ defaultEmail }: { defaultEmail?: string }) {
         totalSteps={5}
         eyebrow={t("eyebrow")}
         title={title}
+        steps={steps}
         onBack={step > 1 ? () => setStep(step - 1) : undefined}
         onNext={next}
         nextLabel={step === 5 ? t("submit") : t("next")}

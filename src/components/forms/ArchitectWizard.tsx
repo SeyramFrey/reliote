@@ -14,22 +14,24 @@ import Step6 from "./steps/Architect6";
 import { submitArchitect } from "@/app/[locale]/architectes/rejoindre/actions";
 
 const STEP_FIELDS: (keyof ArchitectInput)[][] = [
-  ["full_name", "email", "phone", "photo_url"],
-  ["country", "city"],
+  ["first_name", "last_name", "email", "phone", "photo_url"],
+  ["country", "city", "structure"],
   ["specialties", "languages", "project_types"],
-  ["years_experience", "description", "portfolio_url"],
-  ["availability", "fee_from"],
+  ["years_experience", "ordre_number", "diploma", "description", "portfolio_url"],
+  ["availability", "fee_currency", "fee_amount"],
   ["terms"],
 ];
 
-const STEPS = [Step1, Step2, Step3, Step4, Step5, Step6];
-
 export function ArchitectWizard({
+  userId,
   defaultEmail,
-  defaultName,
+  defaultFirstName,
+  defaultLastName,
 }: {
+  userId: string;
   defaultEmail?: string;
-  defaultName?: string;
+  defaultFirstName?: string;
+  defaultLastName?: string;
 }) {
   const t = useTranslations("wizardArchitect");
   const [step, setStep] = useState(1);
@@ -40,7 +42,8 @@ export function ArchitectWizard({
     resolver: zodResolver(architectSchema) as any,
     mode: "onTouched",
     defaultValues: {
-      full_name: defaultName ?? "",
+      first_name: defaultFirstName ?? "",
+      last_name: defaultLastName ?? "",
       email: defaultEmail ?? "",
       country: "Côte d'Ivoire",
       specialties: [],
@@ -60,8 +63,12 @@ export function ArchitectWizard({
     if (res && "error" in res && res.error) setServerError(res.error);
   }
 
-  const Current = STEPS[step - 1];
+  const steps = [1, 2, 3, 4, 5, 6].map((n) => ({
+    n: String(n).padStart(2, "0"),
+    t: t(`titles.${n}` as "titles.1"),
+  }));
   const title = t(`titles.${step}` as "titles.1");
+
   return (
     <FormProvider {...form}>
       <WizardShell
@@ -69,14 +76,23 @@ export function ArchitectWizard({
         totalSteps={6}
         eyebrow={t("eyebrow")}
         title={title}
+        steps={steps}
         onBack={step > 1 ? () => setStep(step - 1) : undefined}
         onNext={next}
         nextLabel={step === 6 ? t("submit") : t("next")}
         backLabel={t("back")}
         submitting={submitting}
+        wide={step === 6}
       >
-        <Current />
-        {serverError && <p className="mt-4 text-sm text-red-700">{serverError}</p>}
+        {step === 1 && <Step1 userId={userId} />}
+        {step === 2 && <Step2 />}
+        {step === 3 && <Step3 />}
+        {step === 4 && <Step4 />}
+        {step === 5 && <Step5 />}
+        {step === 6 && <Step6 />}
+        {serverError && (
+          <p className="mt-4 text-sm text-red-700">{serverError}</p>
+        )}
       </WizardShell>
     </FormProvider>
   );

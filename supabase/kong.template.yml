@@ -29,3 +29,12 @@ services:
       - name: key-auth
         config:
           hide_credentials: true
+  - name: storage-v1
+    url: http://storage:5000/
+    routes:
+      - name: storage-v1-all
+        strip_path: true
+        paths:
+          - /storage/v1/
+    plugins:
+      - name: cors

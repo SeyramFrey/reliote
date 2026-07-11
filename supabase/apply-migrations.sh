@@ -12,6 +12,11 @@ SQL_FILES=(
   /reliote/migrations/0001_schema.sql
   /reliote/migrations/0002_rls.sql
   /reliote/migrations/0003_triggers.sql
+  /reliote/migrations/0004_rls_fix_recursion.sql
+  /reliote/migrations/0005_architect_cnoa_fields.sql
+  /reliote/migrations/0006_storage_architect_photos.sql
+  /reliote/migrations/0007_architects_private.sql
+  /reliote/migrations/0008_engagement_and_reveal.sql
   /reliote/seed.sql
 )
 

@@ -1,8 +1,10 @@
 "use client";
 import { useFormContext } from "react-hook-form";
 import { useTranslations } from "next-intl";
+import { PhoneField } from "../fields/PhoneField";
+import { PhotoUploadField } from "../fields/PhotoUploadField";
 
-export default function Architect1() {
+export default function Architect1({ userId }: { userId: string }) {
   const {
     register,
     formState: { errors },
@@ -10,42 +12,53 @@ export default function Architect1() {
   const t = useTranslations("wizardArchitect");
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <label className="block md:col-span-2">
-        <span className="eyebrow">{t("fields.full_name")}</span>
+      <label className="block">
+        <span className="eyebrow">
+          {t("fields.first_name")} <span className="text-brass">*</span>
+        </span>
         <input
-          {...register("full_name")}
-          className="w-full mt-1 bg-transparent border-b border-[var(--hairline)] py-2 outline-none focus:border-green"
+          {...register("first_name")}
+          className="w-full mt-1 bg-transparent border-b border-[var(--hairline)] py-2 outline-none focus:border-green text-[16px]"
         />
-        {errors.full_name && (
-          <span className="text-xs text-red-700">{String(errors.full_name.message)}</span>
+        {errors.first_name && (
+          <span className="text-xs text-red-700 block mt-1">
+            {String(errors.first_name.message)}
+          </span>
         )}
       </label>
       <label className="block">
-        <span className="eyebrow">{t("fields.email")}</span>
+        <span className="eyebrow">
+          {t("fields.last_name")} <span className="text-brass">*</span>
+        </span>
+        <input
+          {...register("last_name")}
+          className="w-full mt-1 bg-transparent border-b border-[var(--hairline)] py-2 outline-none focus:border-green text-[16px]"
+        />
+        {errors.last_name && (
+          <span className="text-xs text-red-700 block mt-1">
+            {String(errors.last_name.message)}
+          </span>
+        )}
+      </label>
+      <label className="block">
+        <span className="eyebrow">
+          {t("fields.email")} <span className="text-brass">*</span>
+        </span>
         <input
           type="email"
           {...register("email")}
-          className="w-full mt-1 bg-transparent border-b border-[var(--hairline)] py-2 outline-none focus:border-green"
+          className="w-full mt-1 bg-transparent border-b border-[var(--hairline)] py-2 outline-none focus:border-green text-[16px]"
         />
         {errors.email && (
-          <span className="text-xs text-red-700">{String(errors.email.message)}</span>
+          <span className="text-xs text-red-700 block mt-1">
+            {String(errors.email.message)}
+          </span>
         )}
       </label>
-      <label className="block">
-        <span className="eyebrow">{t("fields.phone")}</span>
-        <input
-          {...register("phone")}
-          className="w-full mt-1 bg-transparent border-b border-[var(--hairline)] py-2 outline-none focus:border-green"
-        />
-      </label>
-      <label className="block md:col-span-2">
-        <span className="eyebrow">{t("fields.photo_url")}</span>
-        <input
-          {...register("photo_url")}
-          placeholder="https://…"
-          className="w-full mt-1 bg-transparent border-b border-[var(--hairline)] py-2 outline-none focus:border-green"
-        />
-      </label>
+      <PhoneField name="phone" label={t("fields.phone")} />
+      <div className="md:col-span-2">
+        <PhotoUploadField userId={userId} />
+      </div>
     </div>
   );
 }

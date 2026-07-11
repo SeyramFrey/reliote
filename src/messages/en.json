@@ -1,6 +1,6 @@
 {
   "nav": {
-    "architects": "Architects",
+    "architects": "Selection",
     "approach": "Approach",
     "projects": "Projects",
     "journal": "Journal",
@@ -198,16 +198,21 @@
     "registerEyebrow": "Create account",
     "registerClientTitle": "Join Reliote — as a client",
     "registerArchitectTitle": "Join Reliote — as an architect",
+    "registerClientSub": "Present your project in a few minutes. A Reliote duo will reach you within 48 business hours.",
+    "registerArchitectSub": "Present your studio. Our admission committee reviews every application within ten business days.",
     "forgotEyebrow": "Forgotten password",
     "forgotTitle": "Receive a reset link",
     "forgotHint": "Enter the address tied to your account. A secure link will reach you within minutes.",
     "email": "Email address",
     "password": "Password",
     "fullName": "Full name",
+    "firstName": "First name",
+    "lastName": "Last name",
     "signIn": "Sign in",
     "createAccount": "Create my account",
     "sendLink": "Send the link",
     "noAccount": "No account yet?",
+    "haveAccount": "I have an account · Sign in →",
     "forgot": "Forgotten password?"
   },
   "wizardClient": {
@@ -239,6 +244,8 @@
       "title": "Thank you. Your brief is in our hands.",
       "body": "A Reliote duo is now reading your project. A first human reply will reach you within 48 business hours.",
       "matches": "First matches",
+      "viewMatches": "View my matches",
+      "matchesPending": "Your matches will appear in your private space once they have been prepared by our team — within 48 business hours.",
       "cta": "Back to home"
     },
     "match": "Match"
@@ -258,26 +265,57 @@
     },
     "fields": {
       "full_name": "Full name",
+      "first_name": "First name",
+      "last_name": "Last name",
       "email": "Email address",
       "phone": "Phone",
+      "photo": "Professional photo",
       "photo_url": "Link to a professional photo",
       "country": "Country",
       "city": "City",
+      "structure": "Studio / Practice",
+      "ordre_number": "Ordre registration N°",
+      "diploma": "Diploma",
+      "diploma_other": "Specify your diploma",
       "specialties": "Specialties",
       "languages": "Spoken languages",
       "project_types": "Project types handled",
-      "years_experience": "Years of experience",
+      "years_experience": "Years in practice",
       "description": "Description of your practice",
       "portfolio_url": "Portfolio URL",
       "availability": "Current availability",
-      "fee_from": "Fees from",
+      "fee_from": "Fee currency",
+      "fee_amount": "Minimum amount",
+      "fee": "Design fees",
       "terms": "I confirm the accuracy of this information and accept the Reliote charter."
+    },
+    "placeholders": {
+      "city": "e.g. Cocody, Abidjan",
+      "structure": "e.g. Atelier Faïdhèrbe",
+      "ordre_number": "e.g. 2014/418/132",
+      "description": "Describe your approach, key references, design positions…"
+    },
+    "hints": {
+      "ordre_number": "CNOA format: Year / Dossier N° / Individual N°"
+    },
+    "currency": {
+      "eur": "Euro · EUR",
+      "xof": "CFA franc · XOF"
     },
     "availability": {
       "available": "Available",
       "busy": "Limited capacity",
       "unavailable": "Unavailable"
     },
+    "photoCTA": "Upload a photo",
+    "photoHint": "Drag and drop or click. JPG, PNG or WebP. 5 MB max. 4:5 portrait crop recommended.",
+    "photoUploading": "Uploading…",
+    "photoErrors": {
+      "type": "Unsupported format. JPG, PNG or WebP only.",
+      "size": "File too large. 5 MB max.",
+      "unknown": "Upload failed. Try again."
+    },
+    "yearsSuffix": "yrs",
     "thanks": {
       "eyebrow": "Application received",
       "title": "Thank you. Your application is being read.",
@@ -313,6 +351,281 @@
       "architects": "Architects",
       "projects": "Projects",
       "matches": "Matches"
+    }
+  },
+  "landing": {
+    "hero": {
+      "ref": "RLT — 00 / 01",
+      "updatedLabel": "Updated",
+      "updatedVal": "16.05.26 — 08:14 GMT",
+      "spotlightLabel": "Featured · May 16",
+      "spotlightTitle": "Atelier Faïdhèrbe",
+      "spotlightSub": "Cocody — A. N'Guessan · 12 yrs in practice",
+      "trustEyebrow": "Trust, measured",
+      "trust": [
+        { "k": "Admitted per 100", "v": "14" },
+        { "k": "Avg. mission rating", "v": "4.9 / 5" },
+        { "k": "Reliote mediation", "v": "Whole mission" }
+      ]
+    },
+    "trustRail": { "label": "Studios admis · 84 / 612" },
+    "terres": {
+      "eyebrow": "02b — Approach, in depth",
+      "titlePre": "Five ",
+      "titleItalic": "grounds",
+      "titleRest": " on which we build trust.",
+      "kicker": "None is negotiable. Their sum is Reliote — never one of them alone.",
+      "cards": [
+        { "tPre": "Strict ", "tItalic": "selection", "tRest": ".", "b": "Every architect is reviewed on dossier, portfolio and interview. One in six is admitted — that's our only cadence.", "k": "Admission rate", "v": "1 / 6" },
+        { "tPre": "Full ", "tItalic": "verification", "tRest": ".", "b": "Diplomas, registration with the Ordre, delivered projects, references. Everything checked before publication.", "k": "Diplomas verified", "v": "100%" },
+        { "tPre": "Shared ", "tItalic": "method", "tRest": ".", "b": "Eight-question brief, signed scope, written milestones. No scope drift.", "k": "Structured steps", "v": "08" },
+        { "tPre": "Total ", "tItalic": "transparency", "tRest": ".", "b": "Fees, timing, clauses, deliverables. All written down. Nothing surfaces mid-mission.", "k": "Hidden costs", "v": "0" },
+        { "tPre": "", "tItalic": "Care", "tRest": " through to handover.", "b": "A Reliote duo follows every mission. Mediation included, remote and on-site, for the whole duration. You're never alone facing the unexpected.", "k": "Dedicated duo · whole duration", "v": "365d" }
+      ]
+    },
+    "architects": {
+      "trust": [
+        { "strong": "Diplomas & registration", "sub": "Verified at admission" },
+        { "strong": "4.8 / 5 average", "sub": "Across 132 delivered" },
+        { "strong": "Protected fees", "sub": "Milestone-sequenced" },
+        { "strong": "Mediation included", "sub": "Reliote duo on duty" }
+      ],
+      "shown": "profiles shown",
+      "verifiedPlural": "verified",
+      "available": "Available",
+      "booked": "Booked",
+      "verified": "Verified",
+      "view": "VIEW",
+      "from": "from",
+      "yrs": "yrs"
+    },
+    "method": {
+      "eyebrow": "03 — Selection",
+      "titlePre": "A short index, ",
+      "titleItalic": "presented to you,",
+      "titleRest": " never browsed.",
+      "kicker": "You don't browse a catalogue of architects. You tell us about your project — we present the right matches, argued, in your private space.",
+      "stats": {
+        "verified": "Verified architects",
+        "rating": "Average mission rating",
+        "yearsMedian": "Median years in practice",
+        "admission": "Admission rate"
+      },
+      "coverage": {
+        "diplomas": "Diplomas represented",
+        "specialties": "Specialties covered",
+        "cities": "Cities of practice"
+      },
+      "ctaLead": "Present your project in under 6 minutes. We reply within 48 business hours with up to three argued architects.",
+      "cta": "Start a project"
+    },
+    "privateArchitects": {
+      "eyebrow": "Private space · Selection",
+      "titlePre": "Your ",
+      "titleItalic": "matches",
+      "titleRest": ", argued.",
+      "kicker": "The Reliote team shortlists every architect on dossier, fit and availability. You access their full profile here, never on the public landing.",
+      "forProject": "For your project",
+      "empty": {
+        "eyebrow": "No brief submitted",
+        "title": "Your matches will appear here once your brief is submitted.",
+        "body": "You describe your project across eight questions. Our team turns it into a scope of work, compares to our 84 admitted architects, and presents up to three argued proposals within 48 business hours.",
+        "cta": "Submit my brief"
+      },
+      "pending": {
+        "eyebrow": "Brief in review",
+        "title": "Your matches are being prepared.",
+        "body": "Our duo is reading your brief in depth. You'll receive up to three matching architects here within 48 business hours — every proposal comes with a reasoned note explaining the choice.",
+        "ref": "Dossier reference"
+      },
+      "wrongRole": {
+        "architect": {
+          "eyebrow": "Architect area",
+          "title": "This section is for project owners. Your dashboard is elsewhere.",
+          "cta": "Open my dashboard"
+        },
+        "admin": {
+          "eyebrow": "Reliote console",
+          "title": "This view is the client's. The admin console manages all architects.",
+          "cta": "Open the admin console"
+        },
+        "client": {
+          "eyebrow": "—",
+          "title": "—",
+          "cta": "—"
+        }
+      }
+    },
+    "process": {
+      "live": "Live demonstration",
+      "pin": "Click a step to pin",
+      "startNow": "Start now →"
+    },
+    "territoire": {
+      "eyebrow": "07 — Territory",
+      "titlePre": "A ",
+      "titleItalic": "Paris ⇄ Abidjan",
+      "titleRest": " corridor, run like a line.",
+      "kicker": "5,247 km of great-circle. Two capitals, one protocol. We hold the thread from brief to delivery.",
+      "liveChart": "Live chart",
+      "offices": "Offices",
+      "parisSub": "11 duos · Coordination",
+      "abidjanSub": "84 admitted studios · Delivery",
+      "liveCorridor": "Live corridor",
+      "active": "Active",
+      "feed": [
+        { "t": "02:14", "label": "Brief in", "place": "Saint-Mandé → Cocody" },
+        { "t": "02:08", "label": "Milestone signed", "place": "Bingerville · APS" },
+        { "t": "01:51", "label": "Mediation closed", "place": "Marcory · 03h" },
+        { "t": "01:32", "label": "Admission", "place": "Atelier Faïdhèrbe" }
+      ],
+      "meterLabel": "Great-circle Paris → Abidjan"
+    },
+    "featured": {
+      "read": "Read the case study",
+      "startSimilar": "Start a similar project",
+      "slides": ["Rives de la Lagune · water view", "Inner courtyard", "North pool"],
+      "rows": {
+        "client": "Client", "clientV": "Private, Paris-based",
+        "arch": "Architect", "archV": "Atelier Faïdhèrbe (A. N'Guessan)",
+        "program": "Program", "programV": "Primary residence · 480 m²",
+        "site": "Site", "siteV": "Bingerville · Côte d'Ivoire",
+        "duration": "Duration", "durationV": "18 months · delivered 2025",
+        "budget": "Budget", "budgetV": "€ 620,000 — studies & works"
+      },
+      "stats": [
+        { "n": 480, "suf": " m²", "l": "Useful area" },
+        { "n": 18, "suf": " mo", "l": "Studies + works" },
+        { "n": 23, "suf": "", "l": "Local craftspeople" },
+        { "n": 100, "suf": "%", "l": "Milestones held" }
+      ],
+      "hotspots": [
+        { "t": "Board-formed concrete", "b": "Cast on site, local timber matrix, mineral-glazed finish." },
+        { "t": "Raking daylight", "b": "NW-facing glazing, absorptive concrete veil, taming 1pm heat." },
+        { "t": "Reflecting pool", "b": "120 m² of still water for passive cooling, humid climate." }
+      ]
+    },
+    "audiences": {
+      "head": {
+        "eyebrow": "06",
+        "titlePre": "Two sides of the same ",
+        "titleItalic": "frame.",
+        "kicker": "Reliote is built to serve two equally exacting expectations — clients' and practitioners'."
+      },
+      "client": {
+        "titlePre": "Decide from afar with the ",
+        "titleItalic": "same rigour",
+        "titleRest": " you'd want next door.",
+        "list": ["Verified profiles, prior interviews", "Structured brief written with you", "Framed contracts, milestones, payments", "Reliote mediation throughout"],
+        "foot": "Paris ⇄ Abidjan"
+      },
+      "architect": {
+        "titlePre": "Sound projects, in a ",
+        "titleItalic": "professional frame.",
+        "titleRest": "",
+        "list": ["Qualified inbound only", "Structured client brief", "Protected fees, sequenced payments", "Visibility into a premium market"],
+        "foot": "Côte d'Ivoire · 2026"
+      }
+    },
+    "journal": {
+      "titlePre": "Journal & ",
+      "titleItalic": "readings.",
+      "kicker": "Method, positions and site studies. Published every two weeks, never to fill.",
+      "more": "Read →",
+      "cards": [
+        { "pre": "The eight-question brief — ", "italic": "why those." },
+        { "pre": "Building on the lagoon — ", "italic": "the climate's truths." },
+        { "pre": "Fees & milestones — ", "italic": "transparency as a tool." }
+      ]
+    },
+    "ctaBand": {
+      "begin": "Begin",
+      "sub": "Present your project in under 6 minutes. A human reply will reach you within 48 business hours.",
+      "secondary": "Talk to a duo"
+    },
+    "footer": {
+      "tag": "Architecture, verified. Collaboration, framed.",
+      "cols": [
+        { "h": "Platform", "links": ["Architects", "Approach", "Projects", "Pricing", "Security"] },
+        { "h": "Resources", "links": ["Journal", "Client guide", "Architect guide", "FAQ"] },
+        { "h": "Company", "links": ["About", "Charter", "Contact", "Careers"] },
+        { "h": "Legal", "links": ["Terms", "Privacy", "Cookies", "Imprint"] }
+      ],
+      "rights": "All rights reserved",
+      "version": "RLT — 00 / 01 · v0.1 MVP"
+    },
+    "drawer": {
+      "verifiedProfile": "Verified profile",
+      "registered": "Registered architect · CI",
+      "verified": "Verified",
+      "approach": "Approach",
+      "atAGlance": "At a glance",
+      "experience": "Years in practice",
+      "rating": "Average rating",
+      "languages": "Languages",
+      "fees": "Design fees",
+      "selectedWork": "Selected work",
+      "feesFrom": "Design fees · from",
+      "requestMeeting": "Request a meeting",
+      "yearsSuffix": "yrs",
+      "channel": {
+        "title": "Communication via Reliote channel",
+        "body": "The architect's personal contact details (direct phone, personal email) are not shared with you. All initial communication passes through Reliote relay addresses and supervised rooms, until the mission framework is signed."
+      }
+    },
+    "anon": {
+      "handle": "Architect",
+      "diploma": "Diploma",
+      "hidden": "Identity hidden",
+      "reveal": "Reveal identity"
+    },
+    "charter": {
+      "eyebrow": "Non-circumvention charter · v1",
+      "version": "Version v1 · June 2026",
+      "close": "CLOSE ✕",
+      "cancel": "Cancel",
+      "accept": "Accept and reveal identity",
+      "client": {
+        "titlePre": "Accept the charter before revealing the architect's ",
+        "titleItalic": "identity",
+        "titleRest": ".",
+        "intro": "Reliote sells a reasoned match and a framed mission. To reveal this architect's identity, you acknowledge the commitments below. This charter is versioned and timestamped at acceptance.",
+        "consent": "I have read the 7 articles of the charter and accept them in full. I authorize the reveal of this architect's identity on the platform.",
+        "articles": [
+          { "t": "Reasoned selection", "b": "Reliote presents up to three architects matching your brief. Each proposal is selected on dossier, skills, availability and fit — and comes with a reasoned note explaining the choice." },
+          { "t": "Non-circumvention (18 months)", "b": "For 18 months following the reveal of an architect's identity on the Reliote platform, you commit not to enter into any mission, study or service directly with this architect outside the Reliote framework." },
+          { "t": "Mission framework", "b": "If you engage an architect presented by Reliote, the mission is conducted via the platform: structured brief, framed contract, defined milestones, sequenced payments via Reliote, mediation included for the project's full duration." },
+          { "t": "Mediated communication", "b": "The architect's personal contact details (direct phone, personal email) are not transmitted to you. All initial communication passes through Reliote channels — anonymized relay addresses and video rooms supervised by your duo." },
+          { "t": "Information confidentiality", "b": "You commit not to reproduce, share or publicly disseminate the architect's professional information (portfolio, background, photos, references) outside the direct context of your project." },
+          { "t": "Penalty for breach", "b": "Any proven circumvention during the engagement period triggers a fixed penalty of 12% of the mission amount in question (all taxes included), invoiced by Reliote to the breaching party." },
+          { "t": "Duration and termination", "b": "This charter takes effect at acceptance and remains valid for 18 months following identity reveal, regardless of whether the presented project materializes." }
+        ]
+      },
+      "architect": {
+        "titlePre": "Accept the Reliote ",
+        "titleItalic": "admission charter",
+        "titleRest": ".",
+        "intro": "Admission to the Reliote index requires explicit acceptance of the 7 commitments below. The charter is versioned, timestamped at your admission, and remains valid for the entire duration of your presence in the index.",
+        "articles": [
+          { "t": "Traced introductions", "b": "Reliote presents you with qualified clients who have submitted a structured brief reviewed by our team. Each introduction is traced and timestamped on the platform." },
+          { "t": "Collaboration framework", "b": "Any mission engaged with a client introduced by Reliote is conducted via the platform: signed brief, framed contract, shared milestones, payments sequenced via Reliote, mediation included." },
+          { "t": "Non-circumvention (18 months)", "b": "For 18 months following the introduction of a client by Reliote, you commit not to enter into any mission directly with this client outside the Reliote framework — even if they contact you through another channel." },
+          { "t": "Sequenced fees", "b": "Your mission fees flow through Reliote, sequenced by signed milestones. Reliote retains a commission agreed at your admission, withheld at each milestone validation." },
+          { "t": "Communication via Reliote channels", "b": "Your personal contact details (direct phone, personal email) are never transmitted to clients. All initial communication passes through Reliote relay addresses and supervised video rooms." },
+          { "t": "Sanctions for breach", "b": "Any proven circumvention triggers (a) a fixed penalty of 12% of the mission amount in question, (b) your immediate and permanent exclusion from the Reliote index, (c) suspension of all in-progress payments on the platform." },
+          { "t": "Charter duration", "b": "This charter takes effect at your admission to the Reliote index and remains valid for the entire duration of your presence — it renews tacitly with each introduction." }
+        ]
+      }
+    },
+    "dashboardArchitect": {
+      "eyebrow": "Architect area",
+      "welcome": "Welcome",
+      "status": "Status",
+      "incoming": "Incoming projects",
+      "empty": "No project has been matched to you yet. You'll be notified as soon as a client deposits a brief compatible with your profile.",
+      "engaged": "Client engaged",
+      "channelReady": "Communication channel open",
+      "awaitingClient": "Brief received · awaiting client engagement"
     }
   }
 }

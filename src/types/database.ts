@@ -11,16 +11,23 @@ export type Database = {
     Tables: {
       architect_profiles: {
         Row: {
+          anon_handle: string | null
           availability: Database["public"]["Enums"]["availability_status"]
+          charter_signed_at: string | null
+          charter_version: string | null
           city: string
           country: string
           created_at: string
           description: string
+          diploma: string | null
           email: string
-          fee_from: string | null
-          full_name: string
+          fee_amount: number | null
+          fee_currency: Database["public"]["Enums"]["fee_currency"] | null
+          first_name: string
           id: string
           languages: string[]
+          last_name: string
+          ordre_number: string | null
           phone: string | null
           photo_url: string | null
           portfolio_url: string | null
@@ -28,6 +35,7 @@ export type Database = {
           rating: number | null
           specialties: string[]
           status: Database["public"]["Enums"]["architect_status"]
+          structure: string | null
           updated_at: string
           user_id: string | null
           years_experience: number
@@ -38,11 +46,15 @@ export type Database = {
           country?: string
           created_at?: string
           description: string
+          diploma?: string | null
           email: string
-          fee_from?: string | null
-          full_name: string
+          fee_amount?: number | null
+          fee_currency?: Database["public"]["Enums"]["fee_currency"] | null
+          first_name: string
           id?: string
           languages?: string[]
+          last_name: string
+          ordre_number?: string | null
           phone?: string | null
           photo_url?: string | null
           portfolio_url?: string | null
@@ -50,6 +62,7 @@ export type Database = {
           rating?: number | null
           specialties?: string[]
           status?: Database["public"]["Enums"]["architect_status"]
+          structure?: string | null
           updated_at?: string
           user_id?: string | null
           years_experience: number
@@ -60,11 +73,15 @@ export type Database = {
           country?: string
           created_at?: string
           description?: string
+          diploma?: string | null
           email?: string
-          fee_from?: string | null
-          full_name?: string
+          fee_amount?: number | null
+          fee_currency?: Database["public"]["Enums"]["fee_currency"] | null
+          first_name?: string
           id?: string
           languages?: string[]
+          last_name?: string
+          ordre_number?: string | null
           phone?: string | null
           photo_url?: string | null
           portfolio_url?: string | null
@@ -72,6 +89,7 @@ export type Database = {
           rating?: number | null
           specialties?: string[]
           status?: Database["public"]["Enums"]["architect_status"]
+          structure?: string | null
           updated_at?: string
           user_id?: string | null
           years_experience?: number
@@ -145,6 +163,63 @@ export type Database = {
           },
         ]
       }
+      client_engagements: {
+        Row: {
+          architect_id: string
+          charter_accepted: boolean
+          charter_version: string | null
+          engaged_at: string | null
+          id: string
+          notes: string | null
+          project_id: string
+          proposed_at: string
+          status: Database["public"]["Enums"]["engagement_status"]
+        }
+        Insert: {
+          architect_id: string
+          charter_accepted?: boolean
+          charter_version?: string | null
+          engaged_at?: string | null
+          id?: string
+          notes?: string | null
+          project_id: string
+          proposed_at?: string
+          status?: Database["public"]["Enums"]["engagement_status"]
+        }
+        Update: {
+          architect_id?: string
+          charter_accepted?: boolean
+          charter_version?: string | null
+          engaged_at?: string | null
+          id?: string
+          notes?: string | null
+          project_id?: string
+          proposed_at?: string
+          status?: Database["public"]["Enums"]["engagement_status"]
+        }
+        Relationships: []
+      }
+      engagement_relays: {
+        Row: {
+          architect_relay: string
+          client_relay: string
+          created_at: string
+          engagement_id: string
+        }
+        Insert: {
+          architect_relay: string
+          client_relay: string
+          created_at?: string
+          engagement_id: string
+        }
+        Update: {
+          architect_relay?: string
+          client_relay?: string
+          created_at?: string
+          engagement_id?: string
+        }
+        Relationships: []
+      }
       match_results: {
         Row: {
           architect_id: string
@@ -190,22 +265,25 @@ export type Database = {
       profiles: {
         Row: {
           created_at: string
-          full_name: string | null
+          first_name: string | null
           id: string
+          last_name: string | null
           locale: string
           role: Database["public"]["Enums"]["user_role"]
         }
         Insert: {
           created_at?: string
-          full_name?: string | null
+          first_name?: string | null
           id: string
+          last_name?: string | null
           locale?: string
           role?: Database["public"]["Enums"]["user_role"]
         }
         Update: {
           created_at?: string
-          full_name?: string | null
+          first_name?: string | null
           id?: string
+          last_name?: string | null
           locale?: string
           role?: Database["public"]["Enums"]["user_role"]
         }
@@ -225,6 +303,8 @@ export type Database = {
     Enums: {
       architect_status: "pending" | "verified" | "rejected" | "paused"
       availability_status: "available" | "busy" | "unavailable"
+      engagement_status: "proposed" | "engaged" | "declined" | "cancelled" | "expired"
+      fee_currency: "EUR" | "XOF"
       project_status: "new" | "matched" | "in_review" | "closed"
       project_type:
         | "residential"
@@ -363,6 +443,8 @@ export const Constants = {
     Enums: {
       architect_status: ["pending", "verified", "rejected", "paused"],
       availability_status: ["available", "busy", "unavailable"],
+      engagement_status: ["proposed", "engaged", "declined", "cancelled", "expired"],
+      fee_currency: ["EUR", "XOF"],
       project_status: ["new", "matched", "in_review", "closed"],
       project_type: [
         "residential",

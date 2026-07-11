@@ -3,7 +3,10 @@ import { setArchitectStatus } from "./actions";
 
 type Row = {
   id: string;
-  full_name: string;
+  first_name: string;
+  last_name: string;
+  structure: string | null;
+  ordre_number: string | null;
   city: string;
   status: "pending" | "verified" | "rejected" | "paused";
   created_at: string;
@@ -15,7 +18,7 @@ export default async function AdminArchitects() {
   const s = createServiceClient();
   const { data } = await s
     .from("architect_profiles")
-    .select("id, full_name, city, status, created_at, rating, years_experience")
+    .select("id, first_name, last_name, structure, ordre_number, city, status, created_at, rating, years_experience")
     .order("created_at", { ascending: false }) as { data: Row[] | null };
   const rows = data ?? [];
 
@@ -28,6 +31,8 @@ export default async function AdminArchitects() {
         <thead className="text-left">
           <tr className="border-b border-[var(--hairline)]">
             <th className="eyebrow py-3">Nom</th>
+            <th className="eyebrow">Structure</th>
+            <th className="eyebrow">N° d&apos;agrément</th>
             <th className="eyebrow">Ville</th>
             <th className="eyebrow">Statut</th>
             <th className="eyebrow">Note</th>
@@ -38,7 +43,9 @@ export default async function AdminArchitects() {
         <tbody>
           {rows.map((a) => (
             <tr key={a.id} className="border-b border-[var(--hairline-soft)]">
-              <td className="py-4">{a.full_name}</td>
+              <td className="py-4">{a.first_name} {a.last_name}</td>
+              <td className="text-concrete-1">{a.structure ?? "—"}</td>
+              <td className="mono text-[12px]">{a.ordre_number ?? "—"}</td>
               <td>{a.city}</td>
               <td>
                 <span

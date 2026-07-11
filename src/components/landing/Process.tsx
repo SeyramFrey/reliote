@@ -1,59 +1,102 @@
 "use client";
-import { useEffect, useState } from "react";
-import { useTranslations } from "next-intl";
-import { Eyebrow } from "@/components/shared/Eyebrow";
+import { useEffect, useRef, useState } from "react";
+import { useLocale, useTranslations } from "next-intl";
+import { useRouter } from "next/navigation";
+import { SectionHead } from "./SectionHead";
 
 const STEPS = ["s1", "s2", "s3", "s4"] as const;
 
+// Interactive, auto-advancing process timeline (.timeline-rail / .tl-step).
 export function Process() {
   const t = useTranslations("process");
+  const lt = useTranslations("landing.process");
+  const locale = useLocale();
+  const router = useRouter();
   const [active, setActive] = useState(0);
+  const railRef = useRef<HTMLDivElement>(null);
+  const [inView, setInView] = useState(false);
+
   useEffect(() => {
-    const id = setInterval(() => setActive((a) => (a + 1) % STEPS.length), 4000);
-    return () => clearInterval(id);
+    const el = railRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      ([e]) => {
+        if (e.isIntersecting) setInView(true);
+      },
+      { threshold: 0.15 }
+    );
+    io.observe(el);
+    return () => io.disconnect();
   }, []);
+
+  useEffect(() => {
+    if (!inView) return;
+    const id = setInterval(() => setActive((a) => (a + 1) % STEPS.length), 4200);
+    return () => clearInterval(id);
+  }, [inView]);
+
+  const fill = inView ? ((active + 1) / STEPS.length) * 100 : 0;
+
   return (
-    <section id="processus" className="bg-paper">
-      <div className="page-edge py-32">
-        <Eyebrow>04 — {t("eyebrow")}</Eyebrow>
-        <h2 className="font-light text-[clamp(36px,5vw,72px)] leading-[1.05] tracking-[-0.02em] mt-6 max-w-[24ch]">
-          {t("titlePre")}
-          <em className="serif-i">{t("titleItalic")}</em>
-        </h2>
-        <p className="text-concrete-1 max-w-[60ch] mt-6">{t("kicker")}</p>
-        <div className="relative mt-16">
-          <div className="hidden md:block absolute left-0 right-0 top-[44px] h-px bg-[var(--hairline)]" />
-          <div
-            className="hidden md:block absolute left-0 top-[44px] h-px bg-green transition-[width] duration-[800ms]"
-            style={{ width: `${((active + 1) / STEPS.length) * 100}%` }}
-          />
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-[var(--gutter)]">
-            {STEPS.map((k, i) => {
-              const isActive = i === active;
-              return (
-                <button
-                  key={k}
-                  onClick={() => setActive(i)}
-                  className={`text-left pt-12 relative ${isActive ? "" : "opacity-70"}`}
+    <section className="sect" id="projets">
+      <SectionHead
+        num={t("eyebrow")}
+        titlePre={t("titlePre")}
+        titleItalic={t("titleItalic")}
+        kicker={t("kicker")}
+      />
+      <div className="timeline">
+        <div
+          className="timeline-rail"
+          ref={railRef}
+          style={{ ["--rail-fill"]: `${fill}%` } as React.CSSProperties}
+        >
+          {STEPS.map((k, i) => {
+            const passed = i < active;
+            const isActive = i === active;
+            const deliverables = t.raw(`${k}.deliverables`) as string[];
+            return (
+              <button
+                key={k}
+                className={`tl-step ${isActive ? "active" : ""} ${passed ? "passed" : ""}`}
+                onClick={() => setActive(i)}
+                onMouseEnter={() => setActive(i)}
+                aria-current={isActive}
+              >
+                <span className="tl-dot" />
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "flex-end",
+                    paddingRight: 14,
+                  }}
                 >
-                  <span
-                    className={`absolute -top-1 left-0 inline-block w-3 h-3 rounded-full ${isActive ? "bg-brass animate-pulse" : "bg-concrete-3"}`}
-                  />
-                  <span className="eyebrow">
-                    {t(`${k}.n`)} · {t(`${k}.days`)}
-                  </span>
-                  <h3 className="font-display text-3xl mt-2">{t(`${k}.t`)}</h3>
-                  <p className="serif-i text-concrete-1 mt-3">{t(`${k}.verb`)}</p>
-                  <p className="mt-4 text-sm text-concrete-1">{t(`${k}.b`)}</p>
-                  <ul className="mt-5 space-y-1.5 text-[12px] mono text-concrete-2">
-                    {(t.raw(`${k}.deliverables`) as string[]).map((d) => (
-                      <li key={d}>· {d}</li>
-                    ))}
-                  </ul>
-                </button>
-              );
-            })}
-          </div>
+                  <span className="tl-num">{t(`${k}.n`)}</span>
+                  <span className="tl-days">{t(`${k}.days`)}</span>
+                </div>
+                <h3 className="tl-title">{t(`${k}.t`)}</h3>
+                <p className="tl-body">{t(`${k}.b`)}</p>
+                <p className="tl-verb">— {t(`${k}.verb`)}</p>
+                <ul className="tl-deliv">
+                  {deliverables.map((d) => (
+                    <li key={d}>{d}</li>
+                  ))}
+                </ul>
+              </button>
+            );
+          })}
+        </div>
+        <div className="tl-progress-overlay">
+          <span className="pulse">
+            <span className="pdot" />
+            {lt("live")} — {String(active + 1).padStart(2, "0")} /{" "}
+            {String(STEPS.length).padStart(2, "0")}
+          </span>
+          <span>{lt("pin")}</span>
+          <button onClick={() => router.push(`/${locale}/projets/initier`)}>
+            {lt("startNow")}
+          </button>
         </div>
       </div>
     </section>

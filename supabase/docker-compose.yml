@@ -122,5 +122,44 @@ services:
       PG_META_DB_USER: postgres
       PG_META_DB_PASSWORD: ${POSTGRES_PASSWORD}
 
+  # Supabase Storage API — file backend (no S3 needed for dev).
+  # Buckets + policies are created by migration 0006 after `apply-migrations.sh`.
+  storage:
+    image: supabase/storage-api:v1.11.13
+    container_name: reliote-storage
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      ANON_KEY: ${ANON_KEY}
+      SERVICE_KEY: ${SERVICE_ROLE_KEY}
+      PGRST_JWT_SECRET: ${JWT_SECRET}
+      DATABASE_URL: postgres://supabase_storage_admin:${POSTGRES_PASSWORD}@db:5432/postgres
+      FILE_SIZE_LIMIT: "52428800"            # 50 MB hard ceiling (per-bucket caps are smaller)
+      STORAGE_BACKEND: file
+      FILE_STORAGE_BACKEND_PATH: /var/lib/storage
+      TENANT_ID: stub
+      REGION: stub
+      GLOBAL_S3_BUCKET: stub
+      ENABLE_IMAGE_TRANSFORMATION: "true"
+      IMGPROXY_URL: http://imgproxy:5001
+    volumes:
+      - reliote-storage-data:/var/lib/storage
+
+  # On-the-fly image transformations (resize/crop) for Storage requests with ?width=…&height=…
+  imgproxy:
+    image: darthsim/imgproxy:v3.21.0
+    container_name: reliote-imgproxy
+    restart: unless-stopped
+    environment:
+      IMGPROXY_BIND: ":5001"
+      IMGPROXY_LOCAL_FILESYSTEM_ROOT: /
+      IMGPROXY_USE_ETAG: "true"
+      IMGPROXY_ENABLE_WEBP_DETECTION: "true"
+    volumes:
+      - reliote-storage-data:/var/lib/storage
+
 volumes:
   reliote-db-data:
+  reliote-storage-data:

@@ -3,21 +3,58 @@ import { getLocale, getTranslations } from "next-intl/server";
 
 export async function CtaBand() {
   const locale = await getLocale();
-  const t = await getTranslations("ctaBand");
+  const c = await getTranslations("ctaBand");
+  const lc = await getTranslations("landing.ctaBand");
+
   return (
-    <section className="bg-water text-paper">
-      <div className="page-edge py-32 text-center">
-        <p className="eyebrow text-paper/60">{t("eyebrow")}</p>
-        <h2 className="font-light text-[clamp(40px,6vw,88px)] leading-[1.05] mt-6 max-w-[18ch] mx-auto">
-          {t("titlePre")}<em className="serif-i">{t("titleItalic")}</em>
-        </h2>
-        <Link
-          href={`/${locale}/projets/initier`}
-          className="mt-10 inline-flex items-center gap-2.5 px-7 py-4 bg-green text-paper text-sm"
+    <section className="cta-band">
+      <div className="cta-inner">
+        <div>
+          <div
+            className="eyebrow"
+            style={{ color: "rgba(243,241,236,0.6)", marginBottom: 22 }}
+          >
+            {c("eyebrow")} — {lc("begin")}
+          </div>
+          <h2 className="cta-title">
+            {c("titlePre")}
+            <em>{c("titleItalic")}</em>
+          </h2>
+          <p
+            style={{
+              maxWidth: "52ch",
+              marginTop: 24,
+              color: "rgba(243,241,236,0.78)",
+              fontSize: 15,
+              lineHeight: 1.6,
+            }}
+          >
+            {lc("sub")}
+          </p>
+        </div>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 12,
+            alignItems: "flex-end",
+          }}
         >
-          {t("button")}
-          <span className="inline-block w-[9px] h-[9px] border-r border-t border-current rotate-45" />
-        </Link>
+          <Link
+            href={`/${locale}/projets/initier`}
+            className="btn btn-primary"
+            style={{ background: "var(--paper)", color: "var(--ink)" }}
+          >
+            {c("button")} <span className="btn-arrow" />
+          </Link>
+          <Link
+            href={`/${locale}/architectes`}
+            className="btn btn-ghost on-dark"
+            style={{ color: "var(--paper)", borderColor: "rgba(243,241,236,0.3)" }}
+          >
+            {lc("secondary")}
+          </Link>
+        </div>
       </div>
     </section>
   );

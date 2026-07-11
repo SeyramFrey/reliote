@@ -20,11 +20,15 @@ export async function signUp(formData: FormData) {
   const email = String(formData.get("email"));
   const password = String(formData.get("password"));
   const role = (String(formData.get("role")) === "architect" ? "architect" : "client");
-  const full_name = String(formData.get("full_name") || "");
+  const first_name = String(formData.get("first_name") || "").trim();
+  const last_name = String(formData.get("last_name") || "").trim();
   const locale = String(formData.get("locale") || "fr");
   const { error } = await supabase.auth.signUp({
     email, password,
-    options: { data: { role, full_name, locale }, emailRedirectTo: `${process.env.SITE_URL}/${locale}/auth/callback` },
+    options: {
+      data: { role, first_name, last_name, locale },
+      emailRedirectTo: `${process.env.SITE_URL}/${locale}/auth/callback`,
+    },
   });
   if (error) redirect(`/${locale}/auth/register?role=${role}&error=${encodeURIComponent(error.message)}`);
   if (role === "architect") redirect(`/${locale}/architectes/rejoindre`);

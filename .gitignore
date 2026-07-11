@@ -41,3 +41,16 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# Reference assets kept locally, not part of the deployable app
+/_design-reference/
+/Branding System Board/
+/Logo/
+
+# Supabase runtime scratch
+supabase/.temp/

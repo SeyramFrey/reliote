@@ -16,10 +16,10 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   const supabase = await createClient();
   const { data } = (await supabase
     .from("architect_profiles")
-    .select("full_name, city")
+    .select("first_name, last_name, city")
     .eq("id", id)
-    .single()) as { data: { full_name: string; city: string } | null };
-  return { title: data ? `${data.full_name} — Reliote` : "Reliote" };
+    .single()) as { data: { first_name: string; last_name: string; city: string } | null };
+  return { title: data ? `${data.first_name} ${data.last_name} — Reliote` : "Reliote" };
 }
 
 export default async function Page({ params }: { params: Promise<{ id: string }> }) {
@@ -31,6 +31,15 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
     .eq("id", id)
     .single()) as { data: Profile | null };
   if (!a || a.status !== "verified") notFound();
+  const fullName = `${a.first_name} ${a.last_name}`.trim();
+  const feeDisplay =
+    a.fee_currency && a.fee_amount
+      ? new Intl.NumberFormat("fr-FR", {
+          style: "currency",
+          currency: a.fee_currency,
+          maximumFractionDigits: 0,
+        }).format(a.fee_amount)
+      : "—";
   return (
     <>
       <Nav />
@@ -40,7 +49,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
             <div className="relative aspect-[4/5]">
               <Image
                 src={a.photo_url}
-                alt={a.full_name}
+                alt={fullName}
                 fill
                 className="object-cover"
                 sizes="(min-width: 768px) 40vw, 100vw"
@@ -49,8 +58,8 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
           )}
         </aside>
         <section className="col-span-12 md:col-span-7">
-          <p className="eyebrow">{a.city}</p>
-          <h1 className="font-light text-6xl mt-2 leading-tight">{a.full_name}</h1>
+          <p className="eyebrow">{a.structure ? `${a.structure} · ${a.city}` : a.city}</p>
+          <h1 className="font-light text-6xl mt-2 leading-tight">{fullName}</h1>
           <p className="text-concrete-1 mt-4">{a.specialties.join(" · ")}</p>
           <p className="mt-8">{a.description}</p>
           <dl className="mt-10 grid grid-cols-2 gap-4 text-sm">
@@ -68,8 +77,20 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
             </div>
             <div>
               <dt className="eyebrow">Honoraires</dt>
-              <dd>{a.fee_from ?? "—"}</dd>
+              <dd>{feeDisplay}</dd>
             </div>
+            {a.ordre_number && (
+              <div>
+                <dt className="eyebrow">N° d&apos;agrément</dt>
+                <dd className="mono">{a.ordre_number}</dd>
+              </div>
+            )}
+            {a.diploma && (
+              <div>
+                <dt className="eyebrow">Diplôme</dt>
+                <dd>{a.diploma}</dd>
+              </div>
+            )}
             <div className="col-span-2">
               <dt className="eyebrow">Portfolio</dt>
               <dd>

@@ -5,6 +5,7 @@ import { getMessages, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { locales } from "@/lib/i18n/config";
 import "@/styles/globals.css";
+import "@/styles/landing.css";
 
 const geist = Geist({
   subsets: ["latin"],

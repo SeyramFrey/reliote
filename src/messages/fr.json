@@ -1,6 +1,6 @@
 {
   "nav": {
-    "architects": "Architectes",
+    "architects": "Sélection",
     "approach": "Approche",
     "projects": "Projets",
     "journal": "Journal",
@@ -198,16 +198,21 @@
     "registerEyebrow": "Créer un compte",
     "registerClientTitle": "Rejoindre Reliote — porteur de projet",
     "registerArchitectTitle": "Rejoindre Reliote — architecte",
+    "registerClientSub": "Présentez votre projet en quelques minutes. Vous accédez ensuite à un binôme Reliote sous 48 heures ouvrées.",
+    "registerArchitectSub": "Présentez votre cabinet. Notre comité d'admission étudie chaque dossier sous dix jours ouvrés.",
     "forgotEyebrow": "Mot de passe oublié",
     "forgotTitle": "Recevoir un lien de réinitialisation",
     "forgotHint": "Saisissez l'adresse associée à votre compte. Un lien sécurisé vous parviendra sous quelques minutes.",
     "email": "Adresse e-mail",
     "password": "Mot de passe",
     "fullName": "Nom complet",
+    "firstName": "Prénom",
+    "lastName": "Nom",
     "signIn": "Se connecter",
     "createAccount": "Créer mon compte",
     "sendLink": "Envoyer le lien",
     "noAccount": "Pas encore de compte ?",
+    "haveAccount": "J'ai déjà un compte · Se connecter →",
     "forgot": "Mot de passe oublié ?"
   },
   "wizardClient": {
@@ -239,6 +244,8 @@
       "title": "Merci. Votre brief est entre nos mains.",
       "body": "Un binôme Reliote étudie votre projet. Vous recevrez une première réponse humaine sous 48 heures ouvrées.",
       "matches": "Premières correspondances",
+      "viewMatches": "Consulter mes correspondances",
+      "matchesPending": "Vos correspondances apparaîtront dans votre espace privé une fois qu'elles auront été préparées par notre équipe — sous 48 heures ouvrées.",
       "cta": "Retour à l'accueil"
     },
     "match": "Correspondance"
@@ -258,26 +265,57 @@
     },
     "fields": {
       "full_name": "Nom complet",
+      "first_name": "Prénom",
+      "last_name": "Nom",
       "email": "Adresse e-mail",
       "phone": "Téléphone",
+      "photo": "Photo professionnelle",
       "photo_url": "Lien vers une photo professionnelle",
       "country": "Pays",
       "city": "Ville",
+      "structure": "Structure / Cabinet",
+      "ordre_number": "N° d'agrément à l'Ordre",
+      "diploma": "Diplôme",
+      "diploma_other": "Précisez votre diplôme",
       "specialties": "Spécialités",
       "languages": "Langues parlées",
       "project_types": "Types de projets traités",
-      "years_experience": "Années d'expérience",
+      "years_experience": "Années d'exercice",
       "description": "Description de votre pratique",
       "portfolio_url": "Lien vers votre portfolio",
       "availability": "Disponibilité actuelle",
-      "fee_from": "Honoraires à partir de",
+      "fee_from": "Devise des honoraires",
+      "fee_amount": "Montant à partir de",
+      "fee": "Honoraires",
       "terms": "Je certifie l'exactitude des informations et accepte la charte Reliote."
+    },
+    "placeholders": {
+      "city": "Ex. Cocody, Abidjan",
+      "structure": "Ex. Atelier Faïdhèrbe",
+      "ordre_number": "Ex. 2014/418/132",
+      "description": "Décrivez votre démarche, vos références majeures, vos partis pris…"
+    },
+    "hints": {
+      "ordre_number": "Format CNOA : Année / N° dossier / N° individuel"
+    },
+    "currency": {
+      "eur": "Euro · EUR",
+      "xof": "Franc CFA · XOF"
     },
     "availability": {
       "available": "Disponible",
       "busy": "Capacité réduite",
       "unavailable": "Indisponible"
     },
+    "photoCTA": "Téléverser une photo",
+    "photoHint": "Glissez-déposez ou cliquez. JPG, PNG ou WebP. 5 Mo maximum. Cadrage portrait 4:5 recommandé.",
+    "photoUploading": "Téléversement…",
+    "photoErrors": {
+      "type": "Format non supporté. JPG, PNG ou WebP uniquement.",
+      "size": "Fichier trop lourd. 5 Mo maximum.",
+      "unknown": "Échec du téléversement. Réessayez."
+    },
+    "yearsSuffix": "ans",
     "thanks": {
       "eyebrow": "Candidature reçue",
       "title": "Merci. Votre candidature est en lecture.",
@@ -313,6 +351,281 @@
       "architects": "Architectes",
       "projects": "Projets",
       "matches": "Correspondances"
+    }
+  },
+  "landing": {
+    "hero": {
+      "ref": "RLT — 00 / 01",
+      "updatedLabel": "Mise à jour",
+      "updatedVal": "16.05.26 — 08:14 GMT",
+      "spotlightLabel": "En lumière · 16 mai",
+      "spotlightTitle": "Atelier Faïdhèrbe",
+      "spotlightSub": "Cocody — A. N'Guessan · 12 ans d'exercice",
+      "trustEyebrow": "Confiance mesurée",
+      "trust": [
+        { "k": "Admis sur 100 candidats", "v": "14" },
+        { "k": "Note moy. mission", "v": "4.9 / 5" },
+        { "k": "Médiation Reliote", "v": "Sur toute la mission" }
+      ]
+    },
+    "trustRail": { "label": "Studios admis · 84 / 612" },
+    "terres": {
+      "eyebrow": "02b — Approche, en profondeur",
+      "titlePre": "Cinq ",
+      "titleItalic": "terres",
+      "titleRest": " sur lesquelles nous construisons la confiance.",
+      "kicker": "Aucune n'est négociable. C'est leur somme qui fait Reliote — pas l'une d'elles, isolée.",
+      "cards": [
+        { "tPre": "", "tItalic": "Sélection", "tRest": " stricte.", "b": "Chaque architecte passe par dossier, portfolio et entretien. Un sur six est retenu — c'est notre seul rythme.", "k": "Taux d'admission", "v": "1 / 6" },
+        { "tPre": "", "tItalic": "Vérification", "tRest": " intégrale.", "b": "Diplômes, inscription à l'Ordre, projets livrés, références. Tout est contrôlé avant publication.", "k": "Diplômes contrôlés", "v": "100%" },
+        { "tPre": "", "tItalic": "Méthode", "tRest": " partagée.", "b": "Brief en huit questions, cahier des charges signé, jalons écrits. Aucun glissement de périmètre.", "k": "Étapes structurées", "v": "08" },
+        { "tPre": "", "tItalic": "Transparence", "tRest": " totale.", "b": "Honoraires, délais, clauses, livrables. Tout est écrit. Rien ne surgit en cours de mission.", "k": "Coûts cachés", "v": "0" },
+        { "tPre": "", "tItalic": "Accompagnement", "tRest": " jusqu'à la remise des clés.", "b": "Un binôme Reliote suit chaque mission. Médiation incluse, à distance comme sur site, pendant toute la durée du projet. Vous n'êtes jamais seul·e face à un imprévu.", "k": "Binôme dédié · sur toute la durée", "v": "365j" }
+      ]
+    },
+    "architects": {
+      "trust": [
+        { "strong": "Diplômes & Ordre", "sub": "Vérifiés à l'admission" },
+        { "strong": "Note moyenne 4.8 / 5", "sub": "Sur 132 missions livrées" },
+        { "strong": "Honoraires protégés", "sub": "Séquencés par jalons" },
+        { "strong": "Médiation incluse", "sub": "Binôme Reliote dédié" }
+      ],
+      "shown": "profils affichés",
+      "verifiedPlural": "vérifiés",
+      "available": "Disponible",
+      "booked": "Complet",
+      "verified": "Vérifié",
+      "view": "VOIR",
+      "from": "à partir de",
+      "yrs": "ans"
+    },
+    "method": {
+      "eyebrow": "03 — Sélection",
+      "titlePre": "Un index restreint, ",
+      "titleItalic": "présenté à vous,",
+      "titleRest": " jamais parcouru.",
+      "kicker": "Vous ne parcourez pas un catalogue d'architectes. Vous nous racontez votre projet — nous vous présentons les bonnes correspondances, argumentées, dans votre espace privé.",
+      "stats": {
+        "verified": "Architectes vérifiés",
+        "rating": "Note moyenne sur mission",
+        "yearsMedian": "Exercice en médian",
+        "admission": "Taux d'admission"
+      },
+      "coverage": {
+        "diplomas": "Diplômes représentés",
+        "specialties": "Spécialités couvertes",
+        "cities": "Villes d'exercice"
+      },
+      "ctaLead": "Présentez votre projet en moins de 6 minutes. Nous vous répondons sous 48 heures ouvrées avec jusqu'à trois architectes argumentés.",
+      "cta": "Initier un projet"
+    },
+    "privateArchitects": {
+      "eyebrow": "Espace privé · Sélection",
+      "titlePre": "Vos ",
+      "titleItalic": "correspondances",
+      "titleRest": ", argumentées.",
+      "kicker": "L'équipe Reliote présélectionne chaque architecte sur dossier, compatibilité et disponibilité. Vous accédez à leur profil complet ici, jamais sur la landing publique.",
+      "forProject": "Pour votre projet",
+      "empty": {
+        "eyebrow": "Aucun brief déposé",
+        "title": "Vos correspondances apparaîtront ici une fois votre brief déposé.",
+        "body": "Vous décrivez votre projet en huit questions. Notre équipe traduit le brief en cahier des charges, compare à nos 84 architectes admis, et vous présente jusqu'à trois propositions argumentées sous 48 heures ouvrées.",
+        "cta": "Déposer mon brief"
+      },
+      "pending": {
+        "eyebrow": "Brief en lecture",
+        "title": "Vos correspondances sont en préparation.",
+        "body": "Notre binôme étudie votre brief en profondeur. Vous recevrez ici jusqu'à trois architectes correspondants sous 48 heures ouvrées — chaque proposition viendra avec une note d'argumentation expliquant le choix.",
+        "ref": "Référence dossier"
+      },
+      "wrongRole": {
+        "architect": {
+          "eyebrow": "Espace architecte",
+          "title": "Cette section est dédiée aux porteurs de projet. Votre tableau de bord est ailleurs.",
+          "cta": "Accéder à mon dashboard"
+        },
+        "admin": {
+          "eyebrow": "Console Reliote",
+          "title": "Cette vue est celle des commanditaires. La console admin gère tous les architectes.",
+          "cta": "Ouvrir la console admin"
+        },
+        "client": {
+          "eyebrow": "—",
+          "title": "—",
+          "cta": "—"
+        }
+      }
+    },
+    "process": {
+      "live": "Démonstration en direct",
+      "pin": "Cliquez sur une étape pour figer",
+      "startNow": "Commencer maintenant →"
+    },
+    "territoire": {
+      "eyebrow": "07 — Territoire",
+      "titlePre": "Un corridor ",
+      "titleItalic": "Paris ⇄ Abidjan",
+      "titleRest": ", opéré comme une route.",
+      "kicker": "5 247 km d'orthodromie. Deux capitales, un protocole. Nous tenons le fil entre le brief et la livraison.",
+      "liveChart": "Carte en direct",
+      "offices": "Antennes",
+      "parisSub": "11 binômes · Coordination",
+      "abidjanSub": "84 studios admis · Exécution",
+      "liveCorridor": "Corridor en direct",
+      "active": "Actif",
+      "feed": [
+        { "t": "02:14", "label": "Brief reçu", "place": "Saint-Mandé → Cocody" },
+        { "t": "02:08", "label": "Jalon signé", "place": "Bingerville · APS" },
+        { "t": "01:51", "label": "Médiation close", "place": "Marcory · 03h" },
+        { "t": "01:32", "label": "Admission", "place": "Atelier Faïdhèrbe" }
+      ],
+      "meterLabel": "Orthodromie Paris → Abidjan"
+    },
+    "featured": {
+      "read": "Lire l'étude complète",
+      "startSimilar": "Initier un projet similaire",
+      "slides": ["Rives de la Lagune · vue d'eau", "Cour intérieure", "Bassin nord"],
+      "rows": {
+        "client": "Client", "clientV": "Privé, basé à Paris",
+        "arch": "Architecte", "archV": "Atelier Faïdhèrbe (A. N'Guessan)",
+        "program": "Programme", "programV": "Résidence principale · 480 m²",
+        "site": "Site", "siteV": "Bingerville · Côte d'Ivoire",
+        "duration": "Durée", "durationV": "18 mois · livré 2025",
+        "budget": "Budget", "budgetV": "€ 620 000 — études & travaux"
+      },
+      "stats": [
+        { "n": 480, "suf": " m²", "l": "Surface utile" },
+        { "n": 18, "suf": " mois", "l": "Études + chantier" },
+        { "n": 23, "suf": "", "l": "Artisans locaux mobilisés" },
+        { "n": 100, "suf": "%", "l": "Jalons tenus" }
+      ],
+      "hotspots": [
+        { "t": "Béton banché", "b": "Coulé sur site, matrice bois local, finition lasurée minérale." },
+        { "t": "Lumière rasante", "b": "Plan vitré orienté NO, voile béton absorbant la chaleur de 13h." },
+        { "t": "Bassin réfléchissant", "b": "120 m² d'eau dormante : régulation thermique passive, climat humide." }
+      ]
+    },
+    "audiences": {
+      "head": {
+        "eyebrow": "06",
+        "titlePre": "Deux côtés du même ",
+        "titleItalic": "cadre.",
+        "kicker": "Reliote est conçue pour servir deux exigences également hautes — celle des commanditaires et celle des praticiens."
+      },
+      "client": {
+        "titlePre": "Décider de loin, avec ",
+        "titleItalic": "la même rigueur",
+        "titleRest": " qu'à côté.",
+        "list": ["Profils vérifiés et entretiens préalables", "Brief structuré rédigé avec vous", "Contrats, jalons et paiements encadrés", "Médiation Reliote sur toute la mission"],
+        "foot": "Paris ⇄ Abidjan"
+      },
+      "architect": {
+        "titlePre": "Des projets ",
+        "titleItalic": "justes,",
+        "titleRest": " dans un cadre professionnel.",
+        "list": ["Candidatures qualifiées uniquement", "Brief client structuré, sans flou", "Honoraires protégés, paiements séquencés", "Visibilité auprès d'un marché premium"],
+        "foot": "Côte d'Ivoire · 2026"
+      }
+    },
+    "journal": {
+      "titlePre": "Journal & ",
+      "titleItalic": "regards.",
+      "kicker": "Méthode, prises de position et études de site. Publié toutes les deux semaines, jamais à vide.",
+      "more": "Lire →",
+      "cards": [
+        { "pre": "Le brief en huit questions — ", "italic": "pourquoi celles-là." },
+        { "pre": "Construire en bord de lagune — ", "italic": "les vérités du climat." },
+        { "pre": "Honoraires & jalons — ", "italic": "la transparence comme outil." }
+      ]
+    },
+    "ctaBand": {
+      "begin": "Commencer",
+      "sub": "Présentez votre projet en moins de 6 minutes. Une réponse humaine vous parviendra sous 48 heures ouvrées.",
+      "secondary": "Parler à un binôme"
+    },
+    "footer": {
+      "tag": "Architecture, vérifiée. Collaboration, structurée.",
+      "cols": [
+        { "h": "Plateforme", "links": ["Architectes", "Approche", "Projets", "Tarification", "Sécurité"] },
+        { "h": "Ressources", "links": ["Journal", "Guide commanditaire", "Guide architecte", "FAQ"] },
+        { "h": "Société", "links": ["À propos", "Charte", "Contact", "Carrières"] },
+        { "h": "Légal", "links": ["CGU", "Confidentialité", "Cookies", "Mentions"] }
+      ],
+      "rights": "Tous droits réservés",
+      "version": "RLT — 00 / 01 · v0.1 MVP"
+    },
+    "drawer": {
+      "verifiedProfile": "Profil vérifié",
+      "registered": "Inscrit à l'Ordre · CI",
+      "verified": "Vérifié",
+      "approach": "Approche",
+      "atAGlance": "Repères",
+      "experience": "Années d'exercice",
+      "rating": "Note moyenne",
+      "languages": "Langues",
+      "fees": "Honoraires d'études",
+      "selectedWork": "Quelques projets",
+      "feesFrom": "Honoraires d'études · à partir de",
+      "requestMeeting": "Demander une rencontre",
+      "yearsSuffix": "ans",
+      "channel": {
+        "title": "Communication via canal Reliote",
+        "body": "Les coordonnées personnelles de l'architecte (téléphone direct, email personnel) ne vous sont pas transmises. Tout échange initial passe par les adresses relais et les salles Reliote, le temps que le cadre de mission soit signé."
+      }
+    },
+    "anon": {
+      "handle": "Architecte",
+      "diploma": "Diplôme",
+      "hidden": "Identité masquée",
+      "reveal": "Voir l'identité"
+    },
+    "charter": {
+      "eyebrow": "Charte de non-contournement · v1",
+      "version": "Version v1 · juin 2026",
+      "close": "FERMER ✕",
+      "cancel": "Annuler",
+      "accept": "Accepter et voir l'identité",
+      "client": {
+        "titlePre": "Acceptez la charte avant de voir ",
+        "titleItalic": "l'identité",
+        "titleRest": " de l'architecte.",
+        "intro": "Reliote vend une mise en relation argumentée et un cadre de mission encadré. Pour révéler l'identité de cet architecte, vous reconnaissez les engagements ci-dessous. Cette charte est versionnée et horodatée à son acceptation.",
+        "consent": "Je reconnais avoir lu les 7 articles de la charte et je les accepte intégralement. J'autorise la révélation de l'identité de cet architecte sur la plateforme.",
+        "articles": [
+          { "t": "Sélection argumentée", "b": "Reliote vous présente jusqu'à trois architectes correspondant à votre brief. Chaque proposition est sélectionnée sur dossier, compétences, disponibilité et compatibilité — et accompagnée d'une note d'argumentation." },
+          { "t": "Non-contournement (18 mois)", "b": "Pendant 18 mois suivant la révélation d'identité d'un architecte sur la plateforme Reliote, vous vous engagez à ne pas conclure de mission, étude ou prestation directement avec cet architecte en dehors du cadre Reliote." },
+          { "t": "Cadre de mission", "b": "Si vous engagez un architecte présenté par Reliote, la mission est conduite via la plateforme : brief structuré, contrat encadré, jalons définis, paiements séquencés via Reliote, médiation incluse pour toute la durée du projet." },
+          { "t": "Communication médiée", "b": "Les coordonnées personnelles de l'architecte (téléphone direct, email personnel) ne vous sont pas transmises. Toute communication initiale passe par les canaux Reliote — adresses relais anonymisées et salles de visioconférence supervisées par votre binôme." },
+          { "t": "Confidentialité des informations", "b": "Vous vous engagez à ne pas reproduire, partager ni diffuser publiquement les informations professionnelles de l'architecte (portfolio, parcours, photos, références) en dehors du cadre direct de votre projet." },
+          { "t": "Indemnité en cas de manquement", "b": "Tout contournement avéré pendant la durée d'engagement entraîne une indemnité forfaitaire de 12 % du montant de la mission concernée (toutes taxes comprises), facturée par Reliote au manquant." },
+          { "t": "Durée et résiliation", "b": "Cette charte prend effet à son acceptation et reste valable pendant 18 mois suivant la révélation d'identité, indépendamment de la concrétisation ou non du projet présenté." }
+        ]
+      },
+      "architect": {
+        "titlePre": "Acceptez la charte d'admission ",
+        "titleItalic": "Reliote",
+        "titleRest": ".",
+        "intro": "L'admission à l'index Reliote suppose l'acceptation explicite des 7 engagements suivants. La charte est versionnée, horodatée à votre admission, et reste valable pendant toute la durée de votre présence à l'index.",
+        "articles": [
+          { "t": "Mise en relation tracée", "b": "Reliote vous présente des commanditaires qualifiés ayant déposé un brief structuré et qualifié par notre équipe. Chaque mise en relation est tracée et horodatée sur la plateforme." },
+          { "t": "Cadre de collaboration", "b": "Toute mission engagée avec un commanditaire présenté par Reliote est conduite via la plateforme : brief signé, contrat encadré, jalons partagés et paiements séquencés via Reliote, médiation incluse." },
+          { "t": "Non-contournement (18 mois)", "b": "Pendant 18 mois suivant la mise en relation d'un commanditaire par Reliote, vous vous engagez à ne pas conclure de mission directement avec ce commanditaire en dehors du cadre Reliote — même s'il vous contacte par un autre canal." },
+          { "t": "Honoraires séquencés", "b": "Vos honoraires de mission transitent par Reliote, séquencés en jalons signés. Reliote retient une commission convenue lors de votre admission, prélevée à chaque validation de jalon." },
+          { "t": "Communication via canaux Reliote", "b": "Vos coordonnées personnelles (téléphone direct, email personnel) ne sont jamais transmises aux commanditaires. Toute communication initiale passe par les adresses relais Reliote et les salles de visioconférence supervisées." },
+          { "t": "Sanctions en cas de manquement", "b": "Tout contournement avéré entraîne (a) une indemnité forfaitaire de 12 % du montant de la mission concernée, (b) votre exclusion immédiate et définitive de l'index Reliote, (c) la suspension de tous les paiements en cours sur la plateforme." },
+          { "t": "Durée de la charte", "b": "Cette charte prend effet à votre admission à l'index Reliote et reste valable pendant toute la durée de votre présence — elle se reconduit tacitement à chaque mise en relation." }
+        ]
+      }
+    },
+    "dashboardArchitect": {
+      "eyebrow": "Espace architecte",
+      "welcome": "Bienvenue",
+      "status": "Statut",
+      "incoming": "Projets entrants",
+      "empty": "Aucun projet ne vous a encore été matché. Vous serez notifié dès qu'un commanditaire dépose un brief compatible avec votre profil.",
+      "engaged": "Client engagé",
+      "channelReady": "Canal de communication ouvert",
+      "awaitingClient": "Brief reçu · en attente d'engagement client"
     }
   }
 }

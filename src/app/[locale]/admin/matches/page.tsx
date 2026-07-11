@@ -6,7 +6,7 @@ type Project = { id: string; client_name: string; project_type: string; project_
 type Match = {
   score: number;
   reasons: { kind: string; weight: number }[];
-  architect_profiles: { full_name: string; city: string; specialties: string[] };
+  architect_profiles: { first_name: string; last_name: string; city: string; specialties: string[] };
 };
 
 export default function AdminMatches() {
@@ -30,7 +30,7 @@ export default function AdminMatches() {
     const s = createClient();
     const { data } = await s
       .from("match_results")
-      .select("score, reasons, architect_profiles!inner(full_name, city, specialties)")
+      .select("score, reasons, architect_profiles!inner(first_name, last_name, city, specialties)")
       .eq("project_id", projectId)
       .order("score", { ascending: false }) as { data: Match[] | null };
     setMatches(data ?? []);
@@ -80,7 +80,7 @@ export default function AdminMatches() {
             {matches.map((m, i) => (
               <article key={i} className="border border-[var(--hairline)] p-5">
                 <div className="flex justify-between items-baseline">
-                  <h3 className="font-medium">{m.architect_profiles.full_name}</h3>
+                  <h3 className="font-medium">{m.architect_profiles.first_name} {m.architect_profiles.last_name}</h3>
                   <span className="mono text-green text-[13px]">{Math.round((m.score / 90) * 100)}%</span>
                 </div>
                 <p className="eyebrow mt-1">{m.architect_profiles.city}</p>
