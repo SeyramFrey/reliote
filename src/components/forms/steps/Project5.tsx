@@ -7,6 +7,7 @@ export default function Project5() {
   const v = useWatch();
   const rows: [string, string][] = [
     [t("fields.project_type"), v.project_type ?? "—"],
+    [t("fields.project_country"), v.project_country ?? "—"],
     [t("fields.project_location"), v.project_location ?? "—"],
     [t("fields.budget_range"), v.budget_range ?? "—"],
     [t("fields.timeline"), v.timeline ?? "—"],

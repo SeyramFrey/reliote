@@ -1,6 +1,7 @@
 "use client";
 import { useFormContext } from "react-hook-form";
 import { useTranslations } from "next-intl";
+import { CountrySelectField } from "../fields/CountrySelectField";
 
 export default function Project3() {
   const {
@@ -10,6 +11,13 @@ export default function Project3() {
   const t = useTranslations("wizardClient");
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="mb-6 md:col-span-2">
+        <CountrySelectField
+          name="project_country"
+          namespace="wizardClient"
+          labelKey="fields.project_country"
+        />
+      </div>
       <label className="block md:col-span-2">
         <span className="eyebrow">{t("fields.project_location")}</span>
         <input
