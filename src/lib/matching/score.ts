@@ -1,23 +1,26 @@
-export const MAX_SCORE = 30 + 20 + 15 + 10 + 10 + 5; // 90
+export const MAX_SCORE = 30 + 25 + 20 + 15 + 10 + 5 + 5; // 110
 
 export type MatchReason =
   | { kind: "specialty"; items: string[]; weight: 30 }
+  | { kind: "country"; country: string; weight: 25 }
   | { kind: "project_type"; item: string; weight: 20 }
   | { kind: "availability"; weight: 15 }
   | { kind: "experience"; years: number; weight: 10 }
-  | { kind: "location"; city: string; weight: 10 }
+  | { kind: "location"; city: string; weight: 5 }
   | { kind: "rating"; value: number; weight: 5 };
 
 export type ProjectForMatch = {
   id: string;
   project_type: string;
   required_specialties: string[];
+  project_country: string;
   project_location: string;
   budget_range: string | null | undefined;
 };
 
 export type ArchitectForMatch = {
   id: string;
+  country: string;
   city: string;
   specialties: string[];
   project_types: readonly string[];
@@ -43,6 +46,11 @@ export function scoreArchitect(p: ProjectForMatch, a: ArchitectForMatch) {
     reasons.push({ kind: "specialty", items: overlap, weight: 30 });
   }
 
+  if (a.country && p.project_country && a.country === p.project_country) {
+    score += 25;
+    reasons.push({ kind: "country", country: a.country, weight: 25 });
+  }
+
   if (a.project_types.includes(p.project_type)) {
     score += 20;
     reasons.push({ kind: "project_type", item: p.project_type, weight: 20 });
@@ -61,8 +69,8 @@ export function scoreArchitect(p: ProjectForMatch, a: ArchitectForMatch) {
   }
 
   if (a.city && p.project_location.toLowerCase().includes(a.city.toLowerCase())) {
-    score += 10;
-    reasons.push({ kind: "location", city: a.city, weight: 10 });
+    score += 5;
+    reasons.push({ kind: "location", city: a.city, weight: 5 });
   }
 
   if ((a.rating ?? 0) >= 4.5) {
