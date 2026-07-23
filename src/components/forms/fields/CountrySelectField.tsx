@@ -5,15 +5,23 @@ import { AFRICAN_COUNTRIES_SORTED } from "@/lib/countries/africa";
 
 // Native <select> styled like the wizard's other underlined inputs.
 // Lists all 54 African countries; only those flagged `available: true` are selectable.
-// Others appear with " — Bientôt" appended and `disabled`.
-export function CountrySelectField({ name }: { name: string }) {
+// `namespace`/`labelKey` let the same field serve both the architect and the project wizards.
+export function CountrySelectField({
+  name,
+  namespace = "wizardArchitect",
+  labelKey = "fields.country",
+}: {
+  name: string;
+  namespace?: string;
+  labelKey?: string;
+}) {
   const { register, formState } = useFormContext();
-  const t = useTranslations("wizardArchitect");
+  const t = useTranslations(namespace);
   const error = formState.errors[name];
   return (
     <label className="block">
       <span className="eyebrow">
-        {t("fields.country")} <span className="text-brass">*</span>
+        {t(labelKey)} <span className="text-brass">*</span>
       </span>
       <div className="relative mt-1">
         <select
