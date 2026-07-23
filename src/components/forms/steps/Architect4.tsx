@@ -1,5 +1,5 @@
 "use client";
-import { useFormContext, useWatch } from "react-hook-form";
+import { useFormContext } from "react-hook-form";
 import { useTranslations } from "next-intl";
 import { DiplomaField } from "../fields/DiplomaField";
 
@@ -9,8 +9,7 @@ export default function Architect4() {
     formState: { errors },
   } = useFormContext();
   const t = useTranslations("wizardArchitect");
-  const country = useWatch({ name: "country" }) as string | undefined;
-  const ordreRequired = country === "Côte d'Ivoire";
+  const ordreRequired = true;
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

@@ -36,11 +36,11 @@ describe("architectSchema", () => {
     }
   });
 
-  it("does not require ordre_number for other countries", () => {
+  it("does not require the CNOA format for other countries", () => {
     const r = architectSchema.safeParse({
       ...valid,
       country: "Sénégal",
-      ordre_number: "",
+      ordre_number: "SN-2020-001",
     });
     expect(r.success).toBe(true);
   });
@@ -67,5 +67,37 @@ describe("architectSchema", () => {
   it("accepts neither fee field (entirely optional)", () => {
     const r = architectSchema.safeParse(valid);
     expect(r.success).toBe(true);
+  });
+});
+
+const validNonCI = {
+  first_name: "Kofi",
+  last_name: "Mensah",
+  email: "kofi@example.com",
+  country: "Ghana",
+  city: "Accra",
+  ordre_number: "GH-2021-0042",
+  specialties: ["Résidentiel" as const],
+  languages: ["FR"],
+  project_types: ["residential" as const],
+  years_experience: 8,
+  description: "x".repeat(80),
+  availability: "available" as const,
+  terms: true as const,
+};
+
+describe("architectSchema — ordre_number required for all", () => {
+  it("accepts a free-form ordre number outside Côte d'Ivoire", () => {
+    expect(architectSchema.safeParse(validNonCI).success).toBe(true);
+  });
+
+  it("rejects an empty ordre number outside Côte d'Ivoire", () => {
+    expect(architectSchema.safeParse({ ...validNonCI, ordre_number: "" }).success).toBe(false);
+  });
+
+  it("still enforces the CNOA format for Côte d'Ivoire", () => {
+    const ci = { ...validNonCI, country: "Côte d'Ivoire" };
+    expect(architectSchema.safeParse({ ...ci, ordre_number: "GH-2021-0042" }).success).toBe(false);
+    expect(architectSchema.safeParse({ ...ci, ordre_number: "2014/418/132" }).success).toBe(true);
   });
 });

@@ -53,7 +53,7 @@ export const architectSchema = z
     photo_url: z.string().url().optional().or(z.literal("")),
     country: z.string().min(1, "Pays requis"),
     city: z.string().min(2, "Ville requise"),
-    ordre_number: z.string().optional().or(z.literal("")),
+    ordre_number: z.string().min(1, "Numéro d'ordre requis"),
     diploma: z.string().optional(),
     structure: z.string().optional().or(z.literal("")),
     specialties: z.array(z.enum(SPECIALTIES)).min(1, "Au moins 1 spécialité"),
@@ -69,17 +69,11 @@ export const architectSchema = z
       message: "Vous devez accepter les conditions.",
     }),
   })
-  // CNOA registration number is required when the architect declares Côte d'Ivoire.
+  // Le numéro d'ordre est requis pour tous (voir champ). Le format strict AAAA/NNN/NNN
+  // (matricule CNOA) n'est exigé que pour la Côte d'Ivoire ; les autres pays sont libres.
   .refine(
-    (d) =>
-      d.country !== "Côte d'Ivoire" ||
-      (d.ordre_number !== undefined &&
-        d.ordre_number !== "" &&
-        ORDRE_NUMBER_RE.test(d.ordre_number)),
-    {
-      path: ["ordre_number"],
-      message: "N° d'agrément requis (format AAAA/NNN/NNN)",
-    }
+    (d) => d.country !== "Côte d'Ivoire" || ORDRE_NUMBER_RE.test(d.ordre_number),
+    { path: ["ordre_number"], message: "N° d'agrément CNOA requis (format AAAA/NNN/NNN)" }
   )
   // Fee currency + amount must be set together (both or neither — neither is fine since
   // the field is overall optional, but a half-filled fee is invalid).
