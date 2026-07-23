@@ -15,6 +15,7 @@ type InsertedProject = {
   id: string;
   project_type: string;
   required_specialties: string[];
+  project_country: string;
   project_location: string;
   budget_range: string | null;
 };
@@ -44,7 +45,7 @@ export async function submitProject(input: ProjectInput) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { data: inserted, error } = await (service.from("client_projects") as any)
     .insert(insertRow)
-    .select("id, project_type, required_specialties, project_location, budget_range")
+    .select("id, project_type, required_specialties, project_country, project_location, budget_range")
     .single() as { data: InsertedProject | null; error: { message: string } | null };
 
   if (error || !inserted) return { error: error?.message ?? "Insert failed" };
@@ -52,7 +53,7 @@ export async function submitProject(input: ProjectInput) {
   // Fetch all verified+available architects for ranking
   const { data: architects } = await service
     .from("architect_profiles")
-    .select("id, city, specialties, project_types, years_experience, availability, rating, status") as {
+    .select("id, country, city, specialties, project_types, years_experience, availability, rating, status") as {
     data: ArchitectForMatch[] | null;
   };
 
@@ -60,6 +61,7 @@ export async function submitProject(input: ProjectInput) {
     id: inserted.id,
     project_type: inserted.project_type,
     required_specialties: inserted.required_specialties,
+    project_country: inserted.project_country,
     project_location: inserted.project_location,
     budget_range: inserted.budget_range,
   };
