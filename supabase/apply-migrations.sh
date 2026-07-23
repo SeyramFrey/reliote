@@ -17,6 +17,7 @@ SQL_FILES=(
   /reliote/migrations/0006_storage_architect_photos.sql
   /reliote/migrations/0007_architects_private.sql
   /reliote/migrations/0008_engagement_and_reveal.sql
+  /reliote/migrations/0009_geo_panafrican.sql
   /reliote/seed.sql
 )
 

@@ -113,6 +113,7 @@ export type Database = {
           id: string
           notes: string | null
           phone: string | null
+          project_country: string
           project_description: string
           project_location: string
           project_type: Database["public"]["Enums"]["project_type"]
@@ -129,6 +130,7 @@ export type Database = {
           id?: string
           notes?: string | null
           phone?: string | null
+          project_country: string
           project_description: string
           project_location: string
           project_type: Database["public"]["Enums"]["project_type"]
@@ -145,6 +147,7 @@ export type Database = {
           id?: string
           notes?: string | null
           phone?: string | null
+          project_country?: string
           project_description?: string
           project_location?: string
           project_type?: Database["public"]["Enums"]["project_type"]
