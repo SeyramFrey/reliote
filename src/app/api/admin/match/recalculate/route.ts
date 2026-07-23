@@ -20,16 +20,17 @@ export async function POST(req: NextRequest) {
   if (!projectId) return NextResponse.json({ error: "missing projectId" }, { status: 400 });
 
   const s = createServiceClient();
+  // NOTE: keep these select columns in sync with projets/initier/actions.ts — both feed ProjectForMatch/ArchitectForMatch.
   const { data: project } = await s
     .from("client_projects")
-    .select("id, project_type, required_specialties, project_location, budget_range")
+    .select("id, project_type, required_specialties, project_country, project_location, budget_range")
     .eq("id", projectId)
     .single() as { data: ProjectForMatch | null };
   if (!project) return NextResponse.json({ error: "project not found" }, { status: 404 });
 
   const { data: architects } = await s
     .from("architect_profiles")
-    .select("id, city, specialties, project_types, years_experience, availability, rating, status") as { data: ArchitectForMatch[] | null };
+    .select("id, country, city, specialties, project_types, years_experience, availability, rating, status") as { data: ArchitectForMatch[] | null };
 
   const matches = rankArchitects(project, (architects ?? []), 5);
 
