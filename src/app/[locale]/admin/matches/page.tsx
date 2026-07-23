@@ -1,6 +1,7 @@
 "use client";
 import { useCallback, useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { MAX_SCORE } from "@/lib/matching/score";
 
 type Project = { id: string; client_name: string; project_type: string; project_location: string };
 type Match = {
@@ -81,7 +82,7 @@ export default function AdminMatches() {
               <article key={i} className="border border-[var(--hairline)] p-5">
                 <div className="flex justify-between items-baseline">
                   <h3 className="font-medium">{m.architect_profiles.first_name} {m.architect_profiles.last_name}</h3>
-                  <span className="mono text-green text-[13px]">{Math.round((m.score / 90) * 100)}%</span>
+                  <span className="mono text-green text-[13px]">{Math.round((m.score / MAX_SCORE) * 100)}%</span>
                 </div>
                 <p className="eyebrow mt-1">{m.architect_profiles.city}</p>
                 <p className="text-[12px] text-concrete-1 mt-2">{m.architect_profiles.specialties.join(" · ")}</p>
