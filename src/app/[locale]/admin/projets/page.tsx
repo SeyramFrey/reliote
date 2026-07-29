@@ -43,7 +43,7 @@ export default async function AdminProjects() {
               <td>{p.project_location}</td>
               <td><span className="mono uppercase text-[11px] tracking-[0.18em]">{p.status}</span></td>
               <td className="text-right">
-                <Link className="underline" href={`/${locale}/projets/${p.id}/confirmation`}>Détails →</Link>
+                <Link className="underline" href={`/${locale}/admin/projets/${p.id}`}>Détails →</Link>
               </td>
             </tr>
           ))}

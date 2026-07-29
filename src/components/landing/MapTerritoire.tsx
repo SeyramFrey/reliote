@@ -5,7 +5,7 @@ import { SectionHead } from "./SectionHead";
 
 type Feed = { t: string; label: string; place: string };
 
-// Paris ⇄ Abidjan cartography corridor (V7-adapted) with a live UTC chart.
+// Monde ⇄ Afrique cartography corridor (V7-adapted) with a live UTC chart.
 export function MapTerritoire() {
   const locale = useLocale();
   const t = useTranslations("landing.territoire");
@@ -36,19 +36,19 @@ export function MapTerritoire() {
       <div className="territoire-frame">
         <div className="territoire-map">
           <span className="t-coord tl">
-            A · PARIS
+            A · MONDE
             <br />
-            <b>48,85°N / 2,35°E</b>
+            <b>PORTEUR DE PROJET</b>
           </span>
           <span className="t-coord tr">
-            B · ABIDJAN
+            B · AFRIQUE
             <br />
-            <b>5,34°N / 4,02°W</b>
+            <b>CHANTIER</b>
           </span>
           <span className="t-coord bl">
-            CHANNEL · A → B
+            CANAL · A → B
             <br />
-            <b>5 247 KM · ORTHODROMIE</b>
+            <b>MONDE → AFRIQUE</b>
           </span>
           <span className="t-coord br">
             {t("liveChart")}
@@ -85,7 +85,7 @@ export function MapTerritoire() {
               <path d="M 280 130 L 320 110 L 360 115 L 390 130 L 410 150 L 420 170 L 410 200 L 415 220 L 405 240 L 385 250 L 360 245 L 340 250 L 320 240 L 310 220 L 295 205 L 290 180 L 285 160 Z" />
             </g>
             <text x="338" y="195" fontFamily="Geist Mono, monospace" fontSize="10" letterSpacing="2" fill="#b89968">
-              FRANCE
+              MONDE
             </text>
             <circle cx="345" cy="180" r="32" fill="url(#t-parisGlow)" />
 
@@ -93,7 +93,7 @@ export function MapTerritoire() {
               <path d="M 470 380 L 510 385 L 535 395 L 555 410 L 565 430 L 555 455 L 540 470 L 510 480 L 485 478 L 465 470 L 455 450 L 460 425 L 465 405 Z" />
             </g>
             <text x="478" y="438" fontFamily="Geist Mono, monospace" fontSize="10" letterSpacing="1.5" fill="rgba(243,241,236,0.78)">
-              CÔTE D&apos;IVOIRE
+              AFRIQUE
             </text>
             <circle cx="510" cy="465" r="32" fill="url(#t-abidjanGlow)" />
 
@@ -139,31 +139,31 @@ export function MapTerritoire() {
           <a className="t-pin major" style={{ left: "43%", top: "30%" }} href="#territoire">
             <span className="dot" />
             <span className="pin-label">
-              <span className="id">A</span>PARIS · <span className="city">FR</span>
+              <span className="id">A</span>Monde
             </span>
           </a>
           <a className="t-pin major" style={{ left: "64%", top: "78%" }} href="#territoire">
             <span className="dot" />
             <span className="pin-label">
-              <span className="id">B</span>ABIDJAN · <span className="city">CI</span>
+              <span className="id">B</span>Afrique
             </span>
           </a>
           <a className="t-pin" style={{ left: "60%", top: "73%" }} href="#territoire">
             <span className="dot" />
             <span className="pin-label">
-              <span className="id">01</span>Cocody · <span className="city">Plateau</span>
+              <span className="id">01</span>Abidjan · <span className="city">CI</span>
             </span>
           </a>
           <a className="t-pin" style={{ left: "67%", top: "84%" }} href="#territoire">
             <span className="dot" />
             <span className="pin-label">
-              <span className="id">02</span>Marcory
+              <span className="id">02</span>Dakar · <span className="city">SN</span>
             </span>
           </a>
           <a className="t-pin" style={{ left: "62%", top: "88%" }} href="#territoire">
             <span className="dot" />
             <span className="pin-label">
-              <span className="id">03</span>Bingerville
+              <span className="id">03</span>Accra · <span className="city">GH</span>
             </span>
           </a>
         </div>
@@ -176,14 +176,14 @@ export function MapTerritoire() {
             </div>
             <div className="t-stat-row">
               <div>
-                <div className="big">Paris</div>
+                <div className="big">Monde</div>
                 <div className="sub">{t("parisSub")}</div>
               </div>
               <div className="brass">A</div>
             </div>
             <div className="t-stat-row">
               <div>
-                <div className="big">Abidjan</div>
+                <div className="big">Afrique</div>
                 <div className="sub">{t("abidjanSub")}</div>
               </div>
               <div className="brass">B</div>
@@ -211,16 +211,16 @@ export function MapTerritoire() {
 
           <div className="t-meter">
             <div className="t-meter-num">
-              5 247<small> km</small>
+              54<small> pays</small>
             </div>
             <div className="t-meter-lbl">{t("meterLabel")}</div>
             <div className="t-meter-bar">
-              <span style={{ width: "62%" }} />
+              <span style={{ width: "100%" }} />
             </div>
             <div className="t-meter-foot mono">
-              <span>00 KM</span>
-              <span>2625</span>
-              <span>5247</span>
+              <span>01</span>
+              <span>27</span>
+              <span>54</span>
             </div>
           </div>
         </aside>

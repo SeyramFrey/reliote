@@ -3,33 +3,19 @@ import { getLocale, getTranslations } from "next-intl/server";
 import { createServiceClient } from "@/lib/supabase/service";
 import { SectionHead } from "./SectionHead";
 
-// Replaces the public architect index. Renders aggregate proof (counts +
-// averages + coverage) without ever exposing a single architect row to the
-// browser. The SERVICE_ROLE_KEY used by createServiceClient is server-only
-// (env var not in NEXT_PUBLIC_*) and bypasses the RLS that, since migration
-// 0007, blocks anonymous + unmatched-client reads of architect_profiles.
-//
-// Static numbers (1 / 6 admission rate, 365 days mediation, 8-step brief) live
-// in i18n because they're product promises, not derived data.
+// Replaces the public architect index. Renders aggregate proof (coverage across
+// diplomas / specialties / cities) without ever exposing a single architect row
+// to the browser. The SERVICE_ROLE_KEY used by createServiceClient is
+// server-only (env var not in NEXT_PUBLIC_*) and bypasses the RLS that, since
+// migration 0007, blocks anonymous + unmatched-client reads of architect_profiles.
 
 type Architect = {
-  rating: number | null;
-  years_experience: number;
   city: string;
   diploma: string | null;
   specialties: string[];
 };
 
 const TRUST_ICONS = ["✓", "★", "⊕", "≡"];
-
-function median(nums: number[]): number {
-  if (nums.length === 0) return 0;
-  const sorted = [...nums].sort((a, b) => a - b);
-  const mid = Math.floor(sorted.length / 2);
-  return sorted.length % 2 === 0
-    ? Math.round((sorted[mid - 1] + sorted[mid]) / 2)
-    : sorted[mid];
-}
 
 export async function MethodProof() {
   const locale = await getLocale();
@@ -38,21 +24,12 @@ export async function MethodProof() {
   const trust = architectsT.raw("trust") as { strong: string; sub: string }[];
 
   const service = createServiceClient();
-  const { data, count } = (await service
+  const { data } = (await service
     .from("architect_profiles")
-    .select("rating, years_experience, city, diploma, specialties", {
-      count: "exact",
-    })
-    .eq("status", "verified")) as { data: Architect[] | null; count: number | null };
+    .select("city, diploma, specialties")
+    .eq("status", "verified")) as { data: Architect[] | null };
 
   const rows = data ?? [];
-  const total = count ?? 0;
-  const ratings = rows.map((r) => r.rating).filter((r): r is number => r !== null);
-  const avgRating =
-    ratings.length > 0
-      ? ratings.reduce((s, v) => s + v, 0) / ratings.length
-      : 0;
-  const medianYears = median(rows.map((r) => r.years_experience));
   const cities = [...new Set(rows.map((r) => r.city))].sort();
   const diplomas = [
     ...new Set(rows.map((r) => r.diploma).filter((d): d is string => !!d)),
@@ -80,33 +57,6 @@ export async function MethodProof() {
             </span>
           </div>
         ))}
-      </div>
-
-      <div className="stat-strip" style={{ marginTop: 32 }}>
-        <div className="stat-grid">
-          <div className="stat-cell">
-            <div className="stat-num">{total}</div>
-            <div className="stat-label">{t("stats.verified")}</div>
-          </div>
-          <div className="stat-cell">
-            <div className="stat-num">
-              {avgRating.toFixed(1)}
-              <small> / 5</small>
-            </div>
-            <div className="stat-label">{t("stats.rating")}</div>
-          </div>
-          <div className="stat-cell">
-            <div className="stat-num">
-              {medianYears}
-              <small> {architectsT("yrs")}</small>
-            </div>
-            <div className="stat-label">{t("stats.yearsMedian")}</div>
-          </div>
-          <div className="stat-cell">
-            <div className="stat-num">1 / 6</div>
-            <div className="stat-label">{t("stats.admission")}</div>
-          </div>
-        </div>
       </div>
 
       <div

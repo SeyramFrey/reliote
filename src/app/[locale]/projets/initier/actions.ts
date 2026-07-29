@@ -10,6 +10,8 @@ import {
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
+import { sendEmail, siteUrl } from "@/lib/email/client";
+import { projectReceivedEmail } from "@/lib/email/templates";
 
 type InsertedProject = {
   id: string;
@@ -88,5 +90,18 @@ export async function submitProject(input: ProjectInput) {
   revalidatePath("/en/admin/matches");
 
   const locale = (await cookies()).get("NEXT_LOCALE")?.value || "fr";
+
+  // Accusé de réception au porteur (best-effort, ne bloque jamais le flux).
+  const site = siteUrl();
+  const ack = projectReceivedEmail(locale, {
+    clientName: parsed.data.client_name,
+    projectType: inserted.project_type,
+    projectCountry: inserted.project_country,
+    projectLocation: inserted.project_location,
+    matchCount: matches.length,
+    ctaUrl: site ? `${site}/${locale}/dashboard/client` : null,
+  });
+  await sendEmail({ to: parsed.data.email, subject: ack.subject, html: ack.html });
+
   redirect(`/${locale}/projets/${inserted.id}/confirmation`);
 }

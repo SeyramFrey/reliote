@@ -9,13 +9,13 @@
     "account": "Espace client"
   },
   "footer": {
-    "tagline": "Reliote relie les porteurs de projets en France aux meilleurs architectes de Côte d'Ivoire.",
+    "tagline": "Reliote relie les porteurs de projets du monde entier aux meilleurs architectes d'Afrique — pour un chantier toujours situé sur le continent.",
     "explore": "Explorer",
     "account": "Compte",
     "joinAsArchitect": "Rejoindre Reliote",
     "login": "Se connecter",
     "register": "Créer un compte",
-    "colophon": "Plateforme premium — Paris ⇄ Abidjan"
+    "colophon": "Plateforme premium — Afrique ⇄ Monde"
   },
   "lang": {
     "fr": "FR",
@@ -23,11 +23,11 @@
     "switchTo": "Basculer en {target}"
   },
   "hero": {
-    "eyebrow": "01 — Plateforme de mise en relation · Paris ⇄ Abidjan",
+    "eyebrow": "01 — Plateforme de mise en relation · Afrique ⇄ Monde",
     "titlePre": "Architectes ",
     "titleItalic": "d'exception,",
     "titleRest": "choisis avec méthode.",
-    "sub": "Reliote relie les porteurs de projets en France aux meilleurs architectes de Côte d'Ivoire. Profils vérifiés, mise en relation structurée, collaboration sous cadre — pour les décisions qui méritent du soin.",
+    "sub": "Reliote relie les porteurs de projets du monde entier aux meilleurs architectes d'Afrique — pour un chantier toujours situé sur le continent. Profils vérifiés, mise en relation structurée, collaboration sous cadre — pour les décisions qui méritent du soin.",
     "primary": "Initier un projet",
     "secondary": "Explorer les architectes",
     "liveLabel": "En lumière cette semaine",
@@ -37,7 +37,7 @@
     "a": { "num": "84", "label": "Architectes vérifiés" },
     "b": { "num": "27", "label": "Projets en cours" },
     "c": { "num": "92%", "label": "Réponse sous 48 h" },
-    "d": { "num": "2", "label": "Pays · Une exigence" }
+    "d": { "num": "54", "label": "Pays africains · Une exigence" }
   },
   "pillars": {
     "eyebrow": "02",
@@ -154,13 +154,13 @@
     "client": {
       "eyebrow": "Pour · porteurs de projet",
       "title": "Décider de loin, avec la même rigueur qu'à côté.",
-      "body": "Vous portez un projet en Côte d'Ivoire depuis la France. Vous voulez un cadre, des preuves, et un seul interlocuteur structurant pour chaque étape.",
+      "body": "Vous portez un projet en Afrique, où que vous soyez dans le monde. Vous voulez un cadre, des preuves, et un seul interlocuteur structurant pour chaque étape.",
       "cta": "Initier un projet"
     },
     "architect": {
       "eyebrow": "Pour · architectes & agences",
       "title": "Des projets justes, dans un cadre professionnel.",
-      "body": "Vous êtes architecte en Côte d'Ivoire. Reliote vous présente des commanditaires sérieux, qualifiés et alignés sur vos honoraires.",
+      "body": "Vous êtes architecte en Afrique. Reliote vous présente des commanditaires sérieux, qualifiés et alignés sur vos honoraires.",
       "cta": "Rejoindre l'index"
     }
   },
@@ -465,9 +465,9 @@
     "territoire": {
       "eyebrow": "07 — Territoire",
       "titlePre": "Un corridor ",
-      "titleItalic": "Paris ⇄ Abidjan",
+      "titleItalic": "Monde ⇄ Afrique",
       "titleRest": ", opéré comme une route.",
-      "kicker": "5 247 km d'orthodromie. Deux capitales, un protocole. Nous tenons le fil entre le brief et la livraison.",
+      "kicker": "Chaque mission relie un porteur de projet — où qu'il soit dans le monde — à son chantier africain. Nous tenons le fil, du brief à la livraison.",
       "liveChart": "Carte en direct",
       "offices": "Antennes",
       "parisSub": "11 binômes · Coordination",
@@ -475,12 +475,12 @@
       "liveCorridor": "Corridor en direct",
       "active": "Actif",
       "feed": [
-        { "t": "02:14", "label": "Brief reçu", "place": "Saint-Mandé → Cocody" },
-        { "t": "02:08", "label": "Jalon signé", "place": "Bingerville · APS" },
-        { "t": "01:51", "label": "Médiation close", "place": "Marcory · 03h" },
+        { "t": "02:14", "label": "Brief reçu", "place": "Paris → Abidjan" },
+        { "t": "02:08", "label": "Jalon signé", "place": "Dakar · APS" },
+        { "t": "01:51", "label": "Médiation close", "place": "Accra · 03h" },
         { "t": "01:32", "label": "Admission", "place": "Atelier Faïdhèrbe" }
       ],
-      "meterLabel": "Orthodromie Paris → Abidjan"
+      "meterLabel": "Pays africains couverts"
     },
     "featured": {
       "read": "Lire l'étude complète",
@@ -518,14 +518,14 @@
         "titleItalic": "la même rigueur",
         "titleRest": " qu'à côté.",
         "list": ["Profils vérifiés et entretiens préalables", "Brief structuré rédigé avec vous", "Contrats, jalons et paiements encadrés", "Médiation Reliote sur toute la mission"],
-        "foot": "Paris ⇄ Abidjan"
+        "foot": "Monde ⇄ Afrique"
       },
       "architect": {
         "titlePre": "Des projets ",
         "titleItalic": "justes,",
         "titleRest": " dans un cadre professionnel.",
         "list": ["Candidatures qualifiées uniquement", "Brief client structuré, sans flou", "Honoraires protégés, paiements séquencés", "Visibilité auprès d'un marché premium"],
-        "foot": "Côte d'Ivoire · 2026"
+        "foot": "Afrique · 2026"
       }
     },
     "journal": {

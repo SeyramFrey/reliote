@@ -10,7 +10,10 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
     { href: `/${locale}/admin`, label: "Vue d'ensemble" },
     { href: `/${locale}/admin/architectes`, label: "Architectes" },
     { href: `/${locale}/admin/projets`, label: "Projets" },
+    { href: `/${locale}/admin/rdv`, label: "RDV" },
     { href: `/${locale}/admin/matches`, label: "Matches" },
+    { href: `/${locale}/admin/medias`, label: "Médias" },
+    { href: `/${locale}/admin/featured`, label: "Mis en lumière" },
   ];
   return (
     <div className="page-edge py-12 grid grid-cols-12 gap-[var(--gutter)]">

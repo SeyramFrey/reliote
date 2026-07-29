@@ -1,208 +1,85 @@
-"use client";
-import { useEffect, useRef, useState } from "react";
-import { useLocale, useTranslations } from "next-intl";
-import Link from "next/link";
-import { SectionHead } from "./SectionHead";
+import { getLocale } from "next-intl/server";
+import { createServiceClient } from "@/lib/supabase/service";
+import { FeaturedCaseView, type FeaturedContent } from "./FeaturedCaseView";
 
-const SLIDES = [
-  "/assets/img-stairs-water.jpg",
-  "/assets/img-courtyard-pool.jpg",
-  "/assets/img-redrock-pool.jpg",
-];
-const HOTSPOTS = [
-  { x: 28, y: 38 },
-  { x: 68, y: 30 },
-  { x: 42, y: 72 },
-];
+// Bloc D — Étude de cas mise en lumière, alimentée par featured_projects.
+// Serveur : récupère la ligne publiée la mieux classée, la localise, et délègue
+// le rendu interactif à FeaturedCaseView. Aucune ligne publiée → content=null →
+// la vue retombe sur le contenu i18n d'origine.
 
-function useInView(ref: React.RefObject<HTMLElement | null>, threshold: number) {
-  const [seen, setSeen] = useState(false);
-  useEffect(() => {
-    const el = ref.current;
-    if (!el || seen) return;
-    const io = new IntersectionObserver(
-      ([e]) => {
-        if (e.isIntersecting) setSeen(true);
-      },
-      { threshold }
-    );
-    io.observe(el);
-    return () => io.disconnect();
-  }, [ref, seen, threshold]);
-  return seen;
-}
+type SlideJson = { image?: string; caption_fr?: string; caption_en?: string };
+type StatJson = { n?: number; suf?: string; l_fr?: string; l_en?: string };
+type HotspotJson = {
+  x?: number;
+  y?: number;
+  title_fr?: string;
+  title_en?: string;
+  body_fr?: string;
+  body_en?: string;
+};
+type RowJson = { label_fr?: string; label_en?: string; value_fr?: string; value_en?: string };
 
-function Counter({ target, suffix }: { target: number; suffix: string }) {
-  const ref = useRef<HTMLSpanElement>(null);
-  const inView = useInView(ref, 0.4);
-  const [val, setVal] = useState(0);
-  useEffect(() => {
-    if (!inView) return;
-    let raf = 0;
-    const start = performance.now();
-    const tick = (now: number) => {
-      const p = Math.min(1, (now - start) / 1500);
-      const eased = 1 - Math.pow(1 - p, 3);
-      setVal(Math.round(target * eased));
-      if (p < 1) raf = requestAnimationFrame(tick);
+type FeaturedRow = {
+  title_fr: string;
+  title_en: string;
+  location: string | null;
+  coordinates: string | null;
+  slides: unknown;
+  stats: unknown;
+  hotspots: unknown;
+  quote_fr: string | null;
+  quote_en: string | null;
+  cite: string | null;
+  rows: unknown;
+};
+
+const asArray = <T,>(v: unknown): T[] => (Array.isArray(v) ? (v as T[]) : []);
+
+export async function FeaturedCase() {
+  const locale = await getLocale();
+  const en = locale === "en";
+
+  const service = createServiceClient();
+  const { data } = (await service
+    .from("featured_projects")
+    .select(
+      "title_fr, title_en, location, coordinates, slides, stats, hotspots, quote_fr, quote_en, cite, rows",
+    )
+    .eq("published", true)
+    .order("sort_order", { ascending: true })
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle()) as { data: FeaturedRow | null };
+
+  let content: FeaturedContent | null = null;
+  if (data) {
+    content = {
+      title: en ? data.title_en : data.title_fr,
+      location: data.location ?? "",
+      coordinates: data.coordinates ?? "",
+      slides: asArray<SlideJson>(data.slides).map((s) => ({
+        image: s.image ?? "",
+        caption: (en ? s.caption_en : s.caption_fr) ?? "",
+      })),
+      stats: asArray<StatJson>(data.stats).map((s) => ({
+        n: Number(s.n ?? 0),
+        suf: s.suf ?? "",
+        l: (en ? s.l_en : s.l_fr) ?? "",
+      })),
+      hotspots: asArray<HotspotJson>(data.hotspots).map((h) => ({
+        x: Number(h.x ?? 50),
+        y: Number(h.y ?? 50),
+        t: (en ? h.title_en : h.title_fr) ?? "",
+        b: (en ? h.body_en : h.body_fr) ?? "",
+      })),
+      quote: (en ? data.quote_en : data.quote_fr) ?? "",
+      cite: data.cite ?? "",
+      rows: asArray<RowJson>(data.rows).map((r) => ({
+        k: (en ? r.label_en : r.label_fr) ?? "",
+        v: (en ? r.value_en : r.value_fr) ?? "",
+      })),
     };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, [inView, target]);
-  return (
-    <span ref={ref}>
-      {val}
-      <small>{suffix}</small>
-    </span>
-  );
-}
+  }
 
-type Stat = { n: number; suf: string; l: string };
-type Hotspot = { t: string; b: string };
-
-export function FeaturedCase() {
-  const locale = useLocale();
-  const t = useTranslations("featured");
-  const lt = useTranslations("landing.featured");
-  const slides = lt.raw("slides") as string[];
-  const stats = lt.raw("stats") as Stat[];
-  const hotspots = lt.raw("hotspots") as Hotspot[];
-  const rows = lt.raw("rows") as Record<string, string>;
-  const [idx, setIdx] = useState(0);
-
-  useEffect(() => {
-    const id = setInterval(() => setIdx((i) => (i + 1) % SLIDES.length), 6000);
-    return () => clearInterval(id);
-  }, []);
-
-  const prev = () => setIdx((i) => (i - 1 + SLIDES.length) % SLIDES.length);
-  const next = () => setIdx((i) => (i + 1) % SLIDES.length);
-
-  return (
-    <section className="sect feat">
-      <SectionHead
-        num={t("eyebrow")}
-        titlePre={t("titlePre")}
-        titleItalic={t("titleItalic")}
-        kicker={t("kicker")}
-      />
-      <div className="feat-frame">
-        <div className="feat-stage">
-          {SLIDES.map((src, i) => (
-            <div
-              key={src}
-              className={`feat-slide ${i === idx ? "active" : ""}`}
-              style={{ backgroundImage: `url(${src})` }}
-            />
-          ))}
-
-          <div className="stage-corner tl">Rives de la Lagune · Bingerville</div>
-          <div className="stage-corner tr">{slides[idx]}</div>
-          <div className="stage-corner bl">5.34°N / 3.98°W</div>
-          <div className="stage-corner br">
-            <span>{String(idx + 1).padStart(2, "0")}</span>
-            <span style={{ opacity: 0.5 }}>/</span>
-            <span style={{ opacity: 0.6 }}>{String(SLIDES.length).padStart(2, "0")}</span>
-          </div>
-
-          {idx === 0 &&
-            hotspots.map((h, i) => (
-              <div
-                key={h.t}
-                className="hotspot"
-                style={{ left: `${HOTSPOTS[i].x}%`, top: `${HOTSPOTS[i].y}%` }}
-                aria-label={h.t}
-              >
-                <div className="hotspot-tip">
-                  <span className="ht">{h.t}</span>
-                  {h.b}
-                </div>
-              </div>
-            ))}
-
-          <button className="arrow prev" onClick={prev} aria-label="Previous">
-            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-              <path d="M10 2 L4 8 L10 14" />
-            </svg>
-          </button>
-          <button className="arrow next" onClick={next} aria-label="Next">
-            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-              <path d="M6 2 L12 8 L6 14" />
-            </svg>
-          </button>
-
-          <div className="pager">
-            {SLIDES.map((_, i) => (
-              <button
-                key={i}
-                className={i === idx ? "on" : ""}
-                onClick={() => setIdx(i)}
-                aria-label={`Slide ${i + 1}`}
-              />
-            ))}
-          </div>
-        </div>
-
-        <div className="feat-counters">
-          {stats.map((s, i) => (
-            <div key={i} className="feat-counter">
-              <div className="n">
-                <Counter target={s.n} suffix={s.suf} />
-              </div>
-              <div className="l">{s.l}</div>
-            </div>
-          ))}
-        </div>
-
-        <div className="feat-grid-2">
-          <div>
-            <blockquote className="feat-quote">{t("quote")}</blockquote>
-            <div className="feat-quote-cite">{t("cite")}</div>
-            <div style={{ marginTop: 28, display: "flex", gap: 10, flexWrap: "wrap" }}>
-              <Link
-                href={`/${locale}/projets/initier`}
-                className="btn btn-ghost on-dark"
-                style={{ color: "var(--paper)", borderColor: "rgba(243,241,236,0.3)" }}
-              >
-                {lt("read")} <span className="btn-arrow" />
-              </Link>
-              <Link
-                href={`/${locale}/projets/initier`}
-                className="btn btn-primary"
-                style={{ background: "var(--paper)", color: "var(--ink)" }}
-              >
-                {lt("startSimilar")} <span className="btn-arrow" />
-              </Link>
-            </div>
-          </div>
-          <div style={{ display: "flex", flexDirection: "column", justifyContent: "stretch" }}>
-            <div className="feat-row">
-              <span className="k">{rows.client}</span>
-              <span className="v">{rows.clientV}</span>
-            </div>
-            <div className="feat-row">
-              <span className="k">{rows.arch}</span>
-              <span className="v">{rows.archV}</span>
-            </div>
-            <div className="feat-row">
-              <span className="k">{rows.program}</span>
-              <span className="v">{rows.programV}</span>
-            </div>
-            <div className="feat-row">
-              <span className="k">{rows.site}</span>
-              <span className="v">{rows.siteV}</span>
-            </div>
-            <div className="feat-row">
-              <span className="k">{rows.duration}</span>
-              <span className="v">{rows.durationV}</span>
-            </div>
-            <div className="feat-row">
-              <span className="k">{rows.budget}</span>
-              <span className="v">{rows.budgetV}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
+  return <FeaturedCaseView content={content} />;
 }

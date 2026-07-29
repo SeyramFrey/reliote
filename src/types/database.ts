@@ -7,6 +7,11 @@ export type Json =
   | Json[]
 
 export type Database = {
+  // Allows to automatically instantiate createClient with right options
+  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
+  __InternalSupabase: {
+    PostgrestVersion: "14.5"
+  }
   public: {
     Tables: {
       architect_profiles: {
@@ -27,7 +32,7 @@ export type Database = {
           id: string
           languages: string[]
           last_name: string
-          ordre_number: string | null
+          ordre_number: string
           phone: string | null
           photo_url: string | null
           portfolio_url: string | null
@@ -41,7 +46,10 @@ export type Database = {
           years_experience: number
         }
         Insert: {
+          anon_handle?: string | null
           availability?: Database["public"]["Enums"]["availability_status"]
+          charter_signed_at?: string | null
+          charter_version?: string | null
           city: string
           country?: string
           created_at?: string
@@ -54,7 +62,7 @@ export type Database = {
           id?: string
           languages?: string[]
           last_name: string
-          ordre_number?: string | null
+          ordre_number: string
           phone?: string | null
           photo_url?: string | null
           portfolio_url?: string | null
@@ -68,7 +76,10 @@ export type Database = {
           years_experience: number
         }
         Update: {
+          anon_handle?: string | null
           availability?: Database["public"]["Enums"]["availability_status"]
+          charter_signed_at?: string | null
+          charter_version?: string | null
           city?: string
           country?: string
           created_at?: string
@@ -81,7 +92,7 @@ export type Database = {
           id?: string
           languages?: string[]
           last_name?: string
-          ordre_number?: string | null
+          ordre_number?: string
           phone?: string | null
           photo_url?: string | null
           portfolio_url?: string | null
@@ -100,6 +111,64 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      client_engagements: {
+        Row: {
+          architect_id: string
+          charter_accepted: boolean
+          charter_version: string | null
+          engaged_at: string | null
+          id: string
+          notes: string | null
+          project_id: string
+          proposed_at: string
+          status: Database["public"]["Enums"]["engagement_status"]
+        }
+        Insert: {
+          architect_id: string
+          charter_accepted?: boolean
+          charter_version?: string | null
+          engaged_at?: string | null
+          id?: string
+          notes?: string | null
+          project_id: string
+          proposed_at?: string
+          status?: Database["public"]["Enums"]["engagement_status"]
+        }
+        Update: {
+          architect_id?: string
+          charter_accepted?: boolean
+          charter_version?: string | null
+          engaged_at?: string | null
+          id?: string
+          notes?: string | null
+          project_id?: string
+          proposed_at?: string
+          status?: Database["public"]["Enums"]["engagement_status"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "client_engagements_architect_id_fkey"
+            columns: ["architect_id"]
+            isOneToOne: false
+            referencedRelation: "architect_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "client_engagements_architect_id_fkey"
+            columns: ["architect_id"]
+            isOneToOne: false
+            referencedRelation: "architect_profiles_anon"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "client_engagements_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "client_projects"
             referencedColumns: ["id"]
           },
         ]
@@ -166,42 +235,6 @@ export type Database = {
           },
         ]
       }
-      client_engagements: {
-        Row: {
-          architect_id: string
-          charter_accepted: boolean
-          charter_version: string | null
-          engaged_at: string | null
-          id: string
-          notes: string | null
-          project_id: string
-          proposed_at: string
-          status: Database["public"]["Enums"]["engagement_status"]
-        }
-        Insert: {
-          architect_id: string
-          charter_accepted?: boolean
-          charter_version?: string | null
-          engaged_at?: string | null
-          id?: string
-          notes?: string | null
-          project_id: string
-          proposed_at?: string
-          status?: Database["public"]["Enums"]["engagement_status"]
-        }
-        Update: {
-          architect_id?: string
-          charter_accepted?: boolean
-          charter_version?: string | null
-          engaged_at?: string | null
-          id?: string
-          notes?: string | null
-          project_id?: string
-          proposed_at?: string
-          status?: Database["public"]["Enums"]["engagement_status"]
-        }
-        Relationships: []
-      }
       engagement_relays: {
         Row: {
           architect_relay: string
@@ -220,6 +253,68 @@ export type Database = {
           client_relay?: string
           created_at?: string
           engagement_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "engagement_relays_engagement_id_fkey"
+            columns: ["engagement_id"]
+            isOneToOne: true
+            referencedRelation: "client_engagements"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      featured_projects: {
+        Row: {
+          cite: string | null
+          coordinates: string | null
+          created_at: string
+          hotspots: Json
+          id: string
+          location: string | null
+          published: boolean
+          quote_en: string | null
+          quote_fr: string | null
+          rows: Json
+          slides: Json
+          sort_order: number
+          stats: Json
+          title_en: string
+          title_fr: string
+        }
+        Insert: {
+          cite?: string | null
+          coordinates?: string | null
+          created_at?: string
+          hotspots?: Json
+          id?: string
+          location?: string | null
+          published?: boolean
+          quote_en?: string | null
+          quote_fr?: string | null
+          rows?: Json
+          slides?: Json
+          sort_order?: number
+          stats?: Json
+          title_en: string
+          title_fr: string
+        }
+        Update: {
+          cite?: string | null
+          coordinates?: string | null
+          created_at?: string
+          hotspots?: Json
+          id?: string
+          location?: string | null
+          published?: boolean
+          quote_en?: string | null
+          quote_fr?: string | null
+          rows?: Json
+          slides?: Json
+          sort_order?: number
+          stats?: Json
+          title_en?: string
+          title_fr?: string
         }
         Relationships: []
       }
@@ -257,10 +352,133 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "match_results_architect_id_fkey"
+            columns: ["architect_id"]
+            isOneToOne: false
+            referencedRelation: "architect_profiles_anon"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "match_results_project_id_fkey"
             columns: ["project_id"]
             isOneToOne: false
             referencedRelation: "client_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      media_items: {
+        Row: {
+          created_at: string
+          date: string | null
+          excerpt_en: string | null
+          excerpt_fr: string | null
+          id: string
+          image_url: string | null
+          published: boolean
+          read_time: string | null
+          sort_order: number
+          title_en: string
+          title_fr: string
+          url: string | null
+        }
+        Insert: {
+          created_at?: string
+          date?: string | null
+          excerpt_en?: string | null
+          excerpt_fr?: string | null
+          id?: string
+          image_url?: string | null
+          published?: boolean
+          read_time?: string | null
+          sort_order?: number
+          title_en: string
+          title_fr: string
+          url?: string | null
+        }
+        Update: {
+          created_at?: string
+          date?: string | null
+          excerpt_en?: string | null
+          excerpt_fr?: string | null
+          id?: string
+          image_url?: string | null
+          published?: boolean
+          read_time?: string | null
+          sort_order?: number
+          title_en?: string
+          title_fr?: string
+          url?: string | null
+        }
+        Relationships: []
+      }
+      meetings: {
+        Row: {
+          architect_id: string
+          charter_accepted: boolean
+          created_at: string
+          id: string
+          notes: string | null
+          project_id: string
+          proposed_by: string | null
+          scheduled_at: string
+          status: Database["public"]["Enums"]["meeting_status"]
+          updated_at: string
+          video_url: string | null
+        }
+        Insert: {
+          architect_id: string
+          charter_accepted?: boolean
+          created_at?: string
+          id?: string
+          notes?: string | null
+          project_id: string
+          proposed_by?: string | null
+          scheduled_at: string
+          status?: Database["public"]["Enums"]["meeting_status"]
+          updated_at?: string
+          video_url?: string | null
+        }
+        Update: {
+          architect_id?: string
+          charter_accepted?: boolean
+          created_at?: string
+          id?: string
+          notes?: string | null
+          project_id?: string
+          proposed_by?: string | null
+          scheduled_at?: string
+          status?: Database["public"]["Enums"]["meeting_status"]
+          updated_at?: string
+          video_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "meetings_architect_id_fkey"
+            columns: ["architect_id"]
+            isOneToOne: false
+            referencedRelation: "architect_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "meetings_architect_id_fkey"
+            columns: ["architect_id"]
+            isOneToOne: false
+            referencedRelation: "architect_profiles_anon"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "meetings_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "client_projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "meetings_proposed_by_fkey"
+            columns: ["proposed_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -294,10 +512,74 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      architect_profiles_anon: {
+        Row: {
+          anon_handle: string | null
+          availability:
+            | Database["public"]["Enums"]["availability_status"]
+            | null
+          diploma: string | null
+          id: string | null
+          languages: string[] | null
+          project_types: Database["public"]["Enums"]["project_type"][] | null
+          rating: number | null
+          region: string | null
+          specialties: string[] | null
+          status: Database["public"]["Enums"]["architect_status"] | null
+          years_bracket: string | null
+        }
+        Insert: {
+          anon_handle?: string | null
+          availability?:
+            | Database["public"]["Enums"]["availability_status"]
+            | null
+          diploma?: string | null
+          id?: string | null
+          languages?: string[] | null
+          project_types?: Database["public"]["Enums"]["project_type"][] | null
+          rating?: number | null
+          region?: never
+          specialties?: string[] | null
+          status?: Database["public"]["Enums"]["architect_status"] | null
+          years_bracket?: never
+        }
+        Update: {
+          anon_handle?: string | null
+          availability?:
+            | Database["public"]["Enums"]["availability_status"]
+            | null
+          diploma?: string | null
+          id?: string | null
+          languages?: string[] | null
+          project_types?: Database["public"]["Enums"]["project_type"][] | null
+          rating?: number | null
+          region?: never
+          specialties?: string[] | null
+          status?: Database["public"]["Enums"]["architect_status"] | null
+          years_bracket?: never
+        }
+        Relationships: []
+      }
     }
     Functions: {
+      client_can_reveal_architect: {
+        Args: { p_architect_id: string }
+        Returns: boolean
+      }
       is_admin: { Args: never; Returns: boolean }
+      is_architect_for_row: {
+        Args: { p_architect_id: string }
+        Returns: boolean
+      }
+      is_architect_matched_to_user: {
+        Args: { p_architect_id: string }
+        Returns: boolean
+      }
+      is_matched_architect_for_project: {
+        Args: { p_project_id: string }
+        Returns: boolean
+      }
+      owns_project: { Args: { p_project_id: string }; Returns: boolean }
       user_role_for_current: {
         Args: never
         Returns: Database["public"]["Enums"]["user_role"]
@@ -306,9 +588,28 @@ export type Database = {
     Enums: {
       architect_status: "pending" | "verified" | "rejected" | "paused"
       availability_status: "available" | "busy" | "unavailable"
-      engagement_status: "proposed" | "engaged" | "declined" | "cancelled" | "expired"
+      engagement_status:
+        | "proposed"
+        | "engaged"
+        | "declined"
+        | "cancelled"
+        | "expired"
       fee_currency: "EUR" | "XOF"
-      project_status: "new" | "matched" | "in_review" | "closed"
+      meeting_status:
+        | "proposed"
+        | "confirmed"
+        | "declined"
+        | "rescheduled"
+        | "completed"
+        | "cancelled"
+      project_status:
+        | "new"
+        | "matched"
+        | "in_review"
+        | "closed"
+        | "selected"
+        | "meeting_proposed"
+        | "meeting_confirmed"
       project_type:
         | "residential"
         | "hospitality"
@@ -446,9 +747,31 @@ export const Constants = {
     Enums: {
       architect_status: ["pending", "verified", "rejected", "paused"],
       availability_status: ["available", "busy", "unavailable"],
-      engagement_status: ["proposed", "engaged", "declined", "cancelled", "expired"],
+      engagement_status: [
+        "proposed",
+        "engaged",
+        "declined",
+        "cancelled",
+        "expired",
+      ],
       fee_currency: ["EUR", "XOF"],
-      project_status: ["new", "matched", "in_review", "closed"],
+      meeting_status: [
+        "proposed",
+        "confirmed",
+        "declined",
+        "rescheduled",
+        "completed",
+        "cancelled",
+      ],
+      project_status: [
+        "new",
+        "matched",
+        "in_review",
+        "closed",
+        "selected",
+        "meeting_proposed",
+        "meeting_confirmed",
+      ],
       project_type: [
         "residential",
         "hospitality",
@@ -461,4 +784,3 @@ export const Constants = {
     },
   },
 } as const
-

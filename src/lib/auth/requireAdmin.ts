@@ -6,7 +6,8 @@ type ProfileRole = { role: string };
 // Guards server actions and route handlers that mutate admin-only data.
 // Pages under /admin are already gated by the admin layout, but server actions are
 // independent POST endpoints — they must re-check the caller's role here.
-export async function requireAdmin(): Promise<void> {
+// Returns the authenticated admin's user id (usable e.g. for meetings.proposed_by).
+export async function requireAdmin(): Promise<{ userId: string }> {
   const supabase = await createClient();
   const {
     data: { user },
@@ -20,4 +21,6 @@ export async function requireAdmin(): Promise<void> {
     .single()) as { data: ProfileRole | null };
 
   if (prof?.role !== "admin") throw new Error("Forbidden");
+
+  return { userId: user.id };
 }

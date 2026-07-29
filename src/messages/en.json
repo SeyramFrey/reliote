@@ -9,13 +9,13 @@
     "account": "Client area"
   },
   "footer": {
-    "tagline": "Reliote connects project owners in France with the best architects in Côte d'Ivoire.",
+    "tagline": "Reliote connects project owners worldwide with the best architects across Africa — for a project always built on the continent.",
     "explore": "Explore",
     "account": "Account",
     "joinAsArchitect": "Join Reliote",
     "login": "Sign in",
     "register": "Create account",
-    "colophon": "Premium platform — Paris ⇄ Abidjan"
+    "colophon": "Premium platform — Africa ⇄ World"
   },
   "lang": {
     "fr": "FR",
@@ -23,11 +23,11 @@
     "switchTo": "Switch to {target}"
   },
   "hero": {
-    "eyebrow": "01 — Cross-border architecture · Paris ⇄ Abidjan",
+    "eyebrow": "01 — Cross-border architecture · Africa ⇄ World",
     "titlePre": "Exceptional architects, ",
     "titleItalic": "chosen",
     "titleRest": "with method.",
-    "sub": "Reliote connects clients in France with the most rigorous architects in Côte d'Ivoire. Verified profiles, structured introductions, framed collaboration — for the decisions that deserve care.",
+    "sub": "Reliote connects project owners worldwide with the most rigorous architects across Africa — for a project always built on the continent. Verified profiles, structured introductions, framed collaboration — for the decisions that deserve care.",
     "primary": "Start a project",
     "secondary": "Browse architects",
     "liveLabel": "Featured this week",
@@ -37,7 +37,7 @@
     "a": { "num": "84", "label": "Verified architects" },
     "b": { "num": "27", "label": "Live projects" },
     "c": { "num": "92%", "label": "Reply in 48 h" },
-    "d": { "num": "2", "label": "Countries · One standard" }
+    "d": { "num": "54", "label": "African countries · One standard" }
   },
   "pillars": {
     "eyebrow": "02",
@@ -154,13 +154,13 @@
     "client": {
       "eyebrow": "For · clients",
       "title": "Decide from afar with the same rigour you'd want next door.",
-      "body": "You're running a project in Côte d'Ivoire from France. You want a frame, proof, and a single structuring contact for each step.",
+      "body": "You're running a project in Africa, wherever you are in the world. You want a frame, proof, and a single structuring contact for each step.",
       "cta": "Start a project"
     },
     "architect": {
       "eyebrow": "For · architects & studios",
       "title": "Sound projects, in a professional frame.",
-      "body": "You're a practising architect in Côte d'Ivoire. Reliote brings you serious, qualified clients aligned with your fees.",
+      "body": "You're a practising architect in Africa. Reliote brings you serious, qualified clients aligned with your fees.",
       "cta": "Join the index"
     }
   },
@@ -465,9 +465,9 @@
     "territoire": {
       "eyebrow": "07 — Territory",
       "titlePre": "A ",
-      "titleItalic": "Paris ⇄ Abidjan",
+      "titleItalic": "World ⇄ Africa",
       "titleRest": " corridor, run like a line.",
-      "kicker": "5,247 km of great-circle. Two capitals, one protocol. We hold the thread from brief to delivery.",
+      "kicker": "Every project links a client — wherever they are in the world — to their African build site. We hold the thread from brief to delivery.",
       "liveChart": "Live chart",
       "offices": "Offices",
       "parisSub": "11 duos · Coordination",
@@ -475,12 +475,12 @@
       "liveCorridor": "Live corridor",
       "active": "Active",
       "feed": [
-        { "t": "02:14", "label": "Brief in", "place": "Saint-Mandé → Cocody" },
-        { "t": "02:08", "label": "Milestone signed", "place": "Bingerville · APS" },
-        { "t": "01:51", "label": "Mediation closed", "place": "Marcory · 03h" },
+        { "t": "02:14", "label": "Brief in", "place": "Paris → Abidjan" },
+        { "t": "02:08", "label": "Milestone signed", "place": "Dakar · APS" },
+        { "t": "01:51", "label": "Mediation closed", "place": "Accra · 03h" },
         { "t": "01:32", "label": "Admission", "place": "Atelier Faïdhèrbe" }
       ],
-      "meterLabel": "Great-circle Paris → Abidjan"
+      "meterLabel": "African countries covered"
     },
     "featured": {
       "read": "Read the case study",
@@ -518,14 +518,14 @@
         "titleItalic": "same rigour",
         "titleRest": " you'd want next door.",
         "list": ["Verified profiles, prior interviews", "Structured brief written with you", "Framed contracts, milestones, payments", "Reliote mediation throughout"],
-        "foot": "Paris ⇄ Abidjan"
+        "foot": "World ⇄ Africa"
       },
       "architect": {
         "titlePre": "Sound projects, in a ",
         "titleItalic": "professional frame.",
         "titleRest": "",
         "list": ["Qualified inbound only", "Structured client brief", "Protected fees, sequenced payments", "Visibility into a premium market"],
-        "foot": "Côte d'Ivoire · 2026"
+        "foot": "Africa · 2026"
       }
     },
     "journal": {

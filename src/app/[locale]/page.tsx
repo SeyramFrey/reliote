@@ -3,7 +3,6 @@ import { Hero } from "@/components/landing/Hero";
 import { StatsBar } from "@/components/landing/StatsBar";
 import { TrustRail } from "@/components/landing/TrustRail";
 import { Pillars } from "@/components/landing/Pillars";
-import { TerresApproche } from "@/components/landing/TerresApproche";
 import { MethodProof } from "@/components/landing/MethodProof";
 import { Process } from "@/components/landing/Process";
 import { MapTerritoire } from "@/components/landing/MapTerritoire";
@@ -23,7 +22,6 @@ export default function Page() {
         <TrustRail />
         <Pillars />
         <Audiences />
-        <TerresApproche />
         <MethodProof />
         <Process />
         <MapTerritoire />

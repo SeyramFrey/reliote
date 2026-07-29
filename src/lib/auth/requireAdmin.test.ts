@@ -29,9 +29,9 @@ describe("requireAdmin", () => {
     await expect(requireAdmin()).rejects.toThrow("Forbidden");
   });
 
-  it("resolves for an admin", async () => {
+  it("resolves with the admin's user id", async () => {
     getUser.mockResolvedValue({ data: { user: { id: "u1" } } });
     single.mockResolvedValue({ data: { role: "admin" } });
-    await expect(requireAdmin()).resolves.toBeUndefined();
+    await expect(requireAdmin()).resolves.toEqual({ userId: "u1" });
   });
 });
