@@ -464,23 +464,20 @@
     },
     "territoire": {
       "eyebrow": "07 — Territory",
-      "titlePre": "A ",
-      "titleItalic": "World ⇄ Africa",
-      "titleRest": " corridor, run like a line.",
-      "kicker": "Every project links a client — wherever they are in the world — to their African build site. We hold the thread from brief to delivery.",
-      "liveChart": "Live chart",
-      "offices": "Offices",
-      "parisSub": "11 duos · Coordination",
-      "abidjanSub": "84 admitted studios · Delivery",
-      "liveCorridor": "Live corridor",
-      "active": "Active",
-      "feed": [
-        { "t": "02:14", "label": "Brief in", "place": "Paris → Abidjan" },
-        { "t": "02:08", "label": "Milestone signed", "place": "Dakar · APS" },
-        { "t": "01:51", "label": "Mediation closed", "place": "Accra · 03h" },
-        { "t": "01:32", "label": "Admission", "place": "Atelier Faïdhèrbe" }
-      ],
-      "meterLabel": "African countries covered"
+      "titlePre": "Coverage that ",
+      "titleItalic": "lights up",
+      "titleRest": ", country by country.",
+      "kicker": "Each country lights up as soon as an architect is verified there. Coverage grows with every admission — from the first studio to all 54 states of the continent.",
+      "mapTitle": "Africa",
+      "presence": "Presence",
+      "activeCountries": "Active countries",
+      "legendLit": "Countries with verified architects",
+      "legendEligible": "54 eligible countries",
+      "statCountries": "countries",
+      "statArchitects": "verified architects",
+      "meterLabel": "Countries with architects",
+      "tooltipArchitects": "{count, plural, one {# verified architect} other {# verified architects}}",
+      "soon": "Soon — first admissions under way."
     },
     "featured": {
       "read": "Read the case study",

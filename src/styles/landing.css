@@ -2199,6 +2199,109 @@
     color: rgba(243,241,236,0.4);
   }
 
+  /* ── Presence map (A: inline SVG · B: MapLibre) — spike comparison ─────── */
+  .territoire-versions { display: flex; flex-direction: column; gap: 46px; margin-top: 10px; }
+  .version-badge {
+    padding: 0 var(--edge);
+    margin-bottom: 12px;
+    display: flex; align-items: center; gap: 10px;
+    font-family: var(--f-mono);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(243,241,236,0.6);
+  }
+  .version-badge .vb-id {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 22px; height: 22px;
+    border: 1px solid var(--accent-brass);
+    color: var(--accent-brass);
+    border-radius: 4px;
+    font-size: 12px;
+  }
+
+  /* Country geometry (Version A, inline SVG) */
+  .t-country {
+    fill: rgba(243,241,236,0.05);
+    stroke: rgba(243,241,236,0.16);
+    stroke-width: 0.5;
+    stroke-linejoin: round;
+    transition: fill 0.25s ease, stroke 0.25s ease;
+    cursor: default;
+  }
+  .t-country.hover { fill: rgba(243,241,236,0.14); }
+  .t-country.lit { fill: var(--accent-brass); stroke: #d8c194; stroke-width: 1; }
+  .t-country.lit.hover { fill: #c7aa74; }
+  .t-country-dot { fill: rgba(243,241,236,0.28); stroke: none; }
+  .t-country-dot.lit { fill: var(--accent-brass); stroke: #d8c194; stroke-width: 1; }
+
+  .t-country-labels { pointer-events: none; }
+  .t-lit-dot { fill: var(--paper); }
+  .t-lit-name {
+    fill: var(--paper);
+    font-family: var(--f-mono);
+    font-size: 15px;
+    font-weight: 500;
+    letter-spacing: 0.03em;
+    paint-order: stroke;
+    stroke: rgba(5,11,10,0.9);
+    stroke-width: 3px;
+    stroke-linejoin: round;
+  }
+  .t-lit-count {
+    fill: var(--accent-brass);
+    font-family: var(--f-display);
+    font-size: 21px;
+    paint-order: stroke;
+    stroke: rgba(5,11,10,0.9);
+    stroke-width: 3px;
+    stroke-linejoin: round;
+  }
+
+  /* Floating tooltip (Version A) */
+  .t-map-tip {
+    position: absolute;
+    z-index: 6;
+    transform: translate(-50%, calc(-100% - 12px));
+    background: rgba(10,19,17,0.92);
+    border: 1px solid rgba(184,153,104,0.5);
+    border-radius: 6px;
+    padding: 6px 10px;
+    pointer-events: none;
+    white-space: nowrap;
+    display: flex; flex-direction: column; gap: 2px;
+    backdrop-filter: blur(6px);
+  }
+  .t-map-tip b { color: var(--paper); font-size: 12.5px; font-weight: 500; }
+  .t-map-tip-n { color: var(--accent-brass); font-family: var(--f-mono); font-size: 10.5px; letter-spacing: 0.08em; }
+
+  /* MapLibre canvas + popup skin (Version B) */
+  /* Higher specificity than maplibre-gl.css's `.maplibregl-map{position:relative}`,
+     which is added to this same element and would otherwise collapse its height. */
+  .territoire-map .t-ml-canvas { position: absolute; inset: 0; z-index: 1; }
+  .maplibregl-popup.t-ml-pop .maplibregl-popup-content {
+    background: rgba(10,19,17,0.92);
+    border: 1px solid rgba(184,153,104,0.5);
+    border-radius: 6px;
+    padding: 6px 10px;
+    color: var(--paper);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.45);
+    display: flex; flex-direction: column; gap: 2px;
+  }
+  .maplibregl-popup.t-ml-pop .maplibregl-popup-content b { font-size: 12.5px; font-weight: 500; color: var(--paper); }
+  .maplibregl-popup.t-ml-pop .maplibregl-popup-content span { color: var(--accent-brass); font-family: var(--f-mono); font-size: 10.5px; letter-spacing: 0.08em; }
+  .maplibregl-popup.t-ml-pop .maplibregl-popup-tip { display: none; }
+  .maplibregl-popup.t-ml-pop.lit .maplibregl-popup-content { border-color: var(--accent-brass); }
+
+  /* Legend + panel additions */
+  .t-legend { margin-top: 16px; display: flex; flex-direction: column; gap: 9px; }
+  .t-legend-row { display: flex; align-items: center; gap: 10px; font-size: 12px; color: rgba(243,241,236,0.7); }
+  .t-legend-row .swatch { width: 13px; height: 13px; border-radius: 3px; flex: none; }
+  .t-legend-row .swatch.lit { background: var(--accent-brass); box-shadow: 0 0 8px rgba(184,153,104,0.5); }
+  .t-legend-row .swatch.eligible { background: rgba(243,241,236,0.08); border: 1px solid rgba(243,241,236,0.22); }
+  .t-feed-count { margin-left: auto; color: var(--accent-brass); font-size: 12px; }
+  .t-empty { margin: 0; color: rgba(243,241,236,0.6); font-size: 13px; line-height: 1.5; font-style: italic; }
+
   @media (max-width: 980px) {
     .territoire-frame { grid-template-columns: 1fr; }
     .territoire-map { aspect-ratio: 5 / 4; }

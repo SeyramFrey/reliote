@@ -464,23 +464,20 @@
     },
     "territoire": {
       "eyebrow": "07 — Territoire",
-      "titlePre": "Un corridor ",
-      "titleItalic": "Monde ⇄ Afrique",
-      "titleRest": ", opéré comme une route.",
-      "kicker": "Chaque mission relie un porteur de projet — où qu'il soit dans le monde — à son chantier africain. Nous tenons le fil, du brief à la livraison.",
-      "liveChart": "Carte en direct",
-      "offices": "Antennes",
-      "parisSub": "11 binômes · Coordination",
-      "abidjanSub": "84 studios admis · Exécution",
-      "liveCorridor": "Corridor en direct",
-      "active": "Actif",
-      "feed": [
-        { "t": "02:14", "label": "Brief reçu", "place": "Paris → Abidjan" },
-        { "t": "02:08", "label": "Jalon signé", "place": "Dakar · APS" },
-        { "t": "01:51", "label": "Médiation close", "place": "Accra · 03h" },
-        { "t": "01:32", "label": "Admission", "place": "Atelier Faïdhèrbe" }
-      ],
-      "meterLabel": "Pays africains couverts"
+      "titlePre": "Une couverture ",
+      "titleItalic": "qui s'allume",
+      "titleRest": ", pays par pays.",
+      "kicker": "Chaque pays s'allume dès qu'un architecte y est vérifié. La couverture grandit au rythme des admissions — du premier studio jusqu'aux 54 États du continent.",
+      "mapTitle": "Afrique",
+      "presence": "Présence",
+      "activeCountries": "Pays actifs",
+      "legendLit": "Pays avec architectes vérifiés",
+      "legendEligible": "54 pays éligibles",
+      "statCountries": "pays",
+      "statArchitects": "architectes vérifiés",
+      "meterLabel": "Pays avec architectes",
+      "tooltipArchitects": "{count, plural, one {# architecte vérifié} other {# architectes vérifiés}}",
+      "soon": "Bientôt — premières admissions en cours."
     },
     "featured": {
       "read": "Lire l'étude complète",
