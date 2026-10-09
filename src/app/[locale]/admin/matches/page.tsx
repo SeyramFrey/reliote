@@ -1,52 +1,36 @@
-"use client";
-import { useCallback, useEffect, useState } from "react";
-import { createClient } from "@/lib/supabase/client";
+import { createServiceClient } from "@/lib/supabase/service";
+import { getLocale } from "next-intl/server";
+import Link from "next/link";
 import { MAX_SCORE } from "@/lib/matching/score";
+import { describeReasons } from "@/lib/matching/reasons";
+import { RecalculateButton } from "@/components/admin/RecalculateButton";
 
-type Project = { id: string; client_name: string; project_type: string; project_location: string };
+type Project = { id: string; client_name: string; project_type: string; project_country: string; project_location: string };
 type Match = {
   score: number;
-  reasons: { kind: string; weight: number }[];
-  architect_profiles: { first_name: string; last_name: string; city: string; specialties: string[] };
+  reasons: unknown;
+  architect_profiles: { first_name: string; last_name: string; city: string; country: string; specialties: string[] };
 };
 
-export default function AdminMatches() {
-  const [projects, setProjects] = useState<Project[]>([]);
-  const [selected, setSelected] = useState<string | null>(null);
-  const [matches, setMatches] = useState<Match[]>([]);
-  const [busy, setBusy] = useState(false);
+export default async function AdminMatches({ searchParams }: { searchParams: Promise<{ project?: string }> }) {
+  const locale = await getLocale();
+  const { project } = await searchParams;
+  const s = createServiceClient();
+  const { data: projectsData } = (await s
+    .from("client_projects")
+    .select("id, client_name, project_type, project_country, project_location")
+    .order("created_at", { ascending: false })) as { data: Project[] | null };
+  const projects = projectsData ?? [];
+  const selected = projects.find((p) => p.id === project) ?? projects[0];
 
-  const loadProjects = useCallback(async () => {
-    const s = createClient();
-    const { data } = await s
-      .from("client_projects")
-      .select("id, client_name, project_type, project_location")
-      .order("created_at", { ascending: false }) as { data: Project[] | null };
-    const rows = data ?? [];
-    setProjects(rows);
-    if (rows.length > 0 && !selected) setSelected(rows[0].id);
-  }, [selected]);
-
-  const loadMatches = useCallback(async (projectId: string) => {
-    const s = createClient();
-    const { data } = await s
-      .from("match_results")
-      .select("score, reasons, architect_profiles!inner(first_name, last_name, city, specialties)")
-      .eq("project_id", projectId)
-      .order("score", { ascending: false }) as { data: Match[] | null };
-    setMatches(data ?? []);
-  }, []);
-
-  useEffect(() => { loadProjects(); }, [loadProjects]);
-  useEffect(() => { if (selected) loadMatches(selected); }, [selected, loadMatches]);
-
-  async function recalc() {
-    if (!selected) return;
-    setBusy(true);
-    await fetch(`/api/admin/match/recalculate?projectId=${selected}`, { method: "POST" });
-    await loadMatches(selected);
-    setBusy(false);
-  }
+  const { data: matchData } = selected
+    ? ((await s
+        .from("match_results")
+        .select("score, reasons, architect_profiles!inner(first_name, last_name, city, country, specialties)")
+        .eq("project_id", selected.id)
+        .order("score", { ascending: false })) as { data: Match[] | null })
+    : { data: [] as Match[] };
+  const matches = matchData ?? [];
 
   return (
     <>
@@ -56,46 +40,53 @@ export default function AdminMatches() {
         <ul className="col-span-12 md:col-span-4 space-y-1">
           {projects.map((p) => (
             <li key={p.id}>
-              <button
-                onClick={() => setSelected(p.id)}
-                className={`text-left text-sm w-full py-2 border-l-2 pl-3 transition-colors ${
-                  selected === p.id ? "border-green text-ink" : "border-transparent text-concrete-1 hover:text-ink"
+              <Link
+                href={`/${locale}/admin/matches?project=${p.id}`}
+                className={`block text-left text-sm w-full py-2 border-l-2 pl-3 transition-colors ${
+                  selected?.id === p.id ? "border-green text-ink" : "border-transparent text-concrete-1 hover:text-ink"
                 }`}
               >
-                <span className="capitalize">{p.client_name} — {p.project_type}</span>
+                {p.client_name} — {p.project_type}
                 <br />
-                <span className="eyebrow">{p.project_location}</span>
-              </button>
+                <span className="eyebrow">
+                  {p.project_location}, {p.project_country}
+                </span>
+              </Link>
             </li>
           ))}
         </ul>
         <div className="col-span-12 md:col-span-8">
-          <button
-            onClick={recalc}
-            disabled={busy || !selected}
-            className="px-4 py-2 bg-ink text-paper text-sm disabled:opacity-50"
-          >
-            {busy ? "…" : "Re-calculer"}
-          </button>
+          {selected ? (
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <RecalculateButton projectId={selected.id} />
+              <Link href={`/${locale}/admin/projets/${selected.id}`} className="eyebrow hover:text-ink">
+                Fiche projet →
+              </Link>
+            </div>
+          ) : null}
           <div className="mt-6 space-y-4">
             {matches.map((m, i) => (
               <article key={i} className="border border-[var(--hairline)] p-5">
                 <div className="flex justify-between items-baseline">
-                  <h3 className="font-medium">{m.architect_profiles.first_name} {m.architect_profiles.last_name}</h3>
+                  <h3 className="font-medium">
+                    {m.architect_profiles.first_name} {m.architect_profiles.last_name}
+                  </h3>
                   <span className="mono text-green text-[13px]">{Math.round((m.score / MAX_SCORE) * 100)}%</span>
                 </div>
-                <p className="eyebrow mt-1">{m.architect_profiles.city}</p>
+                <p className="eyebrow mt-1">
+                  {m.architect_profiles.city} · {m.architect_profiles.country}
+                </p>
                 <p className="text-[12px] text-concrete-1 mt-2">{m.architect_profiles.specialties.join(" · ")}</p>
-                <ul className="mt-3 space-y-1 text-[12px] mono text-concrete-2">
-                  {m.reasons.map((r, j) => (
-                    <li key={j}>· {r.kind} (+{r.weight})</li>
+                <ul className="mt-3 space-y-1 text-[13px] text-concrete-2">
+                  {describeReasons(m.reasons).map((r, j) => (
+                    <li key={j}>
+                      · {r.text} <span className="mono text-[10px]">+{r.weight}</span>
+                    </li>
                   ))}
                 </ul>
               </article>
             ))}
-            {matches.length === 0 && (
-              <p className="text-concrete-1 text-sm">Aucun match pour ce projet.</p>
-            )}
+            {matches.length === 0 && <p className="text-concrete-1 text-sm">Aucun match pour ce projet.</p>}
           </div>
         </div>
       </div>
