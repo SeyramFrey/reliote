@@ -26,3 +26,10 @@ export const ENGAGEMENT_STATUS_FR: Record<string, string> = {
   cancelled: "Retiré",
   expired: "Expiré",
 };
+
+export const ARCHITECT_STATUS_FR: Record<"pending" | "verified" | "rejected" | "paused", string> = {
+  pending: "À vérifier",
+  verified: "Vérifié",
+  rejected: "Refusé",
+  paused: "En pause",
+};

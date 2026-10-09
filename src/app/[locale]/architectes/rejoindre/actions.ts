@@ -6,6 +6,9 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 import { safeLocale } from "@/lib/auth/safeRedirect";
+import { appOrigin } from "@/lib/auth/origin";
+import { sendEmail, adminEmail } from "@/lib/email/client";
+import { architectApplicationReceivedEmail, newArchitectAdminEmail } from "@/lib/email/templates";
 
 export async function submitArchitect(input: ArchitectInput) {
   const parsed = architectSchema.safeParse(input);
@@ -64,8 +67,11 @@ export async function submitArchitect(input: ArchitectInput) {
   };
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { error } = await (service.from("architect_profiles") as any).insert(row);
-  if (error) return { error: error.message };
+  const { data: inserted, error } = (await (service.from("architect_profiles") as any)
+    .insert(row)
+    .select("id")
+    .single()) as { data: { id: string } | null; error: { message: string } | null };
+  if (error || !inserted) return { error: error?.message ?? "Insert failed" };
 
   revalidatePath("/fr/architectes");
   revalidatePath("/en/architectes");
@@ -73,5 +79,19 @@ export async function submitArchitect(input: ArchitectInput) {
   revalidatePath("/en/admin/architectes");
 
   const locale = safeLocale((await cookies()).get("NEXT_LOCALE")?.value);
+
+  // E-mails best-effort : accusé à l'architecte, alerte à l'admin.
+  const ack = architectApplicationReceivedEmail(locale, { firstName: parsed.data.first_name });
+  const admin = adminEmail();
+  const alert = newArchitectAdminEmail({
+    name: `${parsed.data.first_name} ${parsed.data.last_name}`,
+    country: parsed.data.country,
+    adminUrl: `${await appOrigin()}/fr/admin/architectes/${inserted.id}`,
+  });
+  await Promise.all([
+    sendEmail({ to: parsed.data.email, subject: ack.subject, html: ack.html }),
+    admin ? sendEmail({ to: admin, subject: alert.subject, html: alert.html }) : Promise.resolve(),
+  ]);
+
   redirect(`/${locale}/architectes/rejoindre/merci`);
 }

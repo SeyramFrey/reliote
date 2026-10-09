@@ -11,6 +11,7 @@ import {
   architectApplicationReceivedEmail,
   architectStatusEmail,
   proposalsDeclinedAdminEmail,
+  newArchitectAdminEmail,
 } from "./templates";
 
 describe("projectReceivedEmail", () => {
@@ -174,5 +175,15 @@ describe("proposalsDeclinedAdminEmail", () => {
     expect(m.subject).toMatch(/écart/i);
     expect(m.html).not.toContain("<b>Awa</b>");
     expect(m.html).toContain('href="https://reliote.test/fr/admin/projets/p1"');
+  });
+});
+
+describe("newArchitectAdminEmail", () => {
+  it("announces a new application to verify", () => {
+    const m = newArchitectAdminEmail({ name: "<i>Kofi</i>", country: "Ghana", adminUrl: "https://reliote.test/fr/admin/architectes/a1" });
+    expect(m.subject).toMatch(/dossier architecte/i);
+    expect(m.html).not.toContain("<i>Kofi</i>");
+    expect(m.html).toContain("Ghana");
+    expect(m.html).toContain('href="https://reliote.test/fr/admin/architectes/a1"');
   });
 });

@@ -326,3 +326,16 @@ export function proposalsDeclinedAdminEmail(d: { clientName: string; adminUrl: s
     html: shell({ eyebrow: "Admin · Sélection", title: "Aucune proposition retenue.", body }),
   };
 }
+
+// ── 12. Nouveau dossier architecte à vérifier (→ admin) ──────────────────────
+export function newArchitectAdminEmail(d: { name: string; country: string; adminUrl: string }) {
+  const body =
+    detailBox([
+      ["Architecte", esc(d.name)],
+      ["Pays", esc(d.country)],
+    ]) + cta(d.adminUrl, "Vérifier le dossier");
+  return {
+    subject: "Nouveau dossier architecte à vérifier — Reliote",
+    html: shell({ eyebrow: "Admin · Architectes", title: "Un dossier attend votre vérification.", body }),
+  };
+}
