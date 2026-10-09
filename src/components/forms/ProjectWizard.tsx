@@ -99,8 +99,18 @@ export function ProjectWizard({ account }: { account: ProjectWizardAccount }) {
     // être effacé avant l'envoi, puis restauré si l'envoi échoue.
     const values = form.getValues();
     writeDraft(null);
-    const res = await submitProject(values, account.mode);
-    setSubmitting(false);
+    let res: Awaited<ReturnType<typeof submitProject>>;
+    try {
+      res = await submitProject(values, account.mode);
+    } catch (e) {
+      // Une redirection serveur (succès) passe aussi par ici : on la laisse filer.
+      if (e && typeof e === "object" && "digest" in e && String(e.digest).startsWith("NEXT_REDIRECT")) throw e;
+      writeDraft(values);
+      setOutcome({ kind: "error", message: t("account.network") });
+      return;
+    } finally {
+      setSubmitting(false);
+    }
     if (!res) return;
     if (!("needsConfirmation" in res)) writeDraft(values);
     if ("needsConfirmation" in res) {

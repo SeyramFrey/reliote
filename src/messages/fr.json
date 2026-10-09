@@ -273,7 +273,8 @@
       "short": "8 caractères minimum.",
       "generic": "Une erreur est survenue. Réessayez.",
       "samePassword": "Choisissez un mot de passe différent de l’ancien.",
-      "weak": "Mot de passe trop faible : allongez-le ou variez les caractères."
+      "weak": "Mot de passe trop faible : allongez-le ou variez les caractères.",
+      "linkUsed": "Ce lien a déjà servi ou a été ouvert sur un autre appareil. Si vous venez de confirmer votre adresse, connectez-vous simplement."
     }
   },
   "wizardClient": {
@@ -327,7 +328,8 @@
       "wrongRole": "Ce compte n’est pas un compte porteur de projet. Déconnectez-vous pour déposer un projet.",
       "confirmEyebrow": "Projet enregistré",
       "confirmTitle": "Plus qu’une étape.",
-      "confirmBody": "Confirmez votre adresse e-mail grâce au lien envoyé à {email}, puis connectez-vous pour suivre votre projet."
+      "confirmBody": "Confirmez votre adresse e-mail grâce au lien envoyé à {email}, puis connectez-vous pour suivre votre projet.",
+      "network": "L’envoi n’a pas abouti (connexion interrompue ?). Votre saisie est conservée : réessayez."
     }
   },
   "wizardArchitect": {
@@ -879,7 +881,8 @@
             "b": "Cette charte prend effet à votre admission à l'index Reliote et reste valable pendant toute la durée de votre présence — elle se reconduit tacitement à chaque mise en relation."
           }
         ]
-      }
+      },
+      "network": "L’envoi n’a pas abouti (connexion interrompue ?). Réessayez."
     }
   },
   "countries": {

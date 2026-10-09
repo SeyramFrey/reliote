@@ -39,6 +39,14 @@ function fail(projectId: string, code: string): never {
   redirect(`/fr/admin/projets/${projectId}?error=${code}`);
 }
 
+// Une écriture qui échoue arrête l'action AVANT tout e-mail ou changement de
+// statut : on ne prévient personne d'un RDV qui n'existe pas.
+function check(res: { error: { code?: string; message: string } | null }, projectId: string): void {
+  if (!res.error) return;
+  if (res.error.code === "23505") fail(projectId, "meetingOpen");
+  fail(projectId, "generic");
+}
+
 // Après une action réussie : revalide, puis renvoie sur une URL propre (sans
 // ?error= d'une tentative précédente). `returnTo` permet à la page RDV de
 // rester sur la page RDV ; seul un chemin admin interne est accepté.
@@ -113,20 +121,26 @@ export async function proposeArchitect(formData: FormData): Promise<void> {
     .maybeSingle()) as { data: { id: string; status: string } | null };
 
   if (!existing) {
-    await table(s, "client_engagements").insert({
-      project_id: projectId,
-      architect_id: architectId,
-      status: "proposed",
-    });
-  } else if (["declined", "cancelled", "expired"].includes(existing.status)) {
-    await table(s, "client_engagements")
-      .update({
+    check(
+      await table(s, "client_engagements").insert({
+        project_id: projectId,
+        architect_id: architectId,
         status: "proposed",
-        proposed_at: new Date().toISOString(),
-        engaged_at: null,
-        charter_accepted: false,
-      })
-      .eq("id", existing.id);
+      }),
+      projectId,
+    );
+  } else if (["declined", "cancelled", "expired"].includes(existing.status)) {
+    check(
+      await table(s, "client_engagements")
+        .update({
+          status: "proposed",
+          proposed_at: new Date().toISOString(),
+          engaged_at: null,
+          charter_accepted: false,
+        })
+        .eq("id", existing.id),
+      projectId,
+    );
   }
 
   await advanceProject(s, projectId, "proposed");
@@ -148,11 +162,14 @@ export async function withdrawProposal(formData: FormData): Promise<void> {
     .in("status", [...ACTIVE_MEETING_STATUSES]);
   if ((count ?? 0) > 0) fail(projectId, "meetingOpen");
 
-  await table(s, "client_engagements")
-    .update({ status: "cancelled" })
-    .eq("project_id", projectId)
-    .eq("architect_id", architectId)
-    .eq("status", "proposed");
+  check(
+    await table(s, "client_engagements")
+      .update({ status: "cancelled" })
+      .eq("project_id", projectId)
+      .eq("architect_id", architectId)
+      .eq("status", "proposed"),
+    projectId,
+  );
 
   await advanceProject(s, projectId, "proposal_withdrawn");
   done(formData, projectId);
@@ -256,14 +273,17 @@ export async function scheduleMeeting(formData: FormData): Promise<void> {
   if (!eng || !["proposed", "engaged"].includes(eng.status)) fail(projectId, "notProposed");
   if ((await activeMeetingCount(s, projectId)) > 0) fail(projectId, "meetingOpen");
 
-  await table(s, "meetings").insert({
-    project_id: projectId,
-    architect_id: architectId,
-    scheduled_at: slot.at.toISOString(),
-    video_url: slot.videoUrl,
-    status: "proposed",
-    proposed_by: userId,
-  });
+  check(
+    await table(s, "meetings").insert({
+      project_id: projectId,
+      architect_id: architectId,
+      scheduled_at: slot.at.toISOString(),
+      video_url: slot.videoUrl,
+      status: "proposed",
+      proposed_by: userId,
+    }),
+    projectId,
+  );
   await advanceProject(s, projectId, "meeting_scheduled");
 
   const proj = await projectInfo(s, projectId);
@@ -291,9 +311,12 @@ export async function rescheduleMeeting(formData: FormData): Promise<void> {
   if (slot.at.getTime() < Date.now()) fail(mtg.project_id, "pastSlot");
   const videoUrl = slot.videoUrl ?? mtg.video_url;
 
-  await table(s, "meetings")
-    .update({ scheduled_at: slot.at.toISOString(), video_url: videoUrl, status: "rescheduled" })
-    .eq("id", meetingId);
+  check(
+    await table(s, "meetings")
+      .update({ scheduled_at: slot.at.toISOString(), video_url: videoUrl, status: "rescheduled" })
+      .eq("id", meetingId),
+    mtg.project_id,
+  );
   // Le RDV est de nouveau en attente du porteur.
   await table(s, "client_projects")
     .update({ status: "meeting_proposed" })
@@ -328,7 +351,7 @@ export async function setMeetingStatus(formData: FormData): Promise<void> {
     fail(mtg.project_id, "meetingClosed");
   }
 
-  await table(s, "meetings").update({ status }).eq("id", meetingId);
+  check(await table(s, "meetings").update({ status }).eq("id", meetingId), mtg.project_id);
   await advanceProject(s, mtg.project_id, status === "completed" ? "meeting_completed" : "meeting_cancelled");
 
   if (status === "cancelled") {
@@ -362,10 +385,22 @@ export async function closeProject(formData: FormData): Promise<void> {
   const projectId = String(formData.get("projectId") ?? "");
   if (formData.get("confirm") == null) fail(projectId, "confirmClose");
   const s = createServiceClient();
-  await table(s, "meetings")
-    .update({ status: "cancelled" })
-    .eq("project_id", projectId)
-    .in("status", [...ACTIVE_MEETING_STATUSES]);
+  check(
+    await table(s, "meetings")
+      .update({ status: "cancelled" })
+      .eq("project_id", projectId)
+      .in("status", [...ACTIVE_MEETING_STATUSES]),
+    projectId,
+  );
+  // Les propositions encore en suspens tombent aussi : un projet clos ne doit
+  // plus rien ouvrir à personne.
+  check(
+    await table(s, "client_engagements")
+      .update({ status: "cancelled" })
+      .eq("project_id", projectId)
+      .eq("status", "proposed"),
+    projectId,
+  );
   await advanceProject(s, projectId, "closed");
   done(formData, projectId);
 }

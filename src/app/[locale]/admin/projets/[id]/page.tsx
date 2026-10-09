@@ -79,6 +79,7 @@ const ERRORS_FR: Record<string, string> = {
   meetingClosed: "Ce rendez-vous n'est plus ouvert.",
   notConfirmed: "Seul un rendez-vous confirmé peut être marqué terminé.",
   confirmClose: "Cochez la case de confirmation pour clôturer le projet.",
+  generic: "L'enregistrement a échoué : rien n'a été envoyé. Réessayez.",
 };
 
 const ACTIVE_MEETINGS = new Set(["proposed", "rescheduled", "confirmed"]);

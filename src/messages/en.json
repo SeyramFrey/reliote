@@ -273,7 +273,8 @@
       "short": "At least 8 characters.",
       "generic": "Something went wrong. Please try again.",
       "samePassword": "Choose a password different from your previous one.",
-      "weak": "Password too weak: make it longer or more varied."
+      "weak": "Password too weak: make it longer or more varied.",
+      "linkUsed": "This link was already used or opened on another device. If you have just confirmed your address, simply sign in."
     }
   },
   "wizardClient": {
@@ -327,7 +328,8 @@
       "wrongRole": "This is not a client account. Sign out to submit a project.",
       "confirmEyebrow": "Project saved",
       "confirmTitle": "One last step.",
-      "confirmBody": "Confirm your email address using the link sent to {email}, then sign in to follow your project."
+      "confirmBody": "Confirm your email address using the link sent to {email}, then sign in to follow your project.",
+      "network": "Sending failed (connection lost?). What you typed is kept: please try again."
     }
   },
   "wizardArchitect": {
@@ -879,7 +881,8 @@
             "b": "This charter takes effect at your admission to the Reliote index and remains valid for the entire duration of your presence — it renews tacitly with each introduction."
           }
         ]
-      }
+      },
+      "network": "Sending failed (connection lost?). Please try again."
     }
   },
   "countries": {

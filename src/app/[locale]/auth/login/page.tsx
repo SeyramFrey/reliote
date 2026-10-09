@@ -1,6 +1,6 @@
 import { signIn } from "../actions";
 import { getTranslations, getLocale } from "next-intl/server";
-import { isAuthErrorCode } from "@/lib/auth/authError";
+import { displayAuthError } from "@/lib/auth/authError";
 
 export default async function LoginPage({
   searchParams,
@@ -10,7 +10,8 @@ export default async function LoginPage({
   const locale = await getLocale();
   const t = await getTranslations("auth");
   const { next, error, sent } = await searchParams;
-  const errorText = error ? (isAuthErrorCode(error) ? t(`errors.${error}`) : error) : null;
+  const errorCode = displayAuthError(error);
+  const errorText = errorCode ? t(`errors.${errorCode}`) : null;
   return (
     <main className="page-edge py-32 max-w-[480px] mx-auto">
       <p className="eyebrow">{t("loginEyebrow")}</p>

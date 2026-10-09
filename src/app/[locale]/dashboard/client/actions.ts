@@ -83,11 +83,12 @@ export async function chooseProposal(formData: FormData): Promise<void> {
     .maybeSingle()) as { data: { id: string; architect_profiles: { anon_handle: string | null } | null } | null };
   if (!chosen) back(formData, "error=notAllowed");
 
-  await table(s, "client_engagements")
+  const { error: declineErr } = await table(s, "client_engagements")
     .update({ status: "declined" })
     .eq("project_id", projectId)
     .eq("status", "proposed")
     .neq("architect_id", architectId);
+  if (declineErr) back(formData, "error=generic");
 
   const admin = adminEmail();
   if (admin) {
@@ -120,11 +121,12 @@ export async function declineProposal(formData: FormData): Promise<void> {
     .in("status", [...ACTIVE_MEETING_STATUSES]);
   if ((openMeetings ?? 0) > 0) back(formData, "error=notAllowed");
 
-  await table(s, "client_engagements")
+  const { error: declineErr } = await table(s, "client_engagements")
     .update({ status: "declined" })
     .eq("project_id", projectId)
     .eq("architect_id", architectId)
     .eq("status", "proposed");
+  if (declineErr) back(formData, "error=generic");
   const next = await advanceProject(s, projectId, "proposal_withdrawn");
 
   const admin = adminEmail();

@@ -36,7 +36,14 @@ export function EngagementCharter({
   async function accept() {
     setSubmitting(true);
     setErr(null);
-    const res = await onAccept();
+    let res: { ok: true } | { error: string };
+    try {
+      res = await onAccept();
+    } catch {
+      setErr(t("network"));
+      setSubmitting(false);
+      return;
+    }
     if ("error" in res) {
       setErr(res.error);
       setSubmitting(false);
