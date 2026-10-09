@@ -4,12 +4,14 @@ import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { BrandMark } from "./BrandMark";
 import { LangSwitch } from "./LangSwitch";
+import { NavAccount, NavAccountMobile, useSignedIn } from "./NavAccount";
 import { cn } from "@/lib/utils";
 
 export function Nav({ dark = false }: { dark?: boolean }) {
   const locale = useLocale();
   const t = useTranslations("nav");
   const [scrolled, setScrolled] = useState(false);
+  const signedIn = useSignedIn();
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 80);
     onScroll();
@@ -46,8 +48,22 @@ export function Nav({ dark = false }: { dark?: boolean }) {
         ))}
       </nav>
       <div className="flex items-center gap-3.5">
+        <div className="hidden sm:flex">
+          <NavAccount signedIn={signedIn} />
+        </div>
         <LangSwitch dark={dark && !scrolled} />
-        <Link href={`/${locale}/projets/initier`} className="inline-flex items-center gap-2.5 px-5 py-3 bg-green text-paper text-[13px] font-medium hover:bg-green-deep transition-colors">
+        {signedIn && (
+          <div className="sm:hidden">
+            <NavAccountMobile />
+          </div>
+        )}
+        <Link
+          href={`/${locale}/projets/initier`}
+          className={cn(
+            "items-center gap-2.5 px-5 py-3 bg-green text-paper text-[13px] font-medium hover:bg-green-deep transition-colors",
+            signedIn ? "hidden sm:inline-flex" : "inline-flex",
+          )}
+        >
           {t("cta")}
           <span className="inline-block w-[9px] h-[9px] border-r border-t border-current rotate-45" />
         </Link>
