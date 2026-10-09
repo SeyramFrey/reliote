@@ -285,8 +285,8 @@
       "1": "Your intent",
       "2": "The program",
       "3": "Site and budget",
-      "4": "Preferred timeline",
-      "5": "Your details"
+      "4": "Your details",
+      "5": "Review and send"
     },
     "fields": {
       "project_type": "Project type",
@@ -299,7 +299,10 @@
       "timeline": "Start horizon",
       "client_name": "Full name",
       "email": "Email address",
-      "phone": "Phone"
+      "phone": "Phone",
+      "first_name": "First name",
+      "last_name": "Last name",
+      "password": "Password (at least 8 characters)"
     },
     "thanks": {
       "eyebrow": "Brief received",
@@ -310,7 +313,22 @@
       "matchesPending": "Your matches will appear in your private space once they have been prepared by our team — within 48 business hours.",
       "cta": "Back to home"
     },
-    "match": "Match"
+    "match": "Match",
+    "placeholders": {
+      "location": "City, district or site"
+    },
+    "account": {
+      "createHint": "Your client space is created along with your project: you will follow the shortlist and your meetings there.",
+      "hasAccount": "Already have an account?",
+      "signIn": "Sign in",
+      "signedInAs": "Signed in as {email}",
+      "exists": "An account already exists with this email.",
+      "existsLink": "Sign in to send your project — what you typed is kept.",
+      "wrongRole": "This is not a client account. Sign out to submit a project.",
+      "confirmEyebrow": "Project saved",
+      "confirmTitle": "One last step.",
+      "confirmBody": "Confirm your email address using the link sent to {email}, then sign in to follow your project."
+    }
   },
   "wizardArchitect": {
     "eyebrow": "Apply to the index",
@@ -873,5 +891,9 @@
       "channelReady": "Communication channel open",
       "awaitingClient": "Brief received · awaiting client engagement"
     }
+  },
+  "countries": {
+    "placeholder": "Choose a country",
+    "soon": "Coming soon"
   }
 }

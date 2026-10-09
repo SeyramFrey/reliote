@@ -285,8 +285,8 @@
       "1": "Votre intention",
       "2": "Le programme",
       "3": "Le site et le budget",
-      "4": "Calendrier souhaité",
-      "5": "Vos coordonnées"
+      "4": "Vos coordonnées",
+      "5": "Vérification et envoi"
     },
     "fields": {
       "project_type": "Type de projet",
@@ -299,7 +299,10 @@
       "timeline": "Horizon de démarrage",
       "client_name": "Nom complet",
       "email": "Adresse e-mail",
-      "phone": "Téléphone"
+      "phone": "Téléphone",
+      "first_name": "Prénom",
+      "last_name": "Nom",
+      "password": "Mot de passe (8 caractères minimum)"
     },
     "thanks": {
       "eyebrow": "Brief reçu",
@@ -310,7 +313,22 @@
       "matchesPending": "Vos correspondances apparaîtront dans votre espace privé une fois qu'elles auront été préparées par notre équipe — sous 48 heures ouvrées.",
       "cta": "Retour à l'accueil"
     },
-    "match": "Correspondance"
+    "match": "Correspondance",
+    "placeholders": {
+      "location": "Ville, quartier ou site"
+    },
+    "account": {
+      "createHint": "Votre espace porteur est créé avec votre projet : vous y suivrez la sélection et vos rendez-vous.",
+      "hasAccount": "Déjà un compte ?",
+      "signIn": "Se connecter",
+      "signedInAs": "Connecté·e en tant que {email}",
+      "exists": "Un compte existe déjà avec cet e-mail.",
+      "existsLink": "Connectez-vous pour envoyer votre projet — votre saisie est conservée.",
+      "wrongRole": "Ce compte n’est pas un compte porteur de projet. Déconnectez-vous pour déposer un projet.",
+      "confirmEyebrow": "Projet enregistré",
+      "confirmTitle": "Plus qu’une étape.",
+      "confirmBody": "Confirmez votre adresse e-mail grâce au lien envoyé à {email}, puis connectez-vous pour suivre votre projet."
+    }
   },
   "wizardArchitect": {
     "eyebrow": "Candidater à l'index",
@@ -873,5 +891,9 @@
       "channelReady": "Canal de communication ouvert",
       "awaitingClient": "Brief reçu · en attente d'engagement client"
     }
+  },
+  "countries": {
+    "placeholder": "Choisir un pays",
+    "soon": "Bientôt"
   }
 }

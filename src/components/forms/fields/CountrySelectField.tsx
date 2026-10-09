@@ -5,6 +5,8 @@ import { AFRICAN_COUNTRIES_SORTED } from "@/lib/countries/africa";
 
 // Native <select> styled like the wizard's other underlined inputs.
 // Lists all 54 African countries; only those flagged `available: true` are selectable.
+// Starts on an empty "Choose a country" option so nobody submits the first
+// country of the list by accident.
 // `namespace`/`labelKey` let the same field serve both the architect and the project wizards.
 export function CountrySelectField({
   name,
@@ -17,6 +19,7 @@ export function CountrySelectField({
 }) {
   const { register, formState } = useFormContext();
   const t = useTranslations(namespace);
+  const tc = useTranslations("countries");
   const error = formState.errors[name];
   return (
     <label className="block">
@@ -28,10 +31,11 @@ export function CountrySelectField({
           {...register(name)}
           className="w-full bg-transparent border-b border-[var(--hairline)] py-2 outline-none focus:border-green appearance-none pr-8 text-[16px]"
         >
+          <option value="">{tc("placeholder")}</option>
           {AFRICAN_COUNTRIES_SORTED.map((c) => (
             <option key={c.iso2} value={c.name} disabled={!c.available}>
               {c.emoji} {c.name}
-              {!c.available ? "  —  Bientôt" : ""}
+              {!c.available ? `  —  ${tc("soon")}` : ""}
             </option>
           ))}
         </select>

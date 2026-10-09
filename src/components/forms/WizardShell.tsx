@@ -89,7 +89,7 @@ export function WizardShell({
           })}
         </ol>
         <div className="mt-auto mono text-[10.5px] tracking-[0.16em] uppercase opacity-55">
-          Paris ⇄ Abidjan · 48.85°N / 5.34°W
+          Afrique ⇄ Monde
         </div>
       </aside>
 

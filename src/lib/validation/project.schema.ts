@@ -4,7 +4,8 @@ import { AFRICAN_COUNTRIES } from "@/lib/countries/africa";
 
 const AFRICAN_COUNTRY_NAMES = AFRICAN_COUNTRIES.map((c) => c.name);
 
-export const projectSchema = z.object({
+// Le projet lui-même. L'e-mail et le nom du porteur viennent de son compte.
+const projectFields = z.object({
   project_type: z.enum(PROJECT_TYPES),
   project_description: z.string().min(100, "≥ 100 caractères"),
   required_specialties: z.array(z.enum(SPECIALTIES)).min(1),
@@ -15,9 +16,21 @@ export const projectSchema = z.object({
   project_location: z.string().min(2),
   budget_range: z.string().optional(),
   timeline: z.string().optional(),
-  client_name: z.string().min(2),
-  email: z.string().email(),
   phone: z.string().optional(),
 });
 
-export type ProjectInput = z.infer<typeof projectSchema>;
+// Invité : le compte porteur est créé avec le projet.
+const accountFields = z.object({
+  first_name: z.string().trim().min(1),
+  last_name: z.string().trim().min(1),
+  email: z.string().email(),
+  password: z.string().min(8),
+});
+
+export type ProjectMode = "guest" | "member";
+
+export function projectSchemaFor(mode: ProjectMode) {
+  return mode === "guest" ? projectFields.merge(accountFields) : projectFields;
+}
+
+export type ProjectInput = z.infer<typeof projectFields> & Partial<z.infer<typeof accountFields>>;

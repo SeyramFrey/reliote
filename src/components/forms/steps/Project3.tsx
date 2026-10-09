@@ -22,7 +22,7 @@ export default function Project3() {
         <span className="eyebrow">{t("fields.project_location")}</span>
         <input
           {...register("project_location")}
-          placeholder="Cocody · Abidjan"
+          placeholder={t("placeholders.location")}
           className="w-full mt-1 bg-transparent border-b border-[var(--hairline)] py-2 outline-none focus:border-green"
         />
         {errors.project_location && (

@@ -1,56 +1,60 @@
 import { describe, it, expect } from "vitest";
-import { projectSchema } from "./project.schema";
+import { projectSchemaFor } from "./project.schema";
 
-describe("projectSchema", () => {
-  it("accepts a valid project", () => {
-    const r = projectSchema.safeParse({
-      project_type: "residential",
-      project_description: "x".repeat(100),
-      required_specialties: ["Résidentiel"],
-      project_country: "Côte d'Ivoire",
-      project_location: "Bingerville",
-      client_name: "Marie L.",
-      email: "m@m.com",
-    });
-    expect(r.success).toBe(true);
-  });
-
-  it("rejects short descriptions", () => {
-    const r = projectSchema.safeParse({
-      project_type: "residential",
-      project_description: "short",
-      required_specialties: ["Résidentiel"],
-      project_country: "Sénégal",
-      project_location: "Abidjan",
-      client_name: "X Y",
-      email: "a@a.com",
-    });
-    expect(r.success).toBe(false);
-  });
-});
-
-const validBase = {
+const project = {
   project_type: "residential" as const,
   project_description: "x".repeat(100),
   required_specialties: ["Résidentiel" as const],
   project_country: "Côte d'Ivoire",
   project_location: "Bingerville",
-  client_name: "Awa Koné",
-  email: "awa@example.com",
 };
 
-describe("projectSchema — project_country", () => {
-  it("accepts a valid African country", () => {
-    expect(projectSchema.safeParse(validBase).success).toBe(true);
+const guest = {
+  ...project,
+  first_name: "Awa",
+  last_name: "Koné",
+  email: "awa@example.com",
+  password: "a-long-pass",
+};
+
+describe("projectSchemaFor('member')", () => {
+  const schema = projectSchemaFor("member");
+
+  it("accepts a valid project without account fields", () => {
+    expect(schema.safeParse(project).success).toBe(true);
   });
 
-  it("rejects a missing country", () => {
-    const { project_country, ...noCountry } = validBase;
-    void project_country;
-    expect(projectSchema.safeParse(noCountry).success).toBe(false);
+  it("rejects short descriptions", () => {
+    expect(schema.safeParse({ ...project, project_description: "short" }).success).toBe(false);
+  });
+
+  it("rejects an unselected country with a clear message", () => {
+    const r = schema.safeParse({ ...project, project_country: "" });
+    expect(r.success).toBe(false);
+    expect(r.error?.issues[0]?.message).toBe("Pays du chantier requis");
   });
 
   it("rejects a non-African country", () => {
-    expect(projectSchema.safeParse({ ...validBase, project_country: "France" }).success).toBe(false);
+    expect(schema.safeParse({ ...project, project_country: "France" }).success).toBe(false);
+  });
+});
+
+describe("projectSchemaFor('guest')", () => {
+  const schema = projectSchemaFor("guest");
+
+  it("accepts a project with the account to create", () => {
+    expect(schema.safeParse(guest).success).toBe(true);
+  });
+
+  it("requires a password of at least 8 characters", () => {
+    const r = schema.safeParse({ ...guest, password: "1234567" });
+    expect(r.success).toBe(false);
+    expect(r.error?.issues[0]?.path).toEqual(["password"]);
+  });
+
+  it("requires first and last name and a valid email", () => {
+    expect(schema.safeParse({ ...guest, first_name: "" }).success).toBe(false);
+    expect(schema.safeParse({ ...guest, last_name: " " }).success).toBe(false);
+    expect(schema.safeParse({ ...guest, email: "nope" }).success).toBe(false);
   });
 });
