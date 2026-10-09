@@ -1,5 +1,6 @@
 import { signUp } from "../actions";
 import { getTranslations, getLocale } from "next-intl/server";
+import { isAuthErrorCode } from "@/lib/auth/authError";
 
 // Full-page auth register — split prénom + nom, dark aside matching the wizard's chrome.
 export default async function RegisterPage({
@@ -42,7 +43,7 @@ export default async function RegisterPage({
           </p>
         </div>
         <div className="mono text-[10.5px] tracking-[0.16em] uppercase opacity-55">
-          Paris ⇄ Abidjan
+          Afrique ⇄ Monde
         </div>
       </aside>
 
@@ -53,7 +54,9 @@ export default async function RegisterPage({
             {role === "architect" ? t("registerArchitectTitle") : t("registerClientTitle")}
           </h1>
           {error && (
-            <p className="text-sm text-red-700 mt-6">{decodeURIComponent(error)}</p>
+            <p role="alert" className="text-sm text-red-700 mt-6">
+              {isAuthErrorCode(error) ? t(`errors.${error}`) : error}
+            </p>
           )}
           <form action={signUp} className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-5">
             <input type="hidden" name="locale" value={locale} />

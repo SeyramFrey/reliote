@@ -7,7 +7,8 @@ export default async function DashboardLayout({ children }: { children: React.Re
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   const locale = await getLocale();
-  if (!user) redirect(`/${locale}/auth/login?next=/${locale}/dashboard/client`);
+  // Le proxy redirige déjà avec le chemin exact ; ceci n'est qu'un filet.
+  if (!user) redirect(`/${locale}/auth/login?next=/${locale}/dashboard`);
   return (
     <>
       <Nav />

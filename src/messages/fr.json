@@ -6,7 +6,10 @@
     "journal": "Journal",
     "about": "À propos",
     "cta": "Initier un projet",
-    "account": "Espace client"
+    "account": "Espace client",
+    "signIn": "Se connecter",
+    "mySpace": "Mon espace",
+    "signOut": "Se déconnecter"
   },
   "footer": {
     "tagline": "Reliote relie les porteurs de projets du monde entier aux meilleurs architectes d'Afrique — pour un chantier toujours situé sur le continent.",
@@ -247,7 +250,31 @@
     "sendLink": "Envoyer le lien",
     "noAccount": "Pas encore de compte ?",
     "haveAccount": "J'ai déjà un compte · Se connecter →",
-    "forgot": "Mot de passe oublié ?"
+    "forgot": "Mot de passe oublié ?",
+    "sent": "Si un compte existe pour cette adresse, un lien vient de lui être envoyé.",
+    "resetEyebrow": "Nouveau mot de passe",
+    "resetTitle": "Choisir un nouveau mot de passe",
+    "newPassword": "Nouveau mot de passe",
+    "confirmPassword": "Confirmer le mot de passe",
+    "savePassword": "Enregistrer",
+    "verifyEyebrow": "Dernière étape",
+    "verifyTitle": "Vérifiez votre boîte e-mail",
+    "verifyBody": "Un lien de confirmation a été envoyé à {email}. Cliquez dessus pour activer votre compte, puis connectez-vous.",
+    "verifyBodyNoEmail": "Un lien de confirmation vient de vous être envoyé. Cliquez dessus pour activer votre compte, puis connectez-vous.",
+    "resend": "Renvoyer le lien",
+    "resent": "Lien renvoyé.",
+    "errors": {
+      "invalid": "E-mail ou mot de passe incorrect.",
+      "unconfirmed": "Confirmez d’abord votre adresse e-mail grâce au lien reçu à l’inscription.",
+      "exists": "Un compte existe déjà avec cet e-mail : connectez-vous.",
+      "link": "Ce lien n’est plus valide. Recommencez la demande.",
+      "expired": "Le lien a expiré : demandez-en un nouveau.",
+      "mismatch": "Les deux mots de passe ne correspondent pas.",
+      "short": "8 caractères minimum.",
+      "generic": "Une erreur est survenue. Réessayez.",
+      "samePassword": "Choisissez un mot de passe différent de l’ancien.",
+      "weak": "Mot de passe trop faible : allongez-le ou variez les caractères."
+    }
   },
   "wizardClient": {
     "eyebrow": "Initier un projet",

@@ -6,7 +6,10 @@
     "journal": "Journal",
     "about": "About",
     "cta": "Start a project",
-    "account": "Client area"
+    "account": "Client area",
+    "signIn": "Sign in",
+    "mySpace": "My space",
+    "signOut": "Sign out"
   },
   "footer": {
     "tagline": "Reliote connects project owners worldwide with the best architects across Africa — for a project always built on the continent.",
@@ -247,7 +250,31 @@
     "sendLink": "Send the link",
     "noAccount": "No account yet?",
     "haveAccount": "I have an account · Sign in →",
-    "forgot": "Forgotten password?"
+    "forgot": "Forgotten password?",
+    "sent": "If an account exists for this address, a link has just been sent to it.",
+    "resetEyebrow": "New password",
+    "resetTitle": "Choose a new password",
+    "newPassword": "New password",
+    "confirmPassword": "Confirm password",
+    "savePassword": "Save",
+    "verifyEyebrow": "One last step",
+    "verifyTitle": "Check your inbox",
+    "verifyBody": "A confirmation link was sent to {email}. Click it to activate your account, then sign in.",
+    "verifyBodyNoEmail": "A confirmation link has just been sent to you. Click it to activate your account, then sign in.",
+    "resend": "Resend the link",
+    "resent": "Link sent again.",
+    "errors": {
+      "invalid": "Incorrect email or password.",
+      "unconfirmed": "Please confirm your email address first, using the link we sent when you signed up.",
+      "exists": "An account already exists with this email: please sign in.",
+      "link": "This link is no longer valid. Please start again.",
+      "expired": "The link has expired: request a new one.",
+      "mismatch": "The two passwords do not match.",
+      "short": "At least 8 characters.",
+      "generic": "Something went wrong. Please try again.",
+      "samePassword": "Choose a password different from your previous one.",
+      "weak": "Password too weak: make it longer or more varied."
+    }
   },
   "wizardClient": {
     "eyebrow": "Start a project",
