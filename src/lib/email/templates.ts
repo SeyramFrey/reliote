@@ -315,3 +315,14 @@ export function architectStatusEmail(
     html: shell({ eyebrow: pick(loc, "Votre dossier", "Your application"), title: copy.title, body }),
   };
 }
+
+// ── 11. Le porteur a écarté toutes les propositions (→ admin) ────────────────
+export function proposalsDeclinedAdminEmail(d: { clientName: string; adminUrl: string }) {
+  const body =
+    p(`${esc(d.clientName)} a écarté les architectes proposés. Une nouvelle sélection est nécessaire.`) +
+    cta(d.adminUrl, "Ouvrir la fiche projet");
+  return {
+    subject: "Propositions écartées par le porteur — Reliote",
+    html: shell({ eyebrow: "Admin · Sélection", title: "Aucune proposition retenue.", body }),
+  };
+}

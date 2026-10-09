@@ -1,25 +1,21 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
-import { submitEngagement } from "@/app/[locale]/architectes/engager/actions";
 
-// Modal de charte de non-contournement (côté client).
-// Affiche les 7 articles de la charte v1, demande une coche explicite, et
-// déclenche le server action qui crée l'engagement → débloque la révélation
-// Niveau 3 via la RLS.
+// Modal de charte de non-contournement (côté porteur).
+// Affiche les articles de la charte v1, demande une coche explicite, puis
+// exécute `onAccept` — la confirmation du rendez-vous, qui révèle les
+// identités. Le parent ne monte la modale que lorsqu'elle est ouverte : son
+// état repart donc à zéro à chaque ouverture.
 export function EngagementCharter({
-  projectId,
-  architectId,
   architectHandle,
-  open,
   onClose,
+  onAccept,
   onAccepted,
 }: {
-  projectId: string;
-  architectId: string;
   architectHandle: string;
-  open: boolean;
   onClose: () => void;
+  onAccept: () => Promise<{ ok: true } | { error: string }>;
   onAccepted: () => void;
 }) {
   const t = useTranslations("landing.charter");
@@ -28,7 +24,6 @@ export function EngagementCharter({
   const [err, setErr] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!open) return;
     document.body.style.overflow = "hidden";
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
     window.addEventListener("keydown", onKey);
@@ -36,20 +31,12 @@ export function EngagementCharter({
       document.body.style.overflow = "";
       window.removeEventListener("keydown", onKey);
     };
-  }, [open, onClose]);
-
-  useEffect(() => {
-    if (open) {
-      setChecked(false);
-      setErr(null);
-      setSubmitting(false);
-    }
-  }, [open]);
+  }, [onClose]);
 
   async function accept() {
     setSubmitting(true);
     setErr(null);
-    const res = await submitEngagement(projectId, architectId);
+    const res = await onAccept();
     if ("error" in res) {
       setErr(res.error);
       setSubmitting(false);
@@ -57,8 +44,6 @@ export function EngagementCharter({
     }
     onAccepted();
   }
-
-  if (!open) return null;
 
   const articles = t.raw("client.articles") as { t: string; b: string }[];
 

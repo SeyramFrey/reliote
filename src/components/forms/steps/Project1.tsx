@@ -9,6 +9,7 @@ export default function Project1() {
     formState: { errors },
   } = useFormContext();
   const t = useTranslations("wizardClient");
+  const tt = useTranslations("projectTypes");
   return (
     <div>
       <span className="eyebrow">{t("fields.project_type")}</span>
@@ -19,7 +20,7 @@ export default function Project1() {
             className="border border-[var(--hairline)] p-4 cursor-pointer transition-colors hover:border-ink has-[:checked]:bg-ink has-[:checked]:text-paper has-[:checked]:border-ink"
           >
             <input type="radio" value={p} {...register("project_type")} className="sr-only" />
-            <span className="block text-sm font-medium capitalize">{p}</span>
+            <span className="block text-sm font-medium">{tt(p)}</span>
           </label>
         ))}
       </div>

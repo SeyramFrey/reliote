@@ -895,5 +895,80 @@
   "countries": {
     "placeholder": "Choose a country",
     "soon": "Coming soon"
+  },
+  "projectTypes": {
+    "residential": "Residential",
+    "hospitality": "Hospitality",
+    "commercial": "Commercial",
+    "urban": "Urban",
+    "cultural": "Cultural",
+    "other": "Other"
+  },
+  "dashboardClient": {
+    "eyebrow": "Client space",
+    "title": "My projects.",
+    "empty": "You don’t have a project on Reliote yet.",
+    "start": "Start a project",
+    "newProject": "New project",
+    "projectStatus": {
+      "new": "Project received",
+      "matched": "Shortlisting in progress",
+      "selected": "Architects shortlisted",
+      "meeting_proposed": "Meeting to confirm",
+      "meeting_confirmed": "Meeting confirmed",
+      "in_review": "Next steps under way",
+      "closed": "Closed"
+    },
+    "table": {
+      "type": "Type",
+      "place": "Site",
+      "status": "Status",
+      "submitted": "Submitted",
+      "view": "View"
+    },
+    "proposals": {
+      "title": "Choose your architect.",
+      "intro": "Reliote has shortlisted these profiles for your project. Their identity is revealed at the meeting, once you accept the charter.",
+      "experience": "Experience",
+      "region": "Region",
+      "specialties": "Specialities",
+      "languages": "Languages",
+      "diploma": "Degree",
+      "choose": "Choose this profile",
+      "decline": "Set aside"
+    },
+    "meetings": {
+      "title": "Your meetings.",
+      "intro": "Reliote proposes this slot with the shortlisted architect. By confirming, you accept the non-circumvention charter and the architect’s identity is revealed to you.",
+      "video": "Video link",
+      "confirm": "Confirm the meeting",
+      "decline": "Decline this slot",
+      "status": {
+        "proposed": "To confirm",
+        "rescheduled": "New time to confirm",
+        "confirmed": "Confirmed",
+        "declined": "Declined",
+        "completed": "Held",
+        "cancelled": "Cancelled"
+      }
+    },
+    "architect": {
+      "title": "Your architect.",
+      "email": "Email",
+      "phone": "Phone",
+      "place": "Practises in",
+      "relay": "Reliote relay address",
+      "relayHint": "For your exchanges, prefer this address: it keeps a record of the introduction."
+    },
+    "notices": {
+      "chosen": "Choice saved: Reliote is scheduling your meeting.",
+      "declined": "Proposal set aside.",
+      "meetingDeclined": "Slot declined: Reliote will suggest another date."
+    },
+    "errors": {
+      "noProposal": "This meeting can no longer be confirmed: the proposal was withdrawn. Reliote will be in touch.",
+      "notAllowed": "This action is no longer possible.",
+      "generic": "That didn’t work. Please try again."
+    }
   }
 }

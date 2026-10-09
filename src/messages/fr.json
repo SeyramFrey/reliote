@@ -895,5 +895,80 @@
   "countries": {
     "placeholder": "Choisir un pays",
     "soon": "Bientôt"
+  },
+  "projectTypes": {
+    "residential": "Résidentiel",
+    "hospitality": "Hôtellerie",
+    "commercial": "Commercial",
+    "urban": "Urbain",
+    "cultural": "Culturel",
+    "other": "Autre"
+  },
+  "dashboardClient": {
+    "eyebrow": "Espace porteur",
+    "title": "Mes projets.",
+    "empty": "Vous n’avez pas encore de projet sur Reliote.",
+    "start": "Démarrer un projet",
+    "newProject": "Nouveau projet",
+    "projectStatus": {
+      "new": "Projet reçu",
+      "matched": "Sélection en cours",
+      "selected": "Architectes sélectionnés",
+      "meeting_proposed": "Rendez-vous à confirmer",
+      "meeting_confirmed": "Rendez-vous confirmé",
+      "in_review": "Suite du projet en cours",
+      "closed": "Clôturé"
+    },
+    "table": {
+      "type": "Type",
+      "place": "Chantier",
+      "status": "Où en est-il",
+      "submitted": "Déposé le",
+      "view": "Voir"
+    },
+    "proposals": {
+      "title": "Choisissez votre architecte.",
+      "intro": "Reliote a sélectionné ces profils pour votre projet. Leur identité vous sera révélée au rendez-vous, une fois la charte acceptée.",
+      "experience": "Expérience",
+      "region": "Région",
+      "specialties": "Spécialités",
+      "languages": "Langues",
+      "diploma": "Diplôme",
+      "choose": "Choisir ce profil",
+      "decline": "Ne pas retenir"
+    },
+    "meetings": {
+      "title": "Vos rendez-vous.",
+      "intro": "Reliote vous propose ce créneau avec l’architecte sélectionné. En confirmant, vous acceptez la charte de non-contournement et l’identité de l’architecte vous est révélée.",
+      "video": "Lien visio",
+      "confirm": "Confirmer le rendez-vous",
+      "decline": "Décliner ce créneau",
+      "status": {
+        "proposed": "À confirmer",
+        "rescheduled": "Nouveau créneau à confirmer",
+        "confirmed": "Confirmé",
+        "declined": "Décliné",
+        "completed": "Tenu",
+        "cancelled": "Annulé"
+      }
+    },
+    "architect": {
+      "title": "Votre architecte.",
+      "email": "E-mail",
+      "phone": "Téléphone",
+      "place": "Exerce à",
+      "relay": "Adresse relais Reliote",
+      "relayHint": "Pour vos échanges, privilégiez cette adresse : elle garde la trace de la mise en relation."
+    },
+    "notices": {
+      "chosen": "Choix enregistré : Reliote planifie votre rendez-vous.",
+      "declined": "Proposition écartée.",
+      "meetingDeclined": "Créneau décliné : Reliote vous propose une autre date."
+    },
+    "errors": {
+      "noProposal": "Ce rendez-vous ne peut plus être confirmé : la proposition a été retirée. Reliote revient vers vous.",
+      "notAllowed": "Cette action n’est plus possible.",
+      "generic": "L’action n’a pas abouti. Réessayez."
+    }
   }
 }

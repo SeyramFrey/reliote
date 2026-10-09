@@ -26,11 +26,12 @@ function isRecent(createdAt: string): boolean {
 // Avant la pivot N2/N3, cette page affichait directement les architectes matchés
 // avec nom + photo — ce qui contournait toute la mécanique de révélation
 // progressive. On la simplifie en page d'accusé de réception qui redirige
-// vers /architectes (où l'engagement charter gère la révélation).
+// vers l'espace porteur (propositions, RDV et révélation au RDV confirmé).
 export default async function Page({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const locale = await getLocale();
   const t = await getTranslations("wizardClient");
+  const tt = await getTranslations("projectTypes");
 
   const service = createServiceClient();
   const { data: project } = (await service
@@ -53,7 +54,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
   }
 
   // Compte les matches pour annoncer le nombre, sans révéler quoi que ce soit
-  // sur les architectes — la révélation se fait sur /architectes via l'engagement.
+  // sur les architectes — la révélation se fait au rendez-vous confirmé.
   const { count: matchCount } = await service
     .from("match_results")
     .select("project_id", { count: "exact", head: true })
@@ -80,7 +81,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
           <dl className="mt-5 grid grid-cols-1 md:grid-cols-3 gap-x-8 gap-y-3 text-sm">
             <div>
               <dt className="eyebrow">{t("fields.project_type")}</dt>
-              <dd className="capitalize">{project.project_type}</dd>
+              <dd>{tt(project.project_type as "other")}</dd>
             </div>
             <div>
               <dt className="eyebrow">{t("fields.project_location")}</dt>
@@ -99,7 +100,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
         <div className="mt-10 flex flex-wrap gap-3">
           {(matchCount ?? 0) > 0 ? (
             <Link
-              href={`/${locale}/architectes`}
+              href={`/${locale}/dashboard/client`}
               className="btn btn-primary"
             >
               {t("thanks.viewMatches")} <span className="btn-arrow" />

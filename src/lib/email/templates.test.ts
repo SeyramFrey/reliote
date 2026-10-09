@@ -10,6 +10,7 @@ import {
   clientChoseAdminEmail,
   architectApplicationReceivedEmail,
   architectStatusEmail,
+  proposalsDeclinedAdminEmail,
 } from "./templates";
 
 describe("projectReceivedEmail", () => {
@@ -164,5 +165,14 @@ describe("architect emails", () => {
   });
   it("escapes the first name", () => {
     expect(architectStatusEmail("fr", { firstName: "<i>K</i>", status: "verified" }).html).not.toContain("<i>K</i>");
+  });
+});
+
+describe("proposalsDeclinedAdminEmail", () => {
+  it("tells the admin the client set aside every proposal", () => {
+    const m = proposalsDeclinedAdminEmail({ clientName: "<b>Awa</b>", adminUrl: "https://reliote.test/fr/admin/projets/p1" });
+    expect(m.subject).toMatch(/écart/i);
+    expect(m.html).not.toContain("<b>Awa</b>");
+    expect(m.html).toContain('href="https://reliote.test/fr/admin/projets/p1"');
   });
 });
