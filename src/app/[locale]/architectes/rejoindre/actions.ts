@@ -5,6 +5,7 @@ import { architectSchema, type ArchitectInput } from "@/lib/validation/architect
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
+import { safeLocale } from "@/lib/auth/safeRedirect";
 
 export async function submitArchitect(input: ArchitectInput) {
   const parsed = architectSchema.safeParse(input);
@@ -71,6 +72,6 @@ export async function submitArchitect(input: ArchitectInput) {
   revalidatePath("/fr/admin/architectes");
   revalidatePath("/en/admin/architectes");
 
-  const locale = (await cookies()).get("NEXT_LOCALE")?.value || "fr";
+  const locale = safeLocale((await cookies()).get("NEXT_LOCALE")?.value);
   redirect(`/${locale}/architectes/rejoindre/merci`);
 }

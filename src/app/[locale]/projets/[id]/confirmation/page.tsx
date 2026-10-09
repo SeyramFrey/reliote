@@ -1,4 +1,5 @@
 import { createServiceClient } from "@/lib/supabase/service";
+import { createClient } from "@/lib/supabase/server";
 import { getLocale, getTranslations } from "next-intl/server";
 import { Nav } from "@/components/shared/Nav";
 import { Footer } from "@/components/landing/Footer";
@@ -7,11 +8,19 @@ import { notFound } from "next/navigation";
 
 type Project = {
   id: string;
-  client_name: string;
+  user_id: string | null;
+  created_at: string;
   project_type: string;
   project_location: string;
-  project_description: string;
 };
+
+// Un projet déposé sans compte n'a pas de propriétaire vérifiable : son
+// accusé de réception n'est consultable que juste après le dépôt.
+const ANONYMOUS_VIEW_WINDOW_MS = 30 * 60 * 1000;
+
+function isRecent(createdAt: string): boolean {
+  return Date.now() - new Date(createdAt).getTime() <= ANONYMOUS_VIEW_WINDOW_MS;
+}
 
 // Page de confirmation post-dépôt de brief.
 // Avant la pivot N2/N3, cette page affichait directement les architectes matchés
@@ -26,10 +35,22 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
   const service = createServiceClient();
   const { data: project } = (await service
     .from("client_projects")
-    .select("id, client_name, project_type, project_location, project_description")
+    .select("id, user_id, created_at, project_type, project_location")
     .eq("id", id)
     .single()) as { data: Project | null };
   if (!project) notFound();
+
+  // La page est lue avec la clé service (RLS contournée) : on vérifie nous-mêmes
+  // que le visiteur a le droit de voir ce projet.
+  if (project.user_id) {
+    const supabase = await createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (user?.id !== project.user_id) notFound();
+  } else if (!isRecent(project.created_at)) {
+    notFound();
+  }
 
   // Compte les matches pour annoncer le nombre, sans révéler quoi que ce soit
   // sur les architectes — la révélation se fait sur /architectes via l'engagement.

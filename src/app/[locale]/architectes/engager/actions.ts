@@ -10,9 +10,11 @@ import { revalidatePath } from "next/cache";
 // On vérifie côté serveur :
 //   1. l'utilisateur est authentifié
 //   2. il owns le projet (project_id ⇄ user_id)
-//   3. l'architecte est bien matché à ce projet (sinon on ne révèle pas)
+//   3. l'admin a PROPOSÉ cet architecte pour ce projet (client_engagements
+//      'proposed'). Être dans le top du matching ne suffit pas : c'est la
+//      sélection de l'admin qui ouvre la révélation, jamais le client seul.
 //
-// On insère ou met à jour client_engagements à status='engaged' + charter_accepted=true.
+// On fait passer l'engagement 'proposed' existant à 'engaged' + charter_accepted=true.
 // Le trigger DB génère les adresses relais. La RLS sur architect_profiles ouvre
 // automatiquement la lecture complète pour ce couple (client, architect).
 export async function submitEngagement(
@@ -36,31 +38,26 @@ export async function submitEngagement(
     .maybeSingle()) as { data: { id: string } | null };
   if (!project) return { error: "Projet introuvable" };
 
-  // (3) L'architecte est-il bien matché à ce projet ? On refuse les engagements
-  // sur des architectes non proposés — pas de scraping de handles.
-  const { data: match } = (await service
-    .from("match_results")
-    .select("project_id")
-    .eq("project_id", projectId)
-    .eq("architect_id", architectId)
-    .maybeSingle()) as { data: { project_id: string } | null };
-  if (!match) return { error: "Cet architecte n'est pas proposé pour ce projet" };
-
-  // Upsert : si une ligne existait déjà à status='proposed', on la passe à 'engaged'.
+  // (3) Seul un engagement proposé par l'admin peut être accepté. Le filtre sur
+  // status='proposed' dans l'UPDATE rend l'opération atomique : pas de ligne
+  // proposée → aucune ligne modifiée → refus.
   const now = new Date().toISOString();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { error } = await (service.from("client_engagements") as any).upsert(
-    {
-      project_id: projectId,
-      architect_id: architectId,
+  const { data: updated, error } = (await (service.from("client_engagements") as any)
+    .update({
       status: "engaged",
       charter_version: CURRENT_CHARTER_VERSION,
       charter_accepted: true,
       engaged_at: now,
-    },
-    { onConflict: "project_id,architect_id" }
-  );
+    })
+    .eq("project_id", projectId)
+    .eq("architect_id", architectId)
+    .eq("status", "proposed")
+    .select("id")) as { data: { id: string }[] | null; error: { message: string } | null };
   if (error) return { error: error.message };
+  if (!updated || updated.length === 0) {
+    return { error: "Cet architecte n'est pas proposé pour ce projet" };
+  }
 
   revalidatePath("/fr/architectes");
   revalidatePath("/en/architectes");

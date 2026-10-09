@@ -92,16 +92,21 @@ async function ClientView({ userId }: { userId: string }) {
     );
   }
 
-  // Niveau 2 — fetched via service client (la vue est filtrée elle-même sur
-  // auth.uid() pour les requêtes user-side ; via service client elle renvoie
-  // toutes les lignes, donc on filtre ici manuellement sur les matches du projet).
-  const { data: matchRows } = (await service
-    .from("match_results")
-    .select("architect_id")
-    .eq("project_id", latestProject.id)) as {
-    data: { architect_id: string }[] | null;
+  // Le porteur ne voit que les architectes que l'admin lui a PROPOSÉS
+  // (client_engagements 'proposed', ou déjà 'engaged') — pas le top du matching
+  // brut, qui reste un outil interne de sélection. Lecture via service client,
+  // filtrée ici sur le projet du porteur.
+  const { data: engagementsRaw } = (await service
+    .from("client_engagements")
+    .select(
+      "id, project_id, architect_id, status, charter_version, charter_accepted, proposed_at, engaged_at"
+    )
+    .eq("project_id", latestProject.id)
+    .in("status", ["proposed", "engaged"])) as {
+    data: ClientEngagement[] | null;
   };
-  const matchedIds = (matchRows ?? []).map((m) => m.architect_id);
+  const engagements: ClientEngagement[] = engagementsRaw ?? [];
+  const matchedIds = engagements.map((e) => e.architect_id);
 
   if (matchedIds.length === 0) {
     return (
@@ -168,16 +173,7 @@ async function ClientView({ userId }: { userId: string }) {
     status: r.status,
   }));
 
-  // 2. Les engagements existants pour ce projet
-  const { data: engagementsRaw } = (await service
-    .from("client_engagements")
-    .select(
-      "id, project_id, architect_id, status, charter_version, charter_accepted, proposed_at, engaged_at"
-    )
-    .eq("project_id", latestProject.id)) as {
-    data: ClientEngagement[] | null;
-  };
-  const engagements: ClientEngagement[] = engagementsRaw ?? [];
+  // 2. Les engagés révèlent leur identité
   const engagedIds = engagements
     .filter((e) => e.status === "engaged")
     .map((e) => e.architect_id);

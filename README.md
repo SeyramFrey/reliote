@@ -39,11 +39,17 @@ npm run dev                  # http://localhost:3000  → /fr (default)
 
 ## Seeded accounts
 
-| Role     | Email                  | Password           |
-|----------|------------------------|--------------------|
-| Admin    | admin@reliote.test     | ReliotePass2026!   |
+No admin password lives in the repo. To get a local admin, export a password
+before applying migrations (local stack only — never against a remote DB):
 
-Plus 8 verified architects and 3 demo client projects (no real auth).
+```bash
+RELIOTE_DEV_ADMIN_PASSWORD='choose-one' ./supabase/apply-migrations.sh
+# optional: RELIOTE_DEV_ADMIN_EMAIL (default admin@reliote.test)
+```
+
+The seed also adds 8 verified demo architects and 3 demo client projects (no real auth).
+In production, create the admin from the Supabase dashboard, then promote it:
+`update public.profiles set role = 'admin' where id = '<user id>';`
 
 ## Routes
 

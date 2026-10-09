@@ -10,6 +10,7 @@ import {
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
+import { safeLocale } from "@/lib/auth/safeRedirect";
 import { sendEmail, siteUrl } from "@/lib/email/client";
 import { projectReceivedEmail } from "@/lib/email/templates";
 
@@ -89,7 +90,7 @@ export async function submitProject(input: ProjectInput) {
   revalidatePath("/fr/admin/matches");
   revalidatePath("/en/admin/matches");
 
-  const locale = (await cookies()).get("NEXT_LOCALE")?.value || "fr";
+  const locale = safeLocale((await cookies()).get("NEXT_LOCALE")?.value);
 
   // Accusé de réception au porteur (best-effort, ne bloque jamais le flux).
   const site = siteUrl();

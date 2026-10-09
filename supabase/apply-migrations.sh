@@ -59,6 +59,16 @@ done
 echo "Applying  seed..."
 psql_c -f /reliote/seed.sql
 
+# Admin local : jamais de mot de passe dans le dépôt. Sans la variable, pas d'admin.
+if [ -n "${RELIOTE_DEV_ADMIN_PASSWORD:-}" ]; then
+  echo "Applying  local admin (${RELIOTE_DEV_ADMIN_EMAIL:-admin@reliote.test})..."
+  psql_c -q -v admin_email="${RELIOTE_DEV_ADMIN_EMAIL:-admin@reliote.test}" \
+            -v admin_password="$RELIOTE_DEV_ADMIN_PASSWORD" \
+            -f /reliote/seed.admin.sql > /dev/null
+else
+  echo "Skipping  local admin (set RELIOTE_DEV_ADMIN_PASSWORD to create one)"
+fi
+
 echo "Reload PostgREST schema cache so it sees the new tables and FKs..."
 psql_c -c "notify pgrst, 'reload schema';" > /dev/null
 

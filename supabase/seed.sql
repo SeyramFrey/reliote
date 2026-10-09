@@ -4,34 +4,10 @@
 -- pgcrypto lives in the `extensions` schema in supabase/postgres; make functions discoverable.
 set search_path = public, extensions, auth;
 
--- Admin: insert into auth.users directly.
-insert into auth.users (id, instance_id, aud, role, email, encrypted_password, email_confirmed_at, raw_user_meta_data, created_at, updated_at)
-values (
-  '00000000-0000-0000-0000-00000000a001',
-  '00000000-0000-0000-0000-000000000000',
-  'authenticated', 'authenticated',
-  'admin@reliote.test',
-  crypt('ReliotePass2026!', gen_salt('bf')),
-  now(),
-  jsonb_build_object('role','admin','first_name','Reliote','last_name','Admin','locale','fr'),
-  now(), now()
-) on conflict (id) do nothing;
-
--- GoTrue v2.177 cannot scan NULL into the *_token varchar columns. Initialise them
--- to '' for any seeded auth.users row (re-runnable; only affects rows where the field is NULL).
-update auth.users
-  set confirmation_token         = coalesce(confirmation_token, ''),
-      recovery_token             = coalesce(recovery_token, ''),
-      email_change_token_new     = coalesce(email_change_token_new, ''),
-      email_change_token_current = coalesce(email_change_token_current, ''),
-      email_change               = coalesce(email_change, ''),
-      phone_change               = coalesce(phone_change, ''),
-      phone_change_token         = coalesce(phone_change_token, ''),
-      reauthentication_token     = coalesce(reauthentication_token, '')
-  where email = 'admin@reliote.test';
-
-update public.profiles set role = 'admin', first_name = 'Reliote', last_name = 'Admin'
-  where id = '00000000-0000-0000-0000-00000000a001';
+-- Pas de compte admin ici : un mot de passe écrit dans ce fichier est public
+-- (dépôt versionné) et ce seed a déjà été rejoué sur une base de production.
+-- En local, l'admin est créé par seed.admin.sql, que apply-migrations.sh ne
+-- lance que si RELIOTE_DEV_ADMIN_PASSWORD est défini dans l'environnement.
 
 -- 8 architects (from the locked design's data.jsx) — names split first/last; fees in EUR.
 -- ordre_number included up-front so the CHECK constraint holds on a fresh DB.

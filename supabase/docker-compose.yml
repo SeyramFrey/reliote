@@ -18,6 +18,7 @@ services:
       # after GoTrue has run its own auth-schema migrations.
       - ./migrations:/reliote/migrations:ro
       - ./seed.sql:/reliote/seed.sql:ro
+      - ./seed.admin.sql:/reliote/seed.admin.sql:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
       interval: 5s

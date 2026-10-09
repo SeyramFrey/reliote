@@ -28,11 +28,15 @@ export async function respondToMeeting(formData: FormData): Promise<void> {
     const charter = formData.get("charter");
     if (charter == null) throw new Error("Charter acceptance required");
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    await (supabase.from("meetings") as any)
+    const { data: updated } = (await (supabase.from("meetings") as any)
       .update({ status: "confirmed", charter_accepted: true })
-      .eq("id", meetingId);
+      .eq("id", meetingId)
+      .select("id")) as { data: { id: string }[] | null };
 
-    await notifyConfirmed(meetingId);
+    // N'envoyer que si CETTE requête a confirmé le RDV : sinon n'importe quel
+    // utilisateur pourrait, avec l'id d'un RDV déjà confirmé qui n'est pas le
+    // sien, faire renvoyer les e-mails de confirmation à ses participants.
+    if (updated && updated.length > 0) await notifyConfirmed(meetingId);
   } else {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     await (supabase.from("meetings") as any)
