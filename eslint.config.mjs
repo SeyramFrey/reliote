@@ -12,6 +12,11 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Maquettes figées du bundle de design et script outillage CommonJS :
+    // ni l'un ni l'autre ne fait partie de l'application.
+    "_design-reference/**",
+    "scripts/gen-landing-css.cjs",
+    ".superpowers/**",
   ]),
 ]);
 
