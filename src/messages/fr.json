@@ -880,16 +880,6 @@
           }
         ]
       }
-    },
-    "dashboardArchitect": {
-      "eyebrow": "Espace architecte",
-      "welcome": "Bienvenue",
-      "status": "Statut",
-      "incoming": "Projets entrants",
-      "empty": "Aucun projet ne vous a encore été matché. Vous serez notifié dès qu'un commanditaire dépose un brief compatible avec votre profil.",
-      "engaged": "Client engagé",
-      "channelReady": "Canal de communication ouvert",
-      "awaitingClient": "Brief reçu · en attente d'engagement client"
     }
   },
   "countries": {
@@ -970,5 +960,46 @@
       "notAllowed": "Cette action n’est plus possible.",
       "generic": "L’action n’a pas abouti. Réessayez."
     }
+  },
+  "dashboardArchitect": {
+    "eyebrow": "Espace architecte",
+    "welcome": "Bienvenue",
+    "status": "Statut du dossier",
+    "statusText": {
+      "pending": "Votre dossier est en cours de vérification : diplôme et inscription à l’ordre.",
+      "verified": "Profil vérifié : vous pouvez être proposé·e aux porteurs de projet.",
+      "rejected": "Votre dossier n’a pas été retenu. Écrivez-nous pour en savoir plus.",
+      "paused": "Votre profil est en pause : il n’est plus proposé pour le moment."
+    },
+    "noProfile": "Vous n’avez pas encore déposé votre dossier.",
+    "completeProfile": "Déposer mon dossier",
+    "incoming": "Projets pour lesquels vous êtes pressenti·e",
+    "empty": "Aucun projet ne vous correspond encore. Vous serez notifié·e dès qu’un porteur dépose un brief compatible avec votre profil.",
+    "match": "Correspondance",
+    "budget": "Budget",
+    "timeline": "Horizon",
+    "engagement": {
+      "none": "Projet compatible · pas encore de sélection",
+      "proposed": "Vous êtes proposé·e au porteur",
+      "engaged": "Mise en relation active",
+      "declined": "Le porteur a retenu un autre profil",
+      "cancelled": "Proposition retirée",
+      "expired": "Proposition expirée"
+    },
+    "identityHidden": "L’identité du porteur vous sera communiquée une fois le rendez-vous confirmé.",
+    "client": "Porteur de projet",
+    "email": "E-mail",
+    "phone": "Téléphone",
+    "relay": "Adresse relais Reliote",
+    "meetings": "Vos rendez-vous",
+    "meetingStatus": {
+      "proposed": "En attente du porteur",
+      "rescheduled": "Nouveau créneau en attente du porteur",
+      "confirmed": "Confirmé",
+      "declined": "Décliné par le porteur",
+      "completed": "Tenu",
+      "cancelled": "Annulé"
+    },
+    "video": "Lien visio"
   }
 }
