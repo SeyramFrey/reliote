@@ -4,6 +4,7 @@ import { createServiceClient } from "@/lib/supabase/service";
 import { revalidatePath } from "next/cache";
 import { sendEmail, adminEmail } from "@/lib/email/client";
 import { meetingConfirmedEmail } from "@/lib/email/templates";
+import { countryTimeZone } from "@/lib/time/meetingTime";
 
 // Réponse du PORTEUR à un RDV proposé. Client AUTHENTIFIÉ : la RLS
 // "meetings owner respond" garantit que seul le propriétaire du projet peut
@@ -70,12 +71,13 @@ async function notifyConfirmed(meetingId: string): Promise<void> {
   if (!mtg || mtg.status !== "confirmed") return;
 
   const [{ data: proj }, { data: arch }] = (await Promise.all([
-    svc.from("client_projects").select("email, user_id").eq("id", mtg.project_id).single(),
+    svc.from("client_projects").select("email, user_id, project_country").eq("id", mtg.project_id).single(),
     svc.from("architect_profiles").select("email, user_id").eq("id", mtg.architect_id).single(),
   ])) as [
-    { data: { email: string; user_id: string | null } | null },
+    { data: { email: string; user_id: string | null; project_country: string } | null },
     { data: { email: string; user_id: string | null } | null },
   ];
+  const projectTimeZone = countryTimeZone(proj?.project_country ?? "");
 
   const ids = [proj?.user_id, arch?.user_id].filter(Boolean) as string[];
   const localeById = new Map<string, string>();
@@ -92,6 +94,7 @@ async function notifyConfirmed(meetingId: string): Promise<void> {
   if (proj?.email) {
     const m = meetingConfirmedEmail(porteurLoc, "client", {
       scheduledAt: mtg.scheduled_at,
+      projectTimeZone,
       videoUrl: mtg.video_url,
     });
     sends.push(sendEmail({ to: proj.email, cc: adminEmail(), subject: m.subject, html: m.html }));
@@ -99,6 +102,7 @@ async function notifyConfirmed(meetingId: string): Promise<void> {
   if (arch?.email) {
     const m = meetingConfirmedEmail(archLoc, "architect", {
       scheduledAt: mtg.scheduled_at,
+      projectTimeZone,
       videoUrl: mtg.video_url,
     });
     sends.push(sendEmail({ to: arch.email, subject: m.subject, html: m.html }));

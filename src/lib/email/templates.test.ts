@@ -3,6 +3,13 @@ import {
   projectReceivedEmail,
   meetingProposedEmail,
   meetingConfirmedEmail,
+  meetingCancelledEmail,
+  meetingDeclinedAdminEmail,
+  newProjectAdminEmail,
+  proposalsReadyEmail,
+  clientChoseAdminEmail,
+  architectApplicationReceivedEmail,
+  architectStatusEmail,
 } from "./templates";
 
 describe("projectReceivedEmail", () => {
@@ -44,7 +51,12 @@ describe("projectReceivedEmail", () => {
 });
 
 describe("meetingProposedEmail", () => {
-  const d = { scheduledAt: "2026-08-15T14:30:00.000Z", videoUrl: "https://meet.test/x", projectLabel: "residential · Dakar" };
+  const d = {
+    scheduledAt: "2026-08-15T14:30:00.000Z",
+    projectTimeZone: "Africa/Dakar",
+    videoUrl: "https://meet.test/x",
+    projectLabel: "residential · Dakar",
+  };
 
   it("differs by recipient (client gets a confirm CTA, architect a wait note)", () => {
     const client = meetingProposedEmail("fr", "client", { ...d, ctaUrl: "https://reliote.test/fr/dashboard/client" });
@@ -62,11 +74,95 @@ describe("meetingProposedEmail", () => {
 
 describe("meetingConfirmedEmail", () => {
   it("subject and reveal note per locale + recipient", () => {
-    const fr = meetingConfirmedEmail("fr", "client", { scheduledAt: "2026-08-15T14:30:00.000Z", videoUrl: null });
+    const fr = meetingConfirmedEmail("fr", "client", { scheduledAt: "2026-08-15T14:30:00.000Z", projectTimeZone: "Africa/Dakar", videoUrl: null });
     expect(fr.subject).toMatch(/confirmé/i);
     expect(fr.html).toMatch(/identité/i);
-    const en = meetingConfirmedEmail("en", "architect", { scheduledAt: "2026-08-15T14:30:00.000Z", videoUrl: null });
+    const en = meetingConfirmedEmail("en", "architect", { scheduledAt: "2026-08-15T14:30:00.000Z", projectTimeZone: "Africa/Dakar", videoUrl: null });
     expect(en.subject).toMatch(/confirmed/i);
     expect(en.html).toMatch(/introduction is now active/i);
+  });
+});
+
+// Le 26/10/2026, Dakar est à UTC+0 et Paris à UTC+1.
+const slot = { scheduledAt: "2026-10-26T09:00:00.000Z", projectTimeZone: "Africa/Dakar" };
+
+describe("meeting times are shown in the build country and in Paris", () => {
+  it("proposed", () => {
+    const { html } = meetingProposedEmail("fr", "client", { ...slot, projectLabel: "x" });
+    expect(html).toContain("09:00");
+    expect(html).toContain("10:00");
+    expect(html).toMatch(/Dakar/);
+    expect(html).toMatch(/Paris/);
+  });
+  it("confirmed", () => {
+    const { html } = meetingConfirmedEmail("en", "architect", slot);
+    expect(html).toContain("09:00");
+    expect(html).toContain("10:00");
+  });
+  it("rescheduled variant says so", () => {
+    expect(meetingProposedEmail("fr", "client", { ...slot, projectLabel: "x", rescheduled: true }).subject).toMatch(/nouveau créneau/i);
+    expect(meetingProposedEmail("en", "client", { ...slot, projectLabel: "x", rescheduled: true }).subject).toMatch(/new time/i);
+  });
+});
+
+describe("meetingCancelledEmail", () => {
+  it("per locale and recipient", () => {
+    expect(meetingCancelledEmail("fr", "client", { ...slot, projectLabel: "Villa" }).subject).toMatch(/annulé/i);
+    expect(meetingCancelledEmail("en", "architect", { ...slot, projectLabel: "Villa" }).subject).toMatch(/cancelled/i);
+  });
+  it("escapes the project label", () => {
+    expect(meetingCancelledEmail("fr", "client", { ...slot, projectLabel: "<b>x</b>" }).html).not.toContain("<b>x</b>");
+  });
+});
+
+describe("admin notifications (French)", () => {
+  const adminUrl = "https://reliote.test/fr/admin/projets/p1";
+  it("meeting declined", () => {
+    const m = meetingDeclinedAdminEmail({ clientName: "<b>Awa</b>", ...slot, adminUrl });
+    expect(m.subject).toMatch(/décliné/i);
+    expect(m.html).not.toContain("<b>Awa</b>");
+    expect(m.html).toContain(`href="${adminUrl}"`);
+  });
+  it("new project", () => {
+    const m = newProjectAdminEmail({
+      clientName: "Awa",
+      projectType: "residential",
+      projectCountry: "Sénégal",
+      projectLocation: "Dakar",
+      matchCount: 4,
+      adminUrl,
+    });
+    expect(m.subject).toMatch(/nouveau projet/i);
+    expect(m.html).toContain("Sénégal");
+  });
+  it("client chose an architect", () => {
+    const m = clientChoseAdminEmail({ clientName: "Awa", architectHandle: "A007", adminUrl });
+    expect(m.subject).toMatch(/choisi/i);
+    expect(m.html).toContain("A007");
+  });
+});
+
+describe("proposalsReadyEmail", () => {
+  it("asks the client to choose, with a CTA", () => {
+    const fr = proposalsReadyEmail("fr", { count: 3, ctaUrl: "https://reliote.test/fr/dashboard/client" });
+    expect(fr.subject).toMatch(/architectes/i);
+    expect(fr.html).toContain("3");
+    expect(fr.html).toContain('href="https://reliote.test/fr/dashboard/client"');
+    expect(proposalsReadyEmail("en", { count: 2, ctaUrl: "https://x.test" }).subject).toMatch(/architects/i);
+  });
+});
+
+describe("architect emails", () => {
+  it("application received", () => {
+    expect(architectApplicationReceivedEmail("fr", { firstName: "Kofi" }).html).toContain("Kofi");
+    expect(architectApplicationReceivedEmail("en", { firstName: "Kofi" }).subject).toMatch(/application/i);
+  });
+  it("status: verified, rejected, paused", () => {
+    expect(architectStatusEmail("fr", { firstName: "Kofi", status: "verified" }).subject).toMatch(/validé/i);
+    expect(architectStatusEmail("en", { firstName: "Kofi", status: "rejected" }).subject).toMatch(/application/i);
+    expect(architectStatusEmail("fr", { firstName: "Kofi", status: "paused" }).subject).toMatch(/pause/i);
+  });
+  it("escapes the first name", () => {
+    expect(architectStatusEmail("fr", { firstName: "<i>K</i>", status: "verified" }).html).not.toContain("<i>K</i>");
   });
 });

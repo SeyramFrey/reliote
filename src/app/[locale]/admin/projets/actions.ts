@@ -4,6 +4,7 @@ import { requireAdmin } from "@/lib/auth/requireAdmin";
 import { revalidatePath } from "next/cache";
 import { sendEmail, adminEmail, siteUrl } from "@/lib/email/client";
 import { meetingProposedEmail } from "@/lib/email/templates";
+import { countryTimeZone } from "@/lib/time/meetingTime";
 
 // Résout le locale de chaque partie depuis son profil (fallback fr), pour des
 // e-mails dans la bonne langue.
@@ -101,12 +102,12 @@ export async function scheduleMeeting(formData: FormData): Promise<void> {
   const [{ data: proj }, { data: arch }] = (await Promise.all([
     s
       .from("client_projects")
-      .select("email, project_type, project_location, user_id")
+      .select("email, project_type, project_country, project_location, user_id")
       .eq("id", projectId)
       .single(),
     s.from("architect_profiles").select("email, user_id").eq("id", architectId).single(),
   ])) as [
-    { data: { email: string; project_type: string; project_location: string; user_id: string | null } | null },
+    { data: { email: string; project_type: string; project_country: string; project_location: string; user_id: string | null } | null },
     { data: { email: string; user_id: string | null } | null },
   ];
 
@@ -116,11 +117,13 @@ export async function scheduleMeeting(formData: FormData): Promise<void> {
   const projectLabel = [proj?.project_type, proj?.project_location].filter(Boolean).join(" · ");
   const site = siteUrl();
   const iso = scheduledAt.toISOString();
+  const projectTimeZone = countryTimeZone(proj?.project_country ?? "");
 
   const sends: Promise<void>[] = [];
   if (proj?.email) {
     const m = meetingProposedEmail(porteurLoc, "client", {
       scheduledAt: iso,
+      projectTimeZone,
       videoUrl: videoUrl || null,
       projectLabel,
       ctaUrl: site ? `${site}/${porteurLoc}/dashboard/client` : null,
@@ -130,6 +133,7 @@ export async function scheduleMeeting(formData: FormData): Promise<void> {
   if (arch?.email) {
     const m = meetingProposedEmail(archLoc, "architect", {
       scheduledAt: iso,
+      projectTimeZone,
       videoUrl: videoUrl || null,
       projectLabel,
     });
