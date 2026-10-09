@@ -7,11 +7,6 @@ export type Json =
   | Json[]
 
 export type Database = {
-  // Allows to automatically instantiate createClient with right options
-  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
-  __InternalSupabase: {
-    PostgrestVersion: "14.5"
-  }
   public: {
     Tables: {
       architect_profiles: {
@@ -32,7 +27,7 @@ export type Database = {
           id: string
           languages: string[]
           last_name: string
-          ordre_number: string
+          ordre_number: string | null
           phone: string | null
           photo_url: string | null
           portfolio_url: string | null
@@ -62,7 +57,7 @@ export type Database = {
           id?: string
           languages?: string[]
           last_name: string
-          ordre_number: string
+          ordre_number?: string | null
           phone?: string | null
           photo_url?: string | null
           portfolio_url?: string | null
@@ -92,7 +87,7 @@ export type Database = {
           id?: string
           languages?: string[]
           last_name?: string
-          ordre_number?: string
+          ordre_number?: string | null
           phone?: string | null
           photo_url?: string | null
           portfolio_url?: string | null
@@ -182,7 +177,6 @@ export type Database = {
           id: string
           notes: string | null
           phone: string | null
-          project_country: string
           project_description: string
           project_location: string
           project_type: Database["public"]["Enums"]["project_type"]
@@ -199,7 +193,6 @@ export type Database = {
           id?: string
           notes?: string | null
           phone?: string | null
-          project_country: string
           project_description: string
           project_location: string
           project_type: Database["public"]["Enums"]["project_type"]
@@ -216,7 +209,6 @@ export type Database = {
           id?: string
           notes?: string | null
           phone?: string | null
-          project_country?: string
           project_description?: string
           project_location?: string
           project_type?: Database["public"]["Enums"]["project_type"]
@@ -315,6 +307,51 @@ export type Database = {
           stats?: Json
           title_en?: string
           title_fr?: string
+        }
+        Relationships: []
+      }
+      legal_pages: {
+        Row: {
+          body_en: string
+          body_fr: string
+          created_at: string
+          id: string
+          published: boolean
+          seo_description_en: string | null
+          seo_description_fr: string | null
+          slug: string
+          sort_order: number
+          title_en: string
+          title_fr: string
+          updated_at: string
+        }
+        Insert: {
+          body_en?: string
+          body_fr?: string
+          created_at?: string
+          id?: string
+          published?: boolean
+          seo_description_en?: string | null
+          seo_description_fr?: string | null
+          slug: string
+          sort_order?: number
+          title_en: string
+          title_fr: string
+          updated_at?: string
+        }
+        Update: {
+          body_en?: string
+          body_fr?: string
+          created_at?: string
+          id?: string
+          published?: boolean
+          seo_description_en?: string | null
+          seo_description_fr?: string | null
+          slug?: string
+          sort_order?: number
+          title_en?: string
+          title_fr?: string
+          updated_at?: string
         }
         Relationships: []
       }
@@ -784,3 +821,4 @@ export const Constants = {
     },
   },
 } as const
+

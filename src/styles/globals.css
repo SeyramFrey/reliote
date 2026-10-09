@@ -58,3 +58,45 @@
 .hairline-v { width: 1px;  background: var(--hairline); align-self: stretch; }
 .page-edge  { padding-left: var(--edge); padding-right: var(--edge); }
 .grid-12    { display: grid; grid-template-columns: repeat(12, 1fr); column-gap: var(--gutter); }
+
+/* Corps des pages légales — HTML produit par CKEditor puis assaini
+ * (src/lib/legal/page.ts). Le reset de base retire le style des <a> et des
+ * listes ; on le rétablit ici, cantonné à ce conteneur pour ne pas déborder
+ * sur le reste du site. */
+.legal-prose { max-width: 68ch; }
+.legal-prose > * + * { margin-top: 1.1em; }
+.legal-prose h2 {
+  font-size: 26px; font-weight: 300; line-height: 1.2;
+  margin-top: 2.4em; text-wrap: balance;
+}
+.legal-prose h3 { font-size: 19px; font-weight: 500; margin-top: 1.9em; }
+.legal-prose h4 { font-size: 16px; font-weight: 600; margin-top: 1.6em; }
+.legal-prose p, .legal-prose li { color: var(--color-concrete-1); line-height: 1.65; }
+.legal-prose ul, .legal-prose ol { padding-left: 1.35em; }
+.legal-prose ul { list-style: disc; }
+.legal-prose ol { list-style: decimal; }
+.legal-prose li + li { margin-top: 0.4em; }
+.legal-prose li::marker { color: var(--color-brass); }
+.legal-prose a {
+  color: var(--color-green); text-decoration: underline;
+  text-underline-offset: 3px; text-decoration-thickness: 1px;
+}
+.legal-prose a:hover { color: var(--color-green-soft); }
+.legal-prose blockquote {
+  border-left: 2px solid var(--color-brass);
+  padding-left: 1.1em; color: var(--color-concrete-2);
+}
+.legal-prose hr { border: none; height: 1px; background: var(--hairline); margin: 2.4em 0; }
+.legal-prose table { border-collapse: collapse; width: 100%; display: block; overflow-x: auto; }
+.legal-prose th, .legal-prose td {
+  border: 1px solid var(--hairline); padding: 8px 12px;
+  text-align: left; font-size: 14px;
+}
+.legal-prose th { font-weight: 500; background: var(--color-paper-2); }
+
+/* Conteneur de l'éditeur admin (CKEditor Classic). Le paquet fournit son propre
+ * habillage ; on n'ajuste que la hauteur utile et le cadre, pour rester dans le
+ * vocabulaire plat du back-office. */
+.legal-editor .ck.ck-editor__editable { min-height: 320px; }
+.legal-editor .ck.ck-editor__main > .ck-editor__editable,
+.legal-editor .ck.ck-toolbar { border-color: var(--hairline); border-radius: 0; }

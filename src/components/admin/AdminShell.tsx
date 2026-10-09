@@ -14,6 +14,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
     { href: `/${locale}/admin/matches`, label: "Matches" },
     { href: `/${locale}/admin/medias`, label: "Médias" },
     { href: `/${locale}/admin/featured`, label: "Mis en lumière" },
+    { href: `/${locale}/admin/legal`, label: "Pages légales" },
   ];
   return (
     <div className="page-edge py-12 grid grid-cols-12 gap-[var(--gutter)]">
