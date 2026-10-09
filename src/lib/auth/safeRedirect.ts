@@ -20,3 +20,9 @@ export function safeRedirectPath(next: string | null | undefined, fallback: stri
   if (/[\u0000-\u001f\u007f]/.test(next)) return fallback;
   return next;
 }
+
+// Retour après une action admin : uniquement un chemin interne de l'admin
+// (lettres, chiffres, tirets, barres — pas de « .. » ni d'autre espace).
+export function safeAdminReturn(back: string | null | undefined, fallback: string): string {
+  return back && /^\/(fr|en)\/admin(\/[\w-]+)*\/?$/.test(back) ? back : fallback;
+}

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
 import { rankArchitects, type ProjectForMatch, type ArchitectForMatch } from "@/lib/matching/score";
+import { advanceProject, ACTIVE_ENGAGEMENT_STATUSES } from "@/lib/workflow/projectState";
 
 type Profile = { role: string };
 
@@ -34,19 +35,32 @@ export async function POST(req: NextRequest) {
 
   const matches = rankArchitects(project, (architects ?? []), 5);
 
-  // Reset then insert
+  // Les correspondances des architectes déjà proposés ou engagés sont gardées :
+  // l'admin ne doit pas perdre la carte (et le formulaire de RDV) d'un
+  // architecte en cours de sélection parce qu'il est sorti du top 5.
+  const { data: engaged } = (await s
+    .from("client_engagements")
+    .select("architect_id")
+    .eq("project_id", projectId)
+    .in("status", [...ACTIVE_ENGAGEMENT_STATUSES])) as { data: { architect_id: string }[] | null };
+  const keep = (engaged ?? []).map((e) => e.architect_id);
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  await (s.from("match_results") as any).delete().eq("project_id", projectId);
+  let del = (s.from("match_results") as any).delete().eq("project_id", projectId);
+  if (keep.length) del = del.not("architect_id", "in", `(${keep.join(",")})`);
+  await del;
   if (matches.length > 0) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    await (s.from("match_results") as any).insert(matches.map((m) => ({
-      project_id: projectId,
-      architect_id: m.architectId,
-      score: m.score,
-      reasons: m.reasons,
-    })));
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    await (s.from("client_projects") as any).update({ status: "matched" }).eq("id", projectId);
+    await (s.from("match_results") as any).upsert(
+      matches.map((m) => ({
+        project_id: projectId,
+        architect_id: m.architectId,
+        score: m.score,
+        reasons: m.reasons,
+      })),
+      { onConflict: "project_id,architect_id" },
+    );
+    await advanceProject(s, projectId, "rematched");
   }
 
   return NextResponse.json({ ok: true, count: matches.length });

@@ -4,7 +4,17 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { MAX_SCORE } from "@/lib/matching/score";
 import { describeReasons } from "@/lib/matching/reasons";
-import { selectArchitect, scheduleMeeting } from "../actions";
+import { countryTimeZone, formatMeetingTime } from "@/lib/time/meetingTime";
+import { MeetingSlotFields } from "@/components/admin/MeetingSlotFields";
+import { MeetingActions } from "@/components/admin/MeetingActions";
+import { PROJECT_STATUS_FR, MEETING_STATUS_FR, ENGAGEMENT_STATUS_FR } from "@/lib/workflow/labels";
+import {
+  proposeArchitect,
+  withdrawProposal,
+  askClientToChoose,
+  scheduleMeeting,
+  closeProject,
+} from "../actions";
 
 type Project = {
   id: string;
@@ -26,12 +36,14 @@ type Project = {
 type ArchitectLite = {
   first_name: string;
   last_name: string;
+  anon_handle: string | null;
   city: string;
   country: string;
   specialties: string[];
   availability: string;
   rating: number | null;
   years_experience: number;
+  status: string;
 };
 
 type MatchRow = {
@@ -41,7 +53,11 @@ type MatchRow = {
   architect_profiles: ArchitectLite | null;
 };
 
-type Engagement = { architect_id: string; status: string };
+type Engagement = {
+  architect_id: string;
+  status: string;
+  architect_profiles: { first_name: string; last_name: string; anon_handle: string | null } | null;
+};
 
 type MeetingRow = {
   id: string;
@@ -53,46 +69,33 @@ type MeetingRow = {
   architect_profiles: { first_name: string; last_name: string } | null;
 };
 
-const PROJECT_STATUS_FR: Record<string, string> = {
-  new: "Nouveau",
-  matched: "Matché",
-  selected: "Architecte choisi",
-  meeting_proposed: "RDV proposé",
-  meeting_confirmed: "RDV confirmé",
-  in_review: "En revue",
-  closed: "Clôturé",
+const ERRORS_FR: Record<string, string> = {
+  notVerified: "Seul un architecte vérifié peut être proposé.",
+  meetingOpen: "Un rendez-vous est déjà ouvert pour ce projet.",
+  needTwo: "Il faut au moins deux architectes proposés pour demander au porteur de choisir.",
+  badSlot: "Créneau, fuseau ou lien visio invalide (le lien doit commencer par https://).",
+  pastSlot: "Ce créneau est déjà passé.",
+  notProposed: "Proposez d'abord cet architecte.",
+  meetingClosed: "Ce rendez-vous n'est plus ouvert.",
+  notConfirmed: "Seul un rendez-vous confirmé peut être marqué terminé.",
+  confirmClose: "Cochez la case de confirmation pour clôturer le projet.",
 };
 
-const MEETING_STATUS_FR: Record<string, string> = {
-  proposed: "Proposé",
-  confirmed: "Confirmé",
-  declined: "Décliné",
-  rescheduled: "Replanifié",
-  completed: "Terminé",
-  cancelled: "Annulé",
-};
+const ACTIVE_MEETINGS = new Set(["proposed", "rescheduled", "confirmed"]);
+const ACTIVE_ENGAGEMENTS = new Set(["proposed", "engaged"]);
 
-const ENGAGEMENT_STATUS_FR: Record<string, string> = {
-  proposed: "Proposé",
-  engaged: "Engagé",
-  declined: "Décliné",
-  cancelled: "Annulé",
-  expired: "Expiré",
-};
-
-function fmtDateTime(iso: string): string {
-  return new Date(iso).toLocaleString("fr-FR", {
-    dateStyle: "medium",
-    timeStyle: "short",
-  });
-}
+const btn = "px-4 py-2 bg-ink text-paper text-sm";
+const btnGhost = "px-4 py-2 border border-[var(--hairline)] text-sm hover:border-ink";
 
 export default async function AdminProjectDetail({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ error?: string; notice?: string }>;
 }) {
   const { id } = await params;
+  const { error, notice } = await searchParams;
   const locale = await getLocale();
   const s = createServiceClient();
 
@@ -109,13 +112,13 @@ export default async function AdminProjectDetail({
     s
       .from("match_results")
       .select(
-        "architect_id, score, reasons, architect_profiles(first_name, last_name, city, country, specialties, availability, rating, years_experience)",
+        "architect_id, score, reasons, architect_profiles(first_name, last_name, anon_handle, city, country, specialties, availability, rating, years_experience, status)",
       )
       .eq("project_id", id)
       .order("score", { ascending: false }) as unknown as Promise<{ data: MatchRow[] | null }>,
     s
       .from("client_engagements")
-      .select("architect_id, status")
+      .select("architect_id, status, architect_profiles(first_name, last_name, anon_handle)")
       .eq("project_id", id) as unknown as Promise<{ data: Engagement[] | null }>,
     s
       .from("meetings")
@@ -129,8 +132,13 @@ export default async function AdminProjectDetail({
   const matches = matchData ?? [];
   const engagements = engData ?? [];
   const meetings = meetingData ?? [];
-  const engagementFor = (architectId: string) =>
-    engagements.find((e) => e.architect_id === architectId);
+  const tz = countryTimeZone(project.project_country);
+  const when = (iso: string) => formatMeetingTime(iso, { locale: "fr", projectTimeZone: tz });
+  const engagementFor = (architectId: string) => engagements.find((e) => e.architect_id === architectId);
+  const activeEngagements = engagements.filter((e) => ACTIVE_ENGAGEMENTS.has(e.status));
+  const proposedCount = engagements.filter((e) => e.status === "proposed").length;
+  const hasActiveMeeting = meetings.some((m) => ACTIVE_MEETINGS.has(m.status));
+  const closed = project.status === "closed";
 
   return (
     <>
@@ -139,31 +147,36 @@ export default async function AdminProjectDetail({
       </Link>
 
       <div className="mt-4 flex flex-wrap items-baseline justify-between gap-3">
-        <h1 className="font-light text-4xl capitalize">{project.client_name}</h1>
+        <h1 className="font-light text-4xl">{project.client_name}</h1>
         <span className="mono uppercase text-[11px] tracking-[0.18em] text-green">
           {PROJECT_STATUS_FR[project.status] ?? project.status}
         </span>
       </div>
       <p className="eyebrow mt-2">Projet · #{project.id.slice(0, 8)}</p>
 
+      {error && (
+        <p role="alert" className="mt-6 border border-red-700/40 bg-red-700/5 p-3 text-sm text-red-700">
+          {ERRORS_FR[error] ?? error}
+        </p>
+      )}
+      {notice === "asked" && (
+        <p role="status" className="mt-6 border border-[var(--hairline)] p-3 text-sm text-green">
+          Le porteur a été invité à choisir son architecte.
+        </p>
+      )}
+
       {/* ── Brief ─────────────────────────────────────────────────────── */}
-      <section
-        className="border border-[var(--hairline)] mt-8 p-6"
-        style={{ background: "var(--paper-2)" }}
-      >
+      <section className="border border-[var(--hairline)] mt-8 p-6" style={{ background: "var(--paper-2)" }}>
         <dl className="grid grid-cols-1 md:grid-cols-3 gap-x-8 gap-y-4 text-sm">
           <Field label="Type" value={project.project_type} capitalize />
           <Field label="Pays du chantier" value={project.project_country} />
           <Field label="Localité / site" value={project.project_location} />
           <Field label="Budget" value={project.budget_range ?? "—"} />
           <Field label="Échéance" value={project.timeline ?? "—"} />
-          <Field
-            label="Spécialités requises"
-            value={project.required_specialties.join(" · ") || "—"}
-          />
+          <Field label="Spécialités requises" value={project.required_specialties.join(" · ") || "—"} />
           <Field label="Contact" value={project.email} />
           <Field label="Téléphone" value={project.phone ?? "—"} />
-          <Field label="Déposé le" value={fmtDateTime(project.created_at)} />
+          <Field label="Déposé le" value={new Date(project.created_at).toLocaleDateString("fr-FR")} />
         </dl>
         <div className="mt-5 border-t border-[var(--hairline-soft)] pt-4">
           <dt className="eyebrow">Descriptif</dt>
@@ -179,13 +192,67 @@ export default async function AdminProjectDetail({
         </div>
       </section>
 
+      {/* ── Propositions en cours ─────────────────────────────────────── */}
+      <div className="mt-12">
+        <h2 className="font-light text-2xl">Propositions</h2>
+        {activeEngagements.length === 0 ? (
+          <p className="text-concrete-1 text-sm mt-3 max-w-[60ch]">
+            Aucun architecte proposé. Choisissez-en un (ou plusieurs) parmi les correspondances ci-dessous.
+          </p>
+        ) : (
+          <div className="mt-5 space-y-4">
+            {activeEngagements.map((e) => {
+              const a = e.architect_profiles;
+              const meetingOpenHere = meetings.some(
+                (m) => m.architect_id === e.architect_id && ACTIVE_MEETINGS.has(m.status),
+              );
+              return (
+                <article key={e.architect_id} className="border border-[var(--hairline)] p-5">
+                  <div className="flex flex-wrap justify-between items-baseline gap-2">
+                    <h3 className="font-medium">
+                      {a ? `${a.first_name} ${a.last_name}` : "Architecte"}
+                      <span className="ml-2 mono text-[11px] text-concrete-2">{a?.anon_handle ?? ""}</span>
+                    </h3>
+                    <span className="mono uppercase text-[10px] tracking-[0.16em] text-green">
+                      {ENGAGEMENT_STATUS_FR[e.status] ?? e.status}
+                    </span>
+                  </div>
+                  {!closed && (
+                    <div className="mt-4 flex flex-wrap items-end gap-4 border-t border-[var(--hairline-soft)] pt-4">
+                      {!hasActiveMeeting && (
+                        <form action={scheduleMeeting} className="flex flex-wrap items-end gap-3">
+                          <input type="hidden" name="projectId" value={project.id} />
+                          <input type="hidden" name="architectId" value={e.architect_id} />
+                          <MeetingSlotFields />
+                          <button className={btn}>Planifier le RDV</button>
+                        </form>
+                      )}
+                      {e.status === "proposed" && !meetingOpenHere && (
+                        <form action={withdrawProposal}>
+                          <input type="hidden" name="projectId" value={project.id} />
+                          <input type="hidden" name="architectId" value={e.architect_id} />
+                          <button className={btnGhost}>Retirer la proposition</button>
+                        </form>
+                      )}
+                    </div>
+                  )}
+                </article>
+              );
+            })}
+          </div>
+        )}
+        {!closed && proposedCount >= 2 && !hasActiveMeeting && (
+          <form action={askClientToChoose} className="mt-4">
+            <input type="hidden" name="projectId" value={project.id} />
+            <button className={btnGhost}>Demander au porteur de choisir parmi les {proposedCount} propositions</button>
+          </form>
+        )}
+      </div>
+
       {/* ── Correspondances ───────────────────────────────────────────── */}
       <div className="mt-12 flex items-baseline justify-between">
         <h2 className="font-light text-2xl">Correspondances</h2>
-        <Link
-          href={`/${locale}/admin/matches`}
-          className="eyebrow hover:text-ink"
-        >
+        <Link href={`/${locale}/admin/matches`} className="eyebrow hover:text-ink">
           Re-calculer →
         </Link>
       </div>
@@ -201,11 +268,9 @@ export default async function AdminProjectDetail({
             const eng = engagementFor(m.architect_id);
             const reasons = describeReasons(m.reasons);
             const pct = Math.round((m.score / MAX_SCORE) * 100);
+            const canPropose = !closed && (!eng || !ACTIVE_ENGAGEMENTS.has(eng.status)) && a?.status === "verified";
             return (
-              <article
-                key={m.architect_id}
-                className="border border-[var(--hairline)] p-5"
-              >
+              <article key={m.architect_id} className="border border-[var(--hairline)] p-5">
                 <div className="flex flex-wrap justify-between items-baseline gap-2">
                   <h3 className="font-medium">
                     {a ? `${a.first_name} ${a.last_name}` : "Architecte"}
@@ -221,64 +286,26 @@ export default async function AdminProjectDetail({
                   <p className="eyebrow mt-1">
                     {a.city} · {a.country} · {a.years_experience} ans
                     {a.rating != null ? ` · ${a.rating.toFixed(1)}/5` : ""}
+                    {a.status !== "verified" ? ` · ${a.status}` : ""}
                   </p>
                 ) : null}
                 {a && a.specialties.length > 0 ? (
-                  <p className="text-[12px] text-concrete-1 mt-2">
-                    {a.specialties.join(" · ")}
-                  </p>
+                  <p className="text-[12px] text-concrete-1 mt-2">{a.specialties.join(" · ")}</p>
                 ) : null}
-
                 <ul className="mt-3 space-y-1 text-[13px] text-concrete-2">
                   {reasons.map((r, j) => (
                     <li key={j}>
-                      · {r.text}{" "}
-                      <span className="mono text-[10px] text-concrete-2">+{r.weight}</span>
+                      · {r.text} <span className="mono text-[10px] text-concrete-2">+{r.weight}</span>
                     </li>
                   ))}
                 </ul>
-
-                {/* Actions : choisir puis planifier */}
-                <div className="mt-4 flex flex-wrap items-end gap-4 border-t border-[var(--hairline-soft)] pt-4">
-                  {!eng ? (
-                    <form action={selectArchitect}>
-                      <input type="hidden" name="projectId" value={project.id} />
-                      <input type="hidden" name="architectId" value={m.architect_id} />
-                      <button className="px-4 py-2 bg-ink text-paper text-sm">
-                        Choisir cet architecte
-                      </button>
-                    </form>
-                  ) : (
-                    <form
-                      action={scheduleMeeting}
-                      className="flex flex-wrap items-end gap-3"
-                    >
-                      <input type="hidden" name="projectId" value={project.id} />
-                      <input type="hidden" name="architectId" value={m.architect_id} />
-                      <label className="block">
-                        <span className="eyebrow">Créneau proposé</span>
-                        <input
-                          type="datetime-local"
-                          name="scheduledAt"
-                          required
-                          className="block mt-1 bg-transparent border-b border-[var(--hairline)] py-1.5 text-sm outline-none focus:border-green"
-                        />
-                      </label>
-                      <label className="block">
-                        <span className="eyebrow">Lien visio</span>
-                        <input
-                          type="url"
-                          name="videoUrl"
-                          placeholder="https://meet…"
-                          className="block mt-1 bg-transparent border-b border-[var(--hairline)] py-1.5 text-sm outline-none focus:border-green min-w-[220px]"
-                        />
-                      </label>
-                      <button className="px-4 py-2 bg-ink text-paper text-sm">
-                        Planifier un RDV
-                      </button>
-                    </form>
-                  )}
-                </div>
+                {canPropose && (
+                  <form action={proposeArchitect} className="mt-4 border-t border-[var(--hairline-soft)] pt-4">
+                    <input type="hidden" name="projectId" value={project.id} />
+                    <input type="hidden" name="architectId" value={m.architect_id} />
+                    <button className={btn}>Proposer cet architecte</button>
+                  </form>
+                )}
               </article>
             );
           })}
@@ -291,58 +318,50 @@ export default async function AdminProjectDetail({
           <h2 className="font-light text-2xl">Rendez-vous</h2>
           <ul className="mt-5 space-y-3">
             {meetings.map((mt) => (
-              <li
-                key={mt.id}
-                className="border border-[var(--hairline)] p-4 flex flex-wrap justify-between items-baseline gap-3 text-sm"
-              >
-                <span>
-                  {fmtDateTime(mt.scheduled_at)}
-                  {mt.architect_profiles
-                    ? ` · ${mt.architect_profiles.first_name} ${mt.architect_profiles.last_name}`
-                    : ""}
-                  {mt.video_url ? (
-                    <>
-                      {" · "}
-                      <a
-                        href={mt.video_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="underline"
-                      >
-                        lien visio
-                      </a>
-                    </>
-                  ) : null}
-                </span>
-                <span className="mono uppercase text-[11px] tracking-[0.18em] text-concrete-1">
-                  {MEETING_STATUS_FR[mt.status] ?? mt.status}
-                  {mt.charter_accepted ? " · charte ✓" : ""}
-                </span>
+              <li key={mt.id} className="border border-[var(--hairline)] p-4 text-sm">
+                <div className="flex flex-wrap justify-between items-baseline gap-3">
+                  <span>
+                    {when(mt.scheduled_at)}
+                    {mt.architect_profiles
+                      ? ` · ${mt.architect_profiles.first_name} ${mt.architect_profiles.last_name}`
+                      : ""}
+                    {mt.video_url ? (
+                      <>
+                        {" · "}
+                        <a href={mt.video_url} target="_blank" rel="noopener noreferrer" className="underline">
+                          lien visio
+                        </a>
+                      </>
+                    ) : null}
+                  </span>
+                  <span className="mono uppercase text-[11px] tracking-[0.18em] text-concrete-1">
+                    {MEETING_STATUS_FR[mt.status] ?? mt.status}
+                    {mt.charter_accepted ? " · charte ✓" : ""}
+                  </span>
+                </div>
+                {ACTIVE_MEETINGS.has(mt.status) && !closed && <MeetingActions meetingId={mt.id} status={mt.status} />}
               </li>
             ))}
           </ul>
-          <p className="eyebrow mt-3">
-            Gérer les statuts (terminer / annuler) depuis l&apos;onglet{" "}
-            <Link href={`/${locale}/admin/rdv`} className="underline hover:text-ink">
-              RDV
-            </Link>
-            .
-          </p>
         </div>
       ) : null}
+
+      {/* ── Clôture ──────────────────────────────────────────────────── */}
+      {!closed && (
+        <form action={closeProject} className="mt-14 border-t border-[var(--hairline)] pt-6 flex flex-wrap items-center gap-4">
+          <input type="hidden" name="projectId" value={project.id} />
+          <label className="flex items-center gap-2 text-sm">
+            <input type="checkbox" name="confirm" required />
+            Clôturer ce projet (les rendez-vous encore ouverts seront annulés)
+          </label>
+          <button className={btnGhost}>Clôturer le projet</button>
+        </form>
+      )}
     </>
   );
 }
 
-function Field({
-  label,
-  value,
-  capitalize,
-}: {
-  label: string;
-  value: string;
-  capitalize?: boolean;
-}) {
+function Field({ label, value, capitalize }: { label: string; value: string; capitalize?: boolean }) {
   return (
     <div>
       <dt className="eyebrow">{label}</dt>

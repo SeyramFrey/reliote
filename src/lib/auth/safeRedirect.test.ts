@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { safeRedirectPath, safeLocale } from "./safeRedirect";
+import { safeRedirectPath, safeLocale, safeAdminReturn } from "./safeRedirect";
 
 describe("safeLocale", () => {
   it("accepts supported locales", () => {
@@ -42,5 +42,18 @@ describe("safeRedirectPath", () => {
   it("rejects control characters that browsers strip", () => {
     expect(safeRedirectPath("/\t/evil.com", FALLBACK)).toBe(FALLBACK);
     expect(safeRedirectPath("/\n/evil.com", FALLBACK)).toBe(FALLBACK);
+  });
+});
+
+describe("safeAdminReturn", () => {
+  it("keeps internal admin paths", () => {
+    expect(safeAdminReturn("/fr/admin/rdv", "/fr/admin")).toBe("/fr/admin/rdv");
+    expect(safeAdminReturn("/en/admin", "/fr/admin")).toBe("/en/admin");
+  });
+  it("falls back for anything else", () => {
+    expect(safeAdminReturn("//evil.com", "/fr/admin")).toBe("/fr/admin");
+    expect(safeAdminReturn("/fr/admin/../dashboard", "/fr/admin")).toBe("/fr/admin");
+    expect(safeAdminReturn("/fr/dashboard/client", "/fr/admin")).toBe("/fr/admin");
+    expect(safeAdminReturn(null, "/fr/admin")).toBe("/fr/admin");
   });
 });
