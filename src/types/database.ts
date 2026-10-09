@@ -27,7 +27,7 @@ export type Database = {
           id: string
           languages: string[]
           last_name: string
-          ordre_number: string | null
+          ordre_number: string
           phone: string | null
           photo_url: string | null
           portfolio_url: string | null
@@ -57,7 +57,7 @@ export type Database = {
           id?: string
           languages?: string[]
           last_name: string
-          ordre_number?: string | null
+          ordre_number: string
           phone?: string | null
           photo_url?: string | null
           portfolio_url?: string | null
@@ -87,7 +87,7 @@ export type Database = {
           id?: string
           languages?: string[]
           last_name?: string
-          ordre_number?: string | null
+          ordre_number?: string
           phone?: string | null
           photo_url?: string | null
           portfolio_url?: string | null
@@ -177,6 +177,7 @@ export type Database = {
           id: string
           notes: string | null
           phone: string | null
+          project_country: string
           project_description: string
           project_location: string
           project_type: Database["public"]["Enums"]["project_type"]
@@ -193,6 +194,7 @@ export type Database = {
           id?: string
           notes?: string | null
           phone?: string | null
+          project_country: string
           project_description: string
           project_location: string
           project_type: Database["public"]["Enums"]["project_type"]
@@ -209,6 +211,7 @@ export type Database = {
           id?: string
           notes?: string | null
           phone?: string | null
+          project_country?: string
           project_description?: string
           project_location?: string
           project_type?: Database["public"]["Enums"]["project_type"]
@@ -599,28 +602,7 @@ export type Database = {
       }
     }
     Functions: {
-      client_can_reveal_architect: {
-        Args: { p_architect_id: string }
-        Returns: boolean
-      }
-      is_admin: { Args: never; Returns: boolean }
-      is_architect_for_row: {
-        Args: { p_architect_id: string }
-        Returns: boolean
-      }
-      is_architect_matched_to_user: {
-        Args: { p_architect_id: string }
-        Returns: boolean
-      }
-      is_matched_architect_for_project: {
-        Args: { p_project_id: string }
-        Returns: boolean
-      }
-      owns_project: { Args: { p_project_id: string }; Returns: boolean }
-      user_role_for_current: {
-        Args: never
-        Returns: Database["public"]["Enums"]["user_role"]
-      }
+      [_ in never]: never
     }
     Enums: {
       architect_status: "pending" | "verified" | "rejected" | "paused"

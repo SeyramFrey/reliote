@@ -23,8 +23,8 @@ insert into architect_profiles (id, first_name, last_name, structure, ordre_numb
 on conflict (id) do nothing;
 
 -- 3 demo projects
-insert into client_projects (id, client_name, email, project_location, project_type, project_description, required_specialties, budget_range, timeline, status) values
-('00000000-0000-0000-0000-0000000c0001','Marie L.','marie.l@example.test','Bingerville · Côte d''Ivoire','residential','Villa contemporaine bord de lagune, 350 m², jardin tropical et bassin.','{Résidentiel}','€500k–€800k','12–18 mois','new'),
-('00000000-0000-0000-0000-0000000c0002','Pierre G.','pierre.g@example.test','Plateau · Abidjan','commercial','Siège régional 1200 m² avec espaces collaboratifs et patio intérieur.','{Commercial,Urbain}','€1M–€2M','24 mois','new'),
-('00000000-0000-0000-0000-0000000c0003','Sophie M.','sophie.m@example.test','Cocody · Abidjan','hospitality','Maison d''hôtes 8 chambres, restaurant signature, piscine de 25m.','{Hospitalité,Résidentiel}','€350k–€500k','15 mois','new')
+insert into client_projects (id, client_name, email, project_location, project_country, project_type, project_description, required_specialties, budget_range, timeline, status) values
+('00000000-0000-0000-0000-0000000c0001','Marie L.','marie.l@example.test','Bingerville · Côte d''Ivoire','Côte d''Ivoire','residential','Villa contemporaine bord de lagune, 350 m², jardin tropical et bassin.','{Résidentiel}','€500k–€800k','12–18 mois','new'),
+('00000000-0000-0000-0000-0000000c0002','Pierre G.','pierre.g@example.test','Plateau · Abidjan','Côte d''Ivoire','commercial','Siège régional 1200 m² avec espaces collaboratifs et patio intérieur.','{Commercial,Urbain}','€1M–€2M','24 mois','new'),
+('00000000-0000-0000-0000-0000000c0003','Sophie M.','sophie.m@example.test','Cocody · Abidjan','Côte d''Ivoire','hospitality','Maison d''hôtes 8 chambres, restaurant signature, piscine de 25m.','{Hospitalité,Résidentiel}','€350k–€500k','15 mois','new')
 on conflict (id) do nothing;
