@@ -45,7 +45,7 @@ export function ArchitectWizard({
       first_name: defaultFirstName ?? "",
       last_name: defaultLastName ?? "",
       email: defaultEmail ?? "",
-      country: "Côte d'Ivoire",
+      country: "",
       specialties: [],
       languages: ["FR"],
       project_types: [],

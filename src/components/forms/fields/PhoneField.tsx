@@ -5,11 +5,11 @@ import "react-phone-number-input/style.css";
 
 // Phone input with searchable country selector (flag emoji + dial code).
 // Stores E.164 in `name` and the selected ISO-2 country code in `${name}_country`.
-// Defaults to CI since the platform is CI-only at launch.
+// No default country: Reliote covers 54 countries, the indicative is picked or typed.
 export function PhoneField({
   name,
   label,
-  defaultCountry = "CI",
+  defaultCountry,
   required = false,
 }: {
   name: string;
@@ -32,7 +32,7 @@ export function PhoneField({
             <PhoneInput
               international
               countryCallingCodeEditable={false}
-              defaultCountry={defaultCountry as "CI"}
+              defaultCountry={defaultCountry as "CI" | undefined}
               value={field.value ?? ""}
               onChange={(v) => field.onChange(v ?? "")}
               onCountryChange={(c) => c && setValue(`${name}_country`, c)}

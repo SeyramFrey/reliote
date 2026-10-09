@@ -101,3 +101,31 @@ describe("architectSchema — ordre_number required for all", () => {
     expect(architectSchema.safeParse({ ...ci, ordre_number: "2014/418/132" }).success).toBe(true);
   });
 });
+
+// Ce que le formulaire envoie réellement quand les honoraires restent vides :
+// des chaînes vides, pas undefined.
+describe("architectSchema — fees as sent by the form", () => {
+  const base = { ...validNonCI };
+
+  it("accepts empty amount and empty currency (fees are optional)", () => {
+    expect(architectSchema.safeParse({ ...base, fee_amount: "", fee_currency: "" }).success).toBe(true);
+  });
+
+  it("asks for the currency when only an amount is typed", () => {
+    const r = architectSchema.safeParse({ ...base, fee_amount: "48000", fee_currency: "" });
+    expect(r.success).toBe(false);
+    expect(r.error?.issues.map((i) => i.path.join("."))).toContain("fee_currency");
+  });
+
+  it("accepts an amount typed as text with a currency", () => {
+    const r = architectSchema.safeParse({ ...base, fee_amount: "48000", fee_currency: "XOF" });
+    expect(r.success).toBe(true);
+    expect(r.success && r.data.fee_amount).toBe(48000);
+  });
+
+  it("rejects an empty country", () => {
+    const r = architectSchema.safeParse({ ...base, country: "" });
+    expect(r.success).toBe(false);
+    expect(r.error?.issues.find((i) => i.path[0] === "country")?.message).toBe("Pays requis");
+  });
+});

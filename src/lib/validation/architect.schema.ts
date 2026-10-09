@@ -43,6 +43,9 @@ export const DIPLOMAS = [
 // e.g. "2014/418/132" or "1971/07/08" (older entries are shorter).
 const ORDRE_NUMBER_RE = /^\d{4}\/\d{1,4}\/\d{1,4}$/;
 
+// Un champ laissé vide arrive en chaîne vide : on le traite comme absent.
+const emptyToUndefined = (v: unknown) => (v === "" || v === null ? undefined : v);
+
 export const architectSchema = z
   .object({
     first_name: z.string().min(1, "Prénom requis"),
@@ -63,8 +66,8 @@ export const architectSchema = z
     description: z.string().min(80, "≥ 80 caractères"),
     portfolio_url: z.string().url().optional().or(z.literal("")),
     availability: z.enum(["available", "busy", "unavailable"]),
-    fee_currency: z.enum(FEE_CURRENCIES).optional(),
-    fee_amount: z.coerce.number().int().positive().optional(),
+    fee_currency: z.preprocess(emptyToUndefined, z.enum(FEE_CURRENCIES).optional()),
+    fee_amount: z.preprocess(emptyToUndefined, z.coerce.number().int().positive().optional()),
     terms: z.literal(true).refine((v) => v === true, {
       message: "Vous devez accepter les conditions.",
     }),
@@ -77,11 +80,13 @@ export const architectSchema = z
   )
   // Fee currency + amount must be set together (both or neither — neither is fine since
   // the field is overall optional, but a half-filled fee is invalid).
-  .refine(
-    (d) =>
-      (d.fee_currency === undefined && d.fee_amount === undefined) ||
-      (d.fee_currency !== undefined && d.fee_amount !== undefined),
-    { path: ["fee_amount"], message: "Devise et montant requis ensemble" }
-  );
+  .refine((d) => d.fee_amount === undefined || d.fee_currency !== undefined, {
+    path: ["fee_currency"],
+    message: "Choisissez la devise des honoraires",
+  })
+  .refine((d) => d.fee_currency === undefined || d.fee_amount !== undefined, {
+    path: ["fee_amount"],
+    message: "Indiquez le montant ou retirez la devise",
+  });
 
 export type ArchitectInput = z.infer<typeof architectSchema>;
