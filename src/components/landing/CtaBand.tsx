@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { getLocale, getTranslations } from "next-intl/server";
 
-export async function CtaBand() {
+export async function CtaBand({ num }: { num: string }) {
   const locale = await getLocale();
   const c = await getTranslations("ctaBand");
   const lc = await getTranslations("landing.ctaBand");
@@ -14,7 +14,7 @@ export async function CtaBand() {
             className="eyebrow"
             style={{ color: "rgba(243,241,236,0.6)", marginBottom: 22 }}
           >
-            {c("eyebrow")} — {lc("begin")}
+            {num} — {lc("begin")}
           </div>
           <h2 className="cta-title">
             {c("titlePre")}
@@ -48,7 +48,7 @@ export async function CtaBand() {
             {c("button")} <span className="btn-arrow" />
           </Link>
           <Link
-            href={`/${locale}/architectes`}
+            href={`/${locale}#projets`}
             className="btn btn-ghost on-dark"
             style={{ color: "var(--paper)", borderColor: "rgba(243,241,236,0.3)" }}
           >

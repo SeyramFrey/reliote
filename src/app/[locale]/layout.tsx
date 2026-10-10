@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
-import { getMessages, setRequestLocale } from "next-intl/server";
+import { getMessages, getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { locales } from "@/lib/i18n/config";
 import "@/styles/globals.css";
@@ -26,11 +26,11 @@ const instrument = Instrument_Serif({
   style: ["normal", "italic"],
 });
 
-export const metadata: Metadata = {
-  title: "Reliote — Architecture, sélectionnée.",
-  description:
-    "Plateforme premium de mise en relation entre porteurs de projets en France et architectes en Côte d'Ivoire.",
-};
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale: hasLocale(locales, locale) ? locale : "fr", namespace: "meta" });
+  return { title: t("title"), description: t("description") };
+}
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));

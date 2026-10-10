@@ -13,13 +13,13 @@ const BGS = [
 ];
 
 // Immersive expanding pillars (.pillars-x / .pillar-x) — hover/focus to expand.
-export function Pillars() {
+export function Pillars({ num }: { num: string }) {
   const t = useTranslations("pillars");
   const [active, setActive] = useState(0);
   return (
     <section className="sect" id="approche">
       <SectionHead
-        num={t("eyebrow")}
+        num={num}
         titlePre={t("titlePre")}
         titleItalic={t("titleItalic")}
         kicker={t("kicker")}

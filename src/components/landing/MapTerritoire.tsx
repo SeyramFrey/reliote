@@ -1,5 +1,5 @@
 import { getTranslations } from "next-intl/server";
-import { createServiceClient } from "@/lib/supabase/service";
+import { getVerifiedArchitects } from "@/lib/landing/data";
 import { aggregatePresence } from "@/lib/countries/presence";
 import { SectionHead } from "./SectionHead";
 import { PresencePanel, type PresenceLabels } from "./PresencePanel";
@@ -7,23 +7,17 @@ import { MapAfricaSvg } from "./MapAfricaSvg";
 import { MapAfricaMaplibre } from "./MapAfricaMaplibre";
 
 // Bloc Territoire — carte de présence Afrique. Serveur : agrège les architectes
-// vérifiés par pays via createServiceClient() (bypass RLS, server-only) et ne
-// transmet que des COMPTES, jamais une ligne architecte individuelle.
+// vérifiés par pays (getVerifiedArchitects, server-only) et ne transmet que des
+// COMPTES, jamais une ligne architecte individuelle.
 //
 // SPIKE : rend deux versions de carte empilées (A = SVG inline, B = MapLibre GL)
 // avec le même panneau droit réel, pour comparaison navigateur. La version non
 // retenue et son artefact/dépendance seront supprimés avant le merge.
 
-export async function MapTerritoire() {
+export async function MapTerritoire({ num }: { num: string }) {
   const t = await getTranslations("landing.territoire");
 
-  const service = createServiceClient();
-  const { data } = (await service
-    .from("architect_profiles")
-    .select("country")
-    .eq("status", "verified")) as { data: { country: string | null }[] | null };
-
-  const presence = aggregatePresence(data ?? []);
+  const presence = aggregatePresence(await getVerifiedArchitects());
 
   const labels: PresenceLabels = {
     presence: t("presence"),
@@ -39,7 +33,8 @@ export async function MapTerritoire() {
   return (
     <section className="sect territoire-sect" id="territoire">
       <SectionHead
-        num={t("eyebrow")}
+        num={num}
+        label={t("eyebrow")}
         titlePre={t("titlePre")}
         titleItalic={t("titleItalic")}
         titleRest={t("titleRest")}

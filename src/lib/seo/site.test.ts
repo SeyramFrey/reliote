@@ -1,0 +1,51 @@
+import { describe, it, expect } from "vitest";
+import { resolveSiteUrl, buildSitemap } from "./site";
+
+describe("resolveSiteUrl", () => {
+  it("prefers SITE_URL, without trailing slash", () => {
+    expect(resolveSiteUrl({ siteUrl: "https://reliote.com/", vercelProdUrl: "reliote.vercel.app" })).toBe(
+      "https://reliote.com",
+    );
+  });
+  it("falls back to the Vercel production domain", () => {
+    expect(resolveSiteUrl({ vercelProdUrl: "reliote.vercel.app" })).toBe("https://reliote.vercel.app");
+  });
+  it("falls back to localhost when nothing is configured", () => {
+    expect(resolveSiteUrl({})).toBe("http://localhost:3000");
+  });
+});
+
+describe("buildSitemap", () => {
+  const base = "https://reliote.com";
+  const now = new Date("2026-10-10T00:00:00Z");
+
+  it("lists every public page in both locales with hreflang alternates", () => {
+    const urls = buildSitemap(base, [], now).map((e) => e.url);
+    expect(urls).toEqual([
+      "https://reliote.com/fr",
+      "https://reliote.com/en",
+      "https://reliote.com/fr/projets/initier",
+      "https://reliote.com/en/projets/initier",
+    ]);
+    const home = buildSitemap(base, [], now)[0];
+    expect(home.alternates?.languages).toEqual({
+      fr: "https://reliote.com/fr",
+      en: "https://reliote.com/en",
+    });
+  });
+
+  it("adds published legal pages with their own last-modified date", () => {
+    const entries = buildSitemap(base, [{ slug: "cgu", updated_at: "2026-09-01T10:00:00Z" }], now);
+    const cgu = entries.filter((e) => e.url.endsWith("/legal/cgu"));
+    expect(cgu.map((e) => e.url)).toEqual([
+      "https://reliote.com/fr/legal/cgu",
+      "https://reliote.com/en/legal/cgu",
+    ]);
+    expect(cgu[0].lastModified).toEqual(new Date("2026-09-01T10:00:00Z"));
+  });
+
+  it("ignores rows whose slug is not a known legal page", () => {
+    const entries = buildSitemap(base, [{ slug: "brouillon-x", updated_at: "2026-09-01T10:00:00Z" }], now);
+    expect(entries.some((e) => e.url.includes("brouillon"))).toBe(false);
+  });
+});
