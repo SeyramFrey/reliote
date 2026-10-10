@@ -1,35 +1,33 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { getMessages, getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
-import { locales } from "@/lib/i18n/config";
+import { defaultLocale, locales } from "@/lib/i18n/config";
+import { siteUrl } from "@/lib/seo/site";
+import { fontVariables } from "../fonts";
 import "@/styles/globals.css";
 import "@/styles/landing.css";
 
-const geist = Geist({
-  subsets: ["latin"],
-  variable: "--font-sans",
-  weight: ["300", "400", "500", "600", "700"],
-});
-
-const geistMono = Geist_Mono({
-  subsets: ["latin"],
-  variable: "--font-mono",
-  weight: ["300", "400", "500"],
-});
-
-const instrument = Instrument_Serif({
-  subsets: ["latin"],
-  variable: "--font-display",
-  weight: "400",
-  style: ["normal", "italic"],
-});
-
+// Valeurs par défaut de tout le site ; chaque page précise titre, canonical
+// et hreflang. L'image de partage vient de ./opengraph-image.tsx.
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { locale } = await params;
-  const t = await getTranslations({ locale: hasLocale(locales, locale) ? locale : "fr", namespace: "meta" });
-  return { title: t("title"), description: t("description") };
+  const { locale: raw } = await params;
+  const locale = hasLocale(locales, raw) ? raw : defaultLocale;
+  const t = await getTranslations({ locale, namespace: "meta" });
+  return {
+    metadataBase: new URL(siteUrl()),
+    title: { default: t("title"), template: "%s — Reliote" },
+    description: t("description"),
+    applicationName: "Reliote",
+    openGraph: {
+      type: "website",
+      siteName: "Reliote",
+      locale: locale === "en" ? "en_GB" : "fr_FR",
+      title: t("title"),
+      description: t("description"),
+    },
+    twitter: { card: "summary_large_image" },
+  };
 }
 
 export function generateStaticParams() {
@@ -53,7 +51,7 @@ export default async function LocaleLayout({ children, params }: Props) {
   return (
     <html
       lang={locale}
-      className={`${geist.variable} ${geistMono.variable} ${instrument.variable}`}
+      className={fontVariables}
     >
       <body>
         <NextIntlClientProvider locale={locale} messages={messages}>

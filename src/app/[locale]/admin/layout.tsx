@@ -3,6 +3,11 @@ import { redirect, notFound } from "next/navigation";
 import { getLocale } from "next-intl/server";
 import { Nav } from "@/components/shared/Nav";
 import { AdminShell } from "@/components/admin/AdminShell";
+import { pageMetadata } from "@/lib/seo/metadata";
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+  return pageMetadata({ locale: (await params).locale, page: "admin" });
+}
 
 type Profile = { role: string };
 

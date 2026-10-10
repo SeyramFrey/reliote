@@ -3,6 +3,11 @@ import { getTranslations, getLocale } from "next-intl/server";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { displayAuthError } from "@/lib/auth/authError";
+import { pageMetadata } from "@/lib/seo/metadata";
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+  return pageMetadata({ locale: (await params).locale, page: "reset" });
+}
 
 // Atteinte depuis le lien « mot de passe oublié » : le callback a ouvert une
 // session de récupération. Sans session, le lien est expiré.

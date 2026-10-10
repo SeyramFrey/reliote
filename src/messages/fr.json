@@ -741,6 +741,62 @@
   },
   "meta": {
     "title": "Reliote — Architectes d'Afrique, vérifiés.",
-    "description": "Reliote met en relation les porteurs de projet du monde entier avec des architectes vérifiés dans 54 pays africains — pour un chantier en Afrique, conduit avec méthode."
+    "description": "Reliote met en relation les porteurs de projet du monde entier avec des architectes vérifiés dans 54 pays africains — pour un chantier en Afrique, conduit avec méthode.",
+    "pages": {
+      "project": {
+        "title": "Initier un projet",
+        "description": "Décrivez votre projet de construction en Afrique en quelques minutes. Un binôme Reliote vous répond sous 48 heures ouvrées avec des architectes vérifiés."
+      },
+      "join": {
+        "title": "Rejoindre Reliote",
+        "description": "Architectes exerçant en Afrique : rejoignez un index restreint et recevez des projets qualifiés de porteurs du monde entier."
+      },
+      "joinThanks": {
+        "title": "Candidature reçue"
+      },
+      "login": {
+        "title": "Connexion"
+      },
+      "register": {
+        "title": "Créer un compte"
+      },
+      "forgot": {
+        "title": "Mot de passe oublié"
+      },
+      "reset": {
+        "title": "Nouveau mot de passe"
+      },
+      "verify": {
+        "title": "Confirmez votre adresse e-mail"
+      },
+      "confirmation": {
+        "title": "Projet reçu"
+      },
+      "dashboard": {
+        "title": "Mon espace"
+      },
+      "admin": {
+        "title": "Console"
+      }
+    }
+  },
+  "errors": {
+    "notFound": {
+      "eyebrow": "Erreur 404",
+      "titlePre": "Cette page ",
+      "titleItalic": "n'existe pas.",
+      "body": "Le lien est peut-être ancien, ou l'adresse a été mal saisie. Le reste du site, lui, vous attend.",
+      "home": "Retour à l'accueil",
+      "project": "Initier un projet"
+    },
+    "error": {
+      "eyebrow": "Incident",
+      "titlePre": "Quelque chose ",
+      "titleItalic": "s'est mal passé.",
+      "body": "Une erreur inattendue est survenue de notre côté. Réessayez dans un instant ; si elle persiste, revenez à l'accueil.",
+      "retry": "Réessayer",
+      "home": "Retour à l'accueil",
+      "ref": "Référence"
+    }
   }
 }

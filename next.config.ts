@@ -22,6 +22,11 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  // 404 des URL hors /fr et /en : le layout racine est sous [locale], il n'y a
+  // donc pas de layout commun pour composer une 404 classique.
+  experimental: {
+    globalNotFound: true,
+  },
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
   },

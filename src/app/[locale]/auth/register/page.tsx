@@ -1,6 +1,11 @@
 import { signUp } from "../actions";
 import { getTranslations, getLocale } from "next-intl/server";
 import { displayAuthError } from "@/lib/auth/authError";
+import { pageMetadata } from "@/lib/seo/metadata";
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+  return pageMetadata({ locale: (await params).locale, page: "register" });
+}
 
 // Full-page auth register — split prénom + nom, dark aside matching the wizard's chrome.
 export default async function RegisterPage({

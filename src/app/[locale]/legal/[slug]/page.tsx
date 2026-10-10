@@ -11,6 +11,7 @@ import {
   sanitizeLegalHtml,
   type LegalRow,
 } from "@/lib/legal/page";
+import { localizedAlternates, ogImage } from "@/lib/seo/site";
 
 const COLUMNS =
   "slug, title_fr, title_en, body_fr, body_en, seo_description_fr, seo_description_en, updated_at";
@@ -38,26 +39,23 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { locale, slug } = await params;
   const row = await loadPage(slug);
-  if (!row) return { title: "Reliote" };
+  if (!row) return {};
 
   const { title, description } = pickLocalized(row, locale as Locale);
-  const base = process.env.SITE_URL?.replace(/\/+$/, "");
   const path = `/legal/${slug}`;
 
   return {
-    ...(base ? { metadataBase: new URL(base) } : {}),
-    title: `${title} — Reliote`,
+    title,
     ...(description ? { description } : {}),
-    alternates: {
-      canonical: `/${locale}${path}`,
-      languages: Object.fromEntries(locales.map((l) => [l, `/${l}${path}`])),
-    },
+    alternates: localizedAlternates(locale, path),
     openGraph: {
       type: "article",
+      siteName: "Reliote",
       title: `${title} — Reliote`,
       ...(description ? { description } : {}),
       url: `/${locale}${path}`,
-      locale,
+      locale: locale === "en" ? "en_GB" : "fr_FR",
+      images: [ogImage(locale)],
     },
   };
 }

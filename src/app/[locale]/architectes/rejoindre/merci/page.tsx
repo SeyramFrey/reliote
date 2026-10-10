@@ -2,6 +2,11 @@ import { getTranslations, getLocale } from "next-intl/server";
 import Link from "next/link";
 import { Nav } from "@/components/shared/Nav";
 import { Footer } from "@/components/landing/Footer";
+import { pageMetadata } from "@/lib/seo/metadata";
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+  return pageMetadata({ locale: (await params).locale, page: "joinThanks" });
+}
 
 export default async function Page() {
   const locale = await getLocale();

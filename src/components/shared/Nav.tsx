@@ -9,10 +9,11 @@ import { cn } from "@/lib/utils";
 
 export function Nav({
   dark = false,
-  showJournal = true,
+  showJournal = false,
 }: {
   dark?: boolean;
-  /** La landing masque le Journal tant qu'aucun média n'est publié. */
+  /** Seule la landing sait si le Journal a du contenu publié ; ailleurs le
+   *  lien est masqué plutôt que de mener vers une section absente. */
   showJournal?: boolean;
 }) {
   const locale = useLocale();

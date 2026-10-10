@@ -1,4 +1,5 @@
-import { getLocale } from "next-intl/server";
+import type { Metadata } from "next";
+import { getLocale, getTranslations } from "next-intl/server";
 import { Nav } from "@/components/shared/Nav";
 import { Hero } from "@/components/landing/Hero";
 import { StatsBar } from "@/components/landing/StatsBar";
@@ -16,6 +17,29 @@ import { getFeaturedRow, getPublishedMedia } from "@/lib/landing/data";
 import { toFeaturedContent } from "@/lib/landing/featured";
 import { numberSections, type LandingSection } from "@/lib/landing/sections";
 import { safeLocale } from "@/lib/auth/safeRedirect";
+import { localizedAlternates, ogImage } from "@/lib/seo/site";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const locale = safeLocale((await params).locale);
+  const t = await getTranslations({ locale, namespace: "meta" });
+  return {
+    alternates: localizedAlternates(locale, ""),
+    // openGraph remplace celui du layout (fusion superficielle) : complet ici.
+    openGraph: {
+      type: "website",
+      siteName: "Reliote",
+      locale: locale === "en" ? "en_GB" : "fr_FR",
+      title: t("title"),
+      description: t("description"),
+      url: `/${locale}`,
+      images: [ogImage(locale)],
+    },
+  };
+}
 
 export default async function Page() {
   const locale = safeLocale(await getLocale());

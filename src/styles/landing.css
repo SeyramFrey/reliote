@@ -798,6 +798,23 @@
   }
   .cta-title em { font-family: var(--f-display); font-style: italic; font-weight: 400; }
 
+  /* Error screens (404 / error / global-error) — CTA band grammar, full frame */
+  .err-screen { min-height: 100svh; display: flex; align-items: center; }
+  .err-inner { position: relative; z-index: 2; width: 100%; max-width: 1100px; margin: 0 auto; }
+  .err-code {
+    font-family: var(--f-display); font-style: italic;
+    font-size: clamp(96px, 18vw, 240px); line-height: 0.8;
+    color: rgba(243,241,236,0.14); margin-bottom: 28px; letter-spacing: -0.03em;
+  }
+  .err-eyebrow { color: rgba(243,241,236,0.6); margin-bottom: 22px; }
+  .err-body { max-width: 52ch; margin: 24px 0 0; color: rgba(243,241,236,0.78); font-size: 15px; line-height: 1.6; }
+  .err-alt { margin-top: 36px; padding-top: 24px; border-top: 1px solid rgba(243,241,236,0.16); }
+  .err-alt-title { margin: 0; font-size: clamp(20px, 2.4vw, 28px); font-weight: 300; }
+  .err-alt-title em { font-family: var(--f-display); font-style: italic; font-weight: 400; }
+  .err-alt .err-body { margin-top: 10px; font-size: 14px; }
+  .err-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 40px; }
+  .err-foot { margin-top: 28px; font-size: 10.5px; letter-spacing: 0.16em; color: rgba(243,241,236,0.45); text-transform: uppercase; }
+
   /* Footer */
   .footer {
     background: var(--ink);

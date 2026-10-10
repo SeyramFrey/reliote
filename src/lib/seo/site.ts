@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { locales } from "@/lib/i18n/config";
+import { locales, defaultLocale } from "@/lib/i18n/config";
 import { isLegalSlug } from "@/lib/legal/page";
 
 // URL canonique du site, pour metadataBase, le sitemap et robots.txt.
@@ -43,4 +43,42 @@ export function buildSitemap(
       .filter((r) => isLegalSlug(r.slug))
       .flatMap((r) => entry(`/legal/${r.slug}`, new Date(r.updated_at))),
   ];
+}
+
+// Balises canonical + hreflang d'une page publique, en chemins relatifs
+// (résolus contre metadataBase). Le français sert de version par défaut.
+export function localizedAlternates(locale: string, path: string) {
+  return {
+    canonical: `/${locale}${path}`,
+    languages: {
+      ...Object.fromEntries(locales.map((l) => [l, `/${l}${path}`])),
+      "x-default": `/${defaultLocale}${path}`,
+    },
+  };
+}
+
+// Espaces privés : connectés, authentification, admin, API, accusés de dépôt.
+const PRIVATE_PREFIXES = ["/admin", "/dashboard", "/auth", "/architectes/rejoindre/merci"];
+
+export function buildRobots(base: string, indexable: boolean): MetadataRoute.Robots {
+  if (!indexable) return { rules: { userAgent: "*", disallow: "/" } };
+  return {
+    rules: {
+      userAgent: "*",
+      allow: "/",
+      disallow: [
+        ...locales.flatMap((l) => PRIVATE_PREFIXES.map((p) => `/${l}${p}`)),
+        ...locales.map((l) => `/${l}/projets/*/confirmation`),
+        "/api/",
+      ],
+    },
+    sitemap: `${base}/sitemap.xml`,
+  };
+}
+
+// Image de partage générée par app/[locale]/opengraph-image.tsx. À répéter
+// dans tout `openGraph` de page : Next fusionne superficiellement, un
+// openGraph de page remplace celui du layout, image comprise.
+export function ogImage(locale: string) {
+  return { url: `/${locale}/opengraph-image`, width: 1200, height: 630, alt: "Reliote" };
 }

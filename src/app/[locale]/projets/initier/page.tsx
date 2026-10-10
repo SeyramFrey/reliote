@@ -3,6 +3,11 @@ import { Footer } from "@/components/landing/Footer";
 import { ProjectWizard } from "@/components/forms/ProjectWizard";
 import type { ProjectWizardAccount } from "@/components/forms/projectWizardContext";
 import { createClient } from "@/lib/supabase/server";
+import { pageMetadata } from "@/lib/seo/metadata";
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+  return pageMetadata({ locale: (await params).locale, page: "project", path: "/projets/initier" });
+}
 
 export default async function Page() {
   const supabase = await createClient();

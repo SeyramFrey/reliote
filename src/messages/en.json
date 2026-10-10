@@ -741,6 +741,62 @@
   },
   "meta": {
     "title": "Reliote — African architects, verified.",
-    "description": "Reliote connects project owners worldwide with verified architects across 54 African countries — for a project built in Africa, run with method."
+    "description": "Reliote connects project owners worldwide with verified architects across 54 African countries — for a project built in Africa, run with method.",
+    "pages": {
+      "project": {
+        "title": "Start a project",
+        "description": "Describe your building project in Africa in a few minutes. A Reliote duo replies within 48 business hours with verified architects."
+      },
+      "join": {
+        "title": "Join Reliote",
+        "description": "Architects practising in Africa: join a selective index and receive qualified projects from owners worldwide."
+      },
+      "joinThanks": {
+        "title": "Application received"
+      },
+      "login": {
+        "title": "Sign in"
+      },
+      "register": {
+        "title": "Create an account"
+      },
+      "forgot": {
+        "title": "Forgotten password"
+      },
+      "reset": {
+        "title": "New password"
+      },
+      "verify": {
+        "title": "Confirm your email address"
+      },
+      "confirmation": {
+        "title": "Project received"
+      },
+      "dashboard": {
+        "title": "My space"
+      },
+      "admin": {
+        "title": "Console"
+      }
+    }
+  },
+  "errors": {
+    "notFound": {
+      "eyebrow": "Error 404",
+      "titlePre": "This page ",
+      "titleItalic": "doesn't exist.",
+      "body": "The link may be old, or the address mistyped. The rest of the site is right where you left it.",
+      "home": "Back to home",
+      "project": "Start a project"
+    },
+    "error": {
+      "eyebrow": "Incident",
+      "titlePre": "Something ",
+      "titleItalic": "went wrong.",
+      "body": "An unexpected error occurred on our side. Try again in a moment; if it persists, head back home.",
+      "retry": "Try again",
+      "home": "Back to home",
+      "ref": "Reference"
+    }
   }
 }

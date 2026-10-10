@@ -2,6 +2,11 @@ import { ArchitectWizard } from "@/components/forms/ArchitectWizard";
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { getLocale } from "next-intl/server";
+import { pageMetadata } from "@/lib/seo/metadata";
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+  return pageMetadata({ locale: (await params).locale, page: "join" });
+}
 
 type Profile = { first_name: string | null; last_name: string | null };
 

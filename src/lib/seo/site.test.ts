@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { resolveSiteUrl, buildSitemap } from "./site";
+import { resolveSiteUrl, buildSitemap, buildRobots, localizedAlternates } from "./site";
 
 describe("resolveSiteUrl", () => {
   it("prefers SITE_URL, without trailing slash", () => {
@@ -47,5 +47,35 @@ describe("buildSitemap", () => {
   it("ignores rows whose slug is not a known legal page", () => {
     const entries = buildSitemap(base, [{ slug: "brouillon-x", updated_at: "2026-09-01T10:00:00Z" }], now);
     expect(entries.some((e) => e.url.includes("brouillon"))).toBe(false);
+  });
+});
+
+describe("localizedAlternates", () => {
+  it("gives the canonical path and every language, French as x-default", () => {
+    expect(localizedAlternates("en", "/projets/initier")).toEqual({
+      canonical: "/en/projets/initier",
+      languages: { fr: "/fr/projets/initier", en: "/en/projets/initier", "x-default": "/fr/projets/initier" },
+    });
+  });
+  it("handles the home page", () => {
+    expect(localizedAlternates("fr", "").canonical).toBe("/fr");
+  });
+});
+
+describe("buildRobots", () => {
+  it("keeps private areas out of the index and points to the sitemap", () => {
+    const r = buildRobots("https://reliote.com", true);
+    expect(r.sitemap).toBe("https://reliote.com/sitemap.xml");
+    const rule = Array.isArray(r.rules) ? r.rules[0] : r.rules;
+    expect(rule.allow).toBe("/");
+    for (const p of ["/fr/admin", "/en/admin", "/fr/dashboard", "/en/auth", "/api/"]) {
+      expect(rule.disallow).toContain(p);
+    }
+  });
+  it("blocks everything on non-production deployments", () => {
+    const r = buildRobots("https://reliote.com", false);
+    const rule = Array.isArray(r.rules) ? r.rules[0] : r.rules;
+    expect(rule.disallow).toBe("/");
+    expect(r.sitemap).toBeUndefined();
   });
 });

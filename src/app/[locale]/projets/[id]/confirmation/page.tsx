@@ -5,6 +5,11 @@ import { Nav } from "@/components/shared/Nav";
 import { Footer } from "@/components/landing/Footer";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { pageMetadata } from "@/lib/seo/metadata";
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+  return pageMetadata({ locale: (await params).locale, page: "confirmation" });
+}
 
 type Project = {
   id: string;
