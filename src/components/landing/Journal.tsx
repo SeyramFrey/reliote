@@ -31,7 +31,7 @@ export async function Journal({ items, num }: { items: MediaItem[]; num: string 
               </div>
               <div
                 className="j-img"
-                style={m.image_url ? { backgroundImage: `url(${m.image_url})` } : undefined}
+                style={m.image_url ? { backgroundImage: `url(${JSON.stringify(m.image_url)})` } : undefined}
               />
               <h3 className="j-title">{title}</h3>
               <p className="j-excerpt">{excerpt}</p>

@@ -63,14 +63,14 @@ describe("localizedAlternates", () => {
 });
 
 describe("buildRobots", () => {
-  it("keeps private areas out of the index and points to the sitemap", () => {
+  it("only blocks the API and points to the sitemap", () => {
+    // Les pages privées portent un noindex : les bloquer ici empêcherait
+    // Google de le lire (« indexée, bien que bloquée par robots.txt »).
     const r = buildRobots("https://reliote.com", true);
     expect(r.sitemap).toBe("https://reliote.com/sitemap.xml");
     const rule = Array.isArray(r.rules) ? r.rules[0] : r.rules;
     expect(rule.allow).toBe("/");
-    for (const p of ["/fr/admin", "/en/admin", "/fr/dashboard", "/en/auth", "/api/"]) {
-      expect(rule.disallow).toContain(p);
-    }
+    expect(rule.disallow).toEqual(["/api/"]);
   });
   it("blocks everything on non-production deployments", () => {
     const r = buildRobots("https://reliote.com", false);

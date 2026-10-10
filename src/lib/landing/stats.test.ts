@@ -4,8 +4,8 @@ import { buildStatCells } from "./stats";
 describe("buildStatCells", () => {
   it("shows the real verified-architect and country counts", () => {
     expect(buildStatCells({ totalArchitects: 8, totalCountries: 1 })).toEqual([
-      { key: "architects", num: "8" },
-      { key: "countries", num: "1" },
+      { key: "architects", num: "8", count: 8 },
+      { key: "countries", num: "1", count: 1 },
       { key: "eligible", num: "54" },
       { key: "response" },
     ]);

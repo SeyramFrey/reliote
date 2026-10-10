@@ -86,7 +86,7 @@ export function FeaturedCaseView({ content, num }: { content: FeaturedContent; n
             <div
               key={`${src}-${i}`}
               className={`feat-slide ${i === idx ? "active" : ""}`}
-              style={{ backgroundImage: `url(${src})` }}
+              style={{ backgroundImage: `url(${JSON.stringify(src)})` }}
             />
           ))}
 

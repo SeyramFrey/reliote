@@ -4,16 +4,17 @@ import { AFRICAN_COUNTRIES } from "@/lib/countries/africa";
 // viennent de la base (architectes vérifiés, pays couverts), « 54 » est le
 // nombre de pays éligibles. Sans architecte vérifié, on affiche des preuves
 // qualitatives plutôt qu'un « 0 » qui desservirait la marque.
-// Une cellule sans `num` tire sa valeur de la traduction (`stats.<key>.num`).
+// Une cellule sans `num` tire sa valeur de la traduction (`stats.<key>.num`) ;
+// `count` accorde le libellé (pluriel ICU).
 
-export type StatCell = { key: string; num?: string };
+export type StatCell = { key: string; num?: string; count?: number };
 
 export function buildStatCells(p: { totalArchitects: number; totalCountries: number }): StatCell[] {
   const live: StatCell[] =
     p.totalArchitects > 0
       ? [
-          { key: "architects", num: String(p.totalArchitects) },
-          { key: "countries", num: String(p.totalCountries) },
+          { key: "architects", num: String(p.totalArchitects), count: p.totalArchitects },
+          { key: "countries", num: String(p.totalCountries), count: p.totalCountries },
         ]
       : [{ key: "vetting" }, { key: "identity" }];
   return [...live, { key: "eligible", num: String(AFRICAN_COUNTRIES.length) }, { key: "response" }];

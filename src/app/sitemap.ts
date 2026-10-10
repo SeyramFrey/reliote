@@ -2,9 +2,9 @@ import type { MetadataRoute } from "next";
 import { createServiceClient } from "@/lib/supabase/service";
 import { buildSitemap, siteUrl } from "@/lib/seo/site";
 
-// Régénéré toutes les heures : une page légale publiée depuis l'admin y entre
-// sans redéploiement.
-export const revalidate = 3600;
+// Calculé à la requête : l'URL du site est celle du serveur qui répond (pas du
+// build), et une page légale publiée depuis l'admin y entre aussitôt.
+export const dynamic = "force-dynamic";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   let legal: { slug: string; updated_at: string }[] = [];

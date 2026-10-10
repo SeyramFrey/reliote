@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getLocale, getTranslations } from "next-intl/server";
 import { getVerifiedArchitects } from "@/lib/landing/data";
+import { COVERAGE_MIN_SHARED, sharedValues } from "@/lib/landing/coverage";
 import { SectionHead } from "./SectionHead";
 
 // Replaces the public architect index. Renders aggregate proof (coverage across
@@ -16,11 +17,12 @@ export async function MethodProof({ num }: { num: string }) {
   const trust = architectsT.raw("trust") as { strong: string; sub: string }[];
 
   const rows = await getVerifiedArchitects();
-  const cities = [...new Set(rows.map((r) => r.city))].sort();
-  const diplomas = [
-    ...new Set(rows.map((r) => r.diploma).filter((d): d is string => !!d)),
-  ].sort();
-  const specialties = [...new Set(rows.flatMap((r) => r.specialties))].sort();
+  // Seules les valeurs partagées par plusieurs architectes : avec un petit
+  // effectif, la liste brute redonnerait le profil d'une personne.
+  const k = COVERAGE_MIN_SHARED;
+  const cities = sharedValues(rows.map((r) => [r.city]), k);
+  const diplomas = sharedValues(rows.map((r) => (r.diploma ? [r.diploma] : [])), k);
+  const specialties = sharedValues(rows.map((r) => r.specialties), k);
 
   return (
     <section className="sect archi-block" id="architectes">

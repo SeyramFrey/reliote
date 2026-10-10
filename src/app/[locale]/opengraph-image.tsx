@@ -4,9 +4,10 @@ import { join } from "node:path";
 import fr from "@/messages/fr.json";
 import en from "@/messages/en.json";
 
-// Image de partage (Open Graph / Twitter) de toutes les pages localisées.
-// Générée au build pour chaque locale : photo du hero assombrie, marque et
-// promesse dans la langue de la page.
+// Image de partage (Open Graph / Twitter) de toutes les pages localisées :
+// photo du hero assombrie, marque et promesse dans la langue de la page.
+// Rendue à la demande (le segment [locale] est dynamique), puis mise en cache
+// par les plateformes qui la récupèrent.
 
 export const alt = "Reliote";
 export const size = { width: 1200, height: 630 };

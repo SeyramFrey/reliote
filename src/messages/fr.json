@@ -26,10 +26,10 @@
   },
   "stats": {
     "architects": {
-      "label": "Architectes vérifiés"
+      "label": "{count, plural, one {Architecte vérifié} other {Architectes vérifiés}}"
     },
     "countries": {
-      "label": "Pays déjà couverts"
+      "label": "{count, plural, one {Pays déjà couvert} other {Pays déjà couverts}}"
     },
     "eligible": {
       "label": "Pays africains éligibles"

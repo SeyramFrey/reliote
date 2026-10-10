@@ -10,7 +10,6 @@ import "@/styles/landing.css";
 // 404 des URL qui n'atteignent aucune route (hors /fr et /en, p. ex. un
 // fichier inexistant). La langue est inconnue : message bilingue.
 export const metadata: Metadata = {
-  title: `${fr.errors.notFound.eyebrow} — Reliote`,
   robots: { index: false },
 };
 
@@ -18,8 +17,9 @@ export default function GlobalNotFound() {
   return (
     <html lang="fr" className={fontVariables}>
       <body>
-        {/* Réaffirmé ici : servi via app/not-found.tsx, le titre du layout
-            [locale] reprendrait la main à l'hydratation. */}
+        {/* Titre posé ici plutôt que dans metadata : servie via
+            app/not-found.tsx, la page hériterait sinon du titre du layout
+            [locale] à l'hydratation. */}
         <title>{`${fr.errors.notFound.eyebrow} — Reliote`}</title>
         <ErrorScreen
           code="404"

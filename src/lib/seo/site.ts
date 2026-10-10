@@ -57,21 +57,13 @@ export function localizedAlternates(locale: string, path: string) {
   };
 }
 
-// Espaces privés : connectés, authentification, admin, API, accusés de dépôt.
-const PRIVATE_PREFIXES = ["/admin", "/dashboard", "/auth", "/architectes/rejoindre/merci"];
-
+// Seule l'API est bloquée. Les pages privées (auth, espaces connectés, admin,
+// accusés de dépôt) portent un noindex : les bloquer ici empêcherait Google de
+// le lire, et une URL bloquée mais liée peut quand même être indexée.
 export function buildRobots(base: string, indexable: boolean): MetadataRoute.Robots {
   if (!indexable) return { rules: { userAgent: "*", disallow: "/" } };
   return {
-    rules: {
-      userAgent: "*",
-      allow: "/",
-      disallow: [
-        ...locales.flatMap((l) => PRIVATE_PREFIXES.map((p) => `/${l}${p}`)),
-        ...locales.map((l) => `/${l}/projets/*/confirmation`),
-        "/api/",
-      ],
-    },
+    rules: { userAgent: "*", allow: "/", disallow: ["/api/"] },
     sitemap: `${base}/sitemap.xml`,
   };
 }

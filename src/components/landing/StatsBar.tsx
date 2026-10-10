@@ -7,11 +7,13 @@ import { buildStatCells } from "@/lib/landing/stats";
 // Real aggregates only — see buildStatCells.
 export async function StatsBar() {
   const t = await getTranslations("stats");
-  const presence = aggregatePresence(await getVerifiedArchitects());
-  const items = buildStatCells(presence).map((c) => ({
+  const rows = await getVerifiedArchitects();
+  // Tous les vérifiés, comme la Sélection ; les pays via la carte de présence.
+  const { totalCountries } = aggregatePresence(rows);
+  const items = buildStatCells({ totalArchitects: rows.length, totalCountries }).map((c) => ({
     key: c.key,
     num: c.num ?? t(`${c.key}.num`),
-    label: t(`${c.key}.label`),
+    label: t(`${c.key}.label`, { count: c.count ?? 0 }),
   }));
   return (
     <div className="stat-strip">
