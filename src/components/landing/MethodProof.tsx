@@ -48,21 +48,23 @@ export async function MethodProof({ num }: { num: string }) {
         ))}
       </div>
 
-      <div
-        className="page-edge"
-        style={{
-          marginTop: 48,
-          display: "grid",
-          gap: 22,
-          maxWidth: "1080px",
-          marginLeft: "auto",
-          marginRight: "auto",
-        }}
-      >
-        <ChipRow label={t("coverage.diplomas")} items={diplomas} />
-        <ChipRow label={t("coverage.specialties")} items={specialties} />
-        <ChipRow label={t("coverage.cities")} items={cities} />
-      </div>
+      {diplomas.length + specialties.length + cities.length > 0 && (
+        <div
+          className="page-edge"
+          style={{
+            marginTop: 48,
+            display: "grid",
+            gap: 22,
+            maxWidth: "1080px",
+            marginLeft: "auto",
+            marginRight: "auto",
+          }}
+        >
+          <ChipRow label={t("coverage.diplomas")} items={diplomas} />
+          <ChipRow label={t("coverage.specialties")} items={specialties} />
+          <ChipRow label={t("coverage.cities")} items={cities} />
+        </div>
+      )}
 
       <div
         className="page-edge"
