@@ -1,6 +1,11 @@
 import { forgot } from "../actions";
 import { getTranslations, getLocale } from "next-intl/server";
 import { displayAuthError } from "@/lib/auth/authError";
+import { pageMetadata } from "@/lib/seo/metadata";
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+  return pageMetadata({ locale: (await params).locale, page: "forgot" });
+}
 
 export default async function ForgotPage({ searchParams }: { searchParams: Promise<{ error?: string }> }) {
   const locale = await getLocale();

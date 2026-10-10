@@ -6,7 +6,6 @@ import { useEffect, useRef } from "react";
 export function Hero() {
   const locale = useLocale();
   const t = useTranslations("hero");
-  const lt = useTranslations("landing.hero");
   const bgRef = useRef<HTMLDivElement>(null);
 
   // Subtle parallax on the background image.
@@ -28,26 +27,6 @@ export function Hero() {
         style={{ backgroundImage: "url(/assets/img-courtyard-pool.jpg)" }}
       />
       <div className="hero-grain" />
-
-      <Link
-        href={`/${locale}#architectes`}
-        className="hero-spotlight"
-        aria-label={lt("spotlightTitle")}
-      >
-        <div
-          className="thumb"
-          style={{ backgroundImage: "url(/assets/img-courtyard-pool.jpg)" }}
-        />
-        <div className="meta">
-          <span className="lbl">
-            <span className="live-dot" />
-            {lt("spotlightLabel")}
-          </span>
-          <span className="title">{lt("spotlightTitle")}</span>
-          <span className="sub">{lt("spotlightSub")}</span>
-        </div>
-        <span className="open-arrow" />
-      </Link>
 
       <div
         className="hero-frame page-edge grid-12"

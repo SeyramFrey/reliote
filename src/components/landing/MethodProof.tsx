@@ -1,45 +1,34 @@
 import Link from "next/link";
 import { getLocale, getTranslations } from "next-intl/server";
-import { createServiceClient } from "@/lib/supabase/service";
+import { getVerifiedArchitects } from "@/lib/landing/data";
+import { COVERAGE_MIN_SHARED, sharedValues } from "@/lib/landing/coverage";
 import { SectionHead } from "./SectionHead";
 
 // Replaces the public architect index. Renders aggregate proof (coverage across
 // diplomas / specialties / cities) without ever exposing a single architect row
-// to the browser. The SERVICE_ROLE_KEY used by createServiceClient is
-// server-only (env var not in NEXT_PUBLIC_*) and bypasses the RLS that, since
-// migration 0007, blocks anonymous + unmatched-client reads of architect_profiles.
-
-type Architect = {
-  city: string;
-  diploma: string | null;
-  specialties: string[];
-};
+// to the browser (see getVerifiedArchitects).
 
 const TRUST_ICONS = ["✓", "★", "⊕", "≡"];
 
-export async function MethodProof() {
+export async function MethodProof({ num }: { num: string }) {
   const locale = await getLocale();
   const t = await getTranslations("landing.method");
   const architectsT = await getTranslations("landing.architects");
   const trust = architectsT.raw("trust") as { strong: string; sub: string }[];
 
-  const service = createServiceClient();
-  const { data } = (await service
-    .from("architect_profiles")
-    .select("city, diploma, specialties")
-    .eq("status", "verified")) as { data: Architect[] | null };
-
-  const rows = data ?? [];
-  const cities = [...new Set(rows.map((r) => r.city))].sort();
-  const diplomas = [
-    ...new Set(rows.map((r) => r.diploma).filter((d): d is string => !!d)),
-  ].sort();
-  const specialties = [...new Set(rows.flatMap((r) => r.specialties))].sort();
+  const rows = await getVerifiedArchitects();
+  // Seules les valeurs partagées par plusieurs architectes : avec un petit
+  // effectif, la liste brute redonnerait le profil d'une personne.
+  const k = COVERAGE_MIN_SHARED;
+  const cities = sharedValues(rows.map((r) => [r.city]), k);
+  const diplomas = sharedValues(rows.map((r) => (r.diploma ? [r.diploma] : [])), k);
+  const specialties = sharedValues(rows.map((r) => r.specialties), k);
 
   return (
     <section className="sect archi-block" id="architectes">
       <SectionHead
-        num={t("eyebrow")}
+        num={num}
+        label={t("eyebrow")}
         titlePre={t("titlePre")}
         titleItalic={t("titleItalic")}
         titleRest={t("titleRest")}
@@ -59,21 +48,23 @@ export async function MethodProof() {
         ))}
       </div>
 
-      <div
-        className="page-edge"
-        style={{
-          marginTop: 48,
-          display: "grid",
-          gap: 22,
-          maxWidth: "1080px",
-          marginLeft: "auto",
-          marginRight: "auto",
-        }}
-      >
-        <ChipRow label={t("coverage.diplomas")} items={diplomas} />
-        <ChipRow label={t("coverage.specialties")} items={specialties} />
-        <ChipRow label={t("coverage.cities")} items={cities} />
-      </div>
+      {diplomas.length + specialties.length + cities.length > 0 && (
+        <div
+          className="page-edge"
+          style={{
+            marginTop: 48,
+            display: "grid",
+            gap: 22,
+            maxWidth: "1080px",
+            marginLeft: "auto",
+            marginRight: "auto",
+          }}
+        >
+          <ChipRow label={t("coverage.diplomas")} items={diplomas} />
+          <ChipRow label={t("coverage.specialties")} items={specialties} />
+          <ChipRow label={t("coverage.cities")} items={cities} />
+        </div>
+      )}
 
       <div
         className="page-edge"

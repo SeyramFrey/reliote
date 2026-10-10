@@ -7,7 +7,7 @@ import { SectionHead } from "./SectionHead";
 const STEPS = ["s1", "s2", "s3", "s4"] as const;
 
 // Interactive, auto-advancing process timeline (.timeline-rail / .tl-step).
-export function Process() {
+export function Process({ num }: { num: string }) {
   const t = useTranslations("process");
   const lt = useTranslations("landing.process");
   const locale = useLocale();
@@ -40,7 +40,7 @@ export function Process() {
   return (
     <section className="sect" id="projets">
       <SectionHead
-        num={t("eyebrow")}
+        num={num}
         titlePre={t("titlePre")}
         titleItalic={t("titleItalic")}
         kicker={t("kicker")}

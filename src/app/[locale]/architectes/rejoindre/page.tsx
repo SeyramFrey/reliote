@@ -1,7 +1,13 @@
 import { ArchitectWizard } from "@/components/forms/ArchitectWizard";
 import { createClient } from "@/lib/supabase/server";
+import { getPublishedLegalSlugs } from "@/lib/legal/published";
 import { redirect } from "next/navigation";
 import { getLocale } from "next-intl/server";
+import { pageMetadata } from "@/lib/seo/metadata";
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+  return pageMetadata({ locale: (await params).locale, page: "join" });
+}
 
 type Profile = { first_name: string | null; last_name: string | null };
 
@@ -26,6 +32,7 @@ export default async function Page() {
       defaultEmail={user.email ?? ""}
       defaultFirstName={profile?.first_name ?? ""}
       defaultLastName={profile?.last_name ?? ""}
+      legalSlugs={await getPublishedLegalSlugs()}
     />
   );
 }

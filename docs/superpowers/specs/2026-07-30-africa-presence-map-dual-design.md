@@ -3,6 +3,8 @@
 **Date:** 2026-07-30
 **Ancre:** `#territoire` (bloc landing, `src/components/landing/`)
 **Statut:** spec approuvée — implémentation double, choix après visualisation navigateur.
+**Issue (2026-10-10) :** Sey a retenu la **Version A (SVG inline)**. La version B (MapLibre),
+`africa.features.json`, les badges A/B et la dépendance `maplibre-gl` ont été supprimés.
 
 ## Objectif
 

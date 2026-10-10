@@ -11,6 +11,7 @@ import Step3 from "./steps/Architect3";
 import Step4 from "./steps/Architect4";
 import Step5 from "./steps/Architect5";
 import Step6 from "./steps/Architect6";
+import { LegalNotice } from "@/components/shared/LegalNotice";
 import { submitArchitect } from "@/app/[locale]/architectes/rejoindre/actions";
 
 const STEP_FIELDS: (keyof ArchitectInput)[][] = [
@@ -27,11 +28,14 @@ export function ArchitectWizard({
   defaultEmail,
   defaultFirstName,
   defaultLastName,
+  legalSlugs = [],
 }: {
   userId: string;
   defaultEmail?: string;
   defaultFirstName?: string;
   defaultLastName?: string;
+  /** Pages légales publiées, pour la mention sous l'envoi. */
+  legalSlugs?: readonly string[];
 }) {
   const t = useTranslations("wizardArchitect");
   const [step, setStep] = useState(1);
@@ -83,6 +87,7 @@ export function ArchitectWizard({
         backLabel={t("back")}
         submitting={submitting}
         wide={step === 6}
+        footnote={step === 6 ? <LegalNotice published={legalSlugs} action="architect" /> : undefined}
       >
         {step === 1 && <Step1 userId={userId} />}
         {step === 2 && <Step2 />}

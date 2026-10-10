@@ -798,6 +798,23 @@
   }
   .cta-title em { font-family: var(--f-display); font-style: italic; font-weight: 400; }
 
+  /* Error screens (404 / error / global-error) — CTA band grammar, full frame */
+  .err-screen { min-height: 100svh; display: flex; align-items: center; }
+  .err-inner { position: relative; z-index: 2; width: 100%; max-width: 1100px; margin: 0 auto; }
+  .err-code {
+    font-family: var(--f-display); font-style: italic;
+    font-size: clamp(96px, 18vw, 240px); line-height: 0.8;
+    color: rgba(243,241,236,0.14); margin-bottom: 28px; letter-spacing: -0.03em;
+  }
+  .err-eyebrow { color: rgba(243,241,236,0.6); margin-bottom: 22px; }
+  .err-body { max-width: 52ch; margin: 24px 0 0; color: rgba(243,241,236,0.78); font-size: 15px; line-height: 1.6; }
+  .err-alt { margin-top: 36px; padding-top: 24px; border-top: 1px solid rgba(243,241,236,0.16); }
+  .err-alt-title { margin: 0; font-size: clamp(20px, 2.4vw, 28px); font-weight: 300; }
+  .err-alt-title em { font-family: var(--f-display); font-style: italic; font-weight: 400; }
+  .err-alt .err-body { margin-top: 10px; font-size: 14px; }
+  .err-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 40px; }
+  .err-foot { margin-top: 28px; font-size: 10.5px; letter-spacing: 0.16em; color: rgba(243,241,236,0.45); text-transform: uppercase; }
+
   /* Footer */
   .footer {
     background: var(--ink);
@@ -806,7 +823,7 @@
   }
   .footer-grid {
     display: grid;
-    grid-template-columns: 4fr 2fr 2fr 2fr 2fr;
+    grid-template-columns: 4fr 2fr 3fr 2fr;
     gap: var(--gutter);
     padding-bottom: 64px;
     border-bottom: 1px solid rgba(243,241,236,0.1);
@@ -1791,87 +1808,6 @@
     gap: var(--gutter);
   }
 
-  /* ─────────────────────────────────────────────────────────────────────────
-     V2 — Hero spotlight card (replaces small BL coord label)
-     ───────────────────────────────────────────────────────────────────────── */
-  .hero-spotlight {
-    position: absolute;
-    z-index: 3;
-    left: var(--edge);
-    bottom: 32px;
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    padding: 12px 18px 12px 12px;
-    background: rgba(243, 241, 236, 0.08);
-    backdrop-filter: blur(14px) saturate(1.1);
-    -webkit-backdrop-filter: blur(14px) saturate(1.1);
-    border: 1px solid rgba(243,241,236,0.18);
-    color: var(--paper);
-    transition: background 240ms ease, transform 360ms ease;
-    cursor: pointer;
-    max-width: 460px;
-  }
-  .hero-spotlight:hover { background: rgba(243,241,236,0.12); transform: translateY(-2px); }
-  .hero-spotlight .thumb {
-    width: 54px; height: 64px;
-    background-size: cover;
-    background-position: center;
-    filter: grayscale(0.3) contrast(1.05);
-    flex-shrink: 0;
-  }
-  .hero-spotlight .meta {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    min-width: 0;
-  }
-  .hero-spotlight .lbl {
-    font-family: var(--f-mono);
-    font-size: 10px;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: rgba(243,241,236,0.65);
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .hero-spotlight .lbl .live-dot {
-    width: 6px; height: 6px;
-    background: var(--accent-brass);
-    border-radius: 50%;
-    box-shadow: 0 0 0 0 rgba(184,153,104,0.5);
-    animation: rl-pulse 2.6s ease-in-out infinite;
-  }
-  .hero-spotlight .title {
-    font-family: var(--f-display);
-    font-style: italic;
-    font-size: 19px;
-    line-height: 1.2;
-    color: var(--paper);
-  }
-  .hero-spotlight .sub {
-    font-family: var(--f-mono);
-    font-size: 10.5px;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: rgba(243,241,236,0.7);
-  }
-  .hero-spotlight .open-arrow {
-    width: 32px; height: 32px;
-    border: 1px solid rgba(243,241,236,0.3);
-    display: grid; place-items: center;
-    margin-left: auto;
-    transition: background 220ms ease, transform 220ms ease;
-    flex-shrink: 0;
-  }
-  .hero-spotlight:hover .open-arrow { background: rgba(243,241,236,0.15); transform: rotate(-45deg); }
-  .hero-spotlight .open-arrow::after {
-    content: "→";
-    color: var(--paper);
-    font-size: 14px;
-  }
-
   /* Hide old hero corners */
   .hero-corner.bl, .hero-corner.tr { display: none; }
 
@@ -1887,112 +1823,6 @@
     .feat-stage { aspect-ratio: 1; }
     .feat-counters { grid-template-columns: 1fr 1fr; }
     .feat-grid-2 { grid-template-columns: 1fr; }
-    .hero-spotlight { left: 16px; right: 16px; bottom: 16px; max-width: none; }
-  }
-
-  /* ── Terres (V5-adapted approach cards) ───────────────────────────────── */
-  .terres-sect { background: var(--paper-2); padding: clamp(72px, 9vw, 120px) 0 clamp(80px, 10vw, 140px); }
-  .terres-wrap { padding: 0 var(--edge); }
-  .terres-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 16px;
-  }
-  .terre-card {
-    position: relative;
-    border-radius: 18px;
-    padding: 32px 30px 28px;
-    min-height: 320px;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    transition: transform 320ms ease, box-shadow 320ms ease;
-  }
-  .terre-card:hover { transform: translateY(-3px); box-shadow: 0 24px 48px -28px rgba(20,20,15,0.28); }
-  .terre-card.is-wide { grid-column: span 2; }
-  .terre-paper { background: var(--paper); color: var(--ink); border: 1px solid var(--hairline-soft); }
-  .terre-paper-2 { background: #fff; color: var(--ink); border: 1px solid var(--hairline-soft); }
-  .terre-brass { background: var(--accent-brass); color: var(--ink); }
-  .terre-ink { background: var(--ink); color: var(--paper); }
-  .terre-green { background: var(--green); color: var(--paper); }
-
-  .terre-num {
-    font-family: var(--f-mono);
-    font-size: 11px;
-    letter-spacing: 0.24em;
-    text-transform: uppercase;
-    opacity: 0.7;
-  }
-  .terre-glyph {
-    position: absolute;
-    top: 32px; right: 30px;
-    width: 30px; height: 30px;
-    border-radius: 50%;
-    border: 1px solid currentColor;
-    opacity: 0.45;
-  }
-  .terre-glyph::after {
-    content: "";
-    position: absolute; inset: 8px;
-    border-radius: 50%;
-    border: 1px solid currentColor;
-    opacity: 0.6;
-  }
-  .terre-title {
-    font-family: var(--f-display);
-    font-weight: 400;
-    font-size: 30px;
-    line-height: 1.04;
-    letter-spacing: -0.018em;
-    margin: 28px 0 12px;
-    text-wrap: balance;
-  }
-  .terre-title em { font-style: italic; }
-  .terre-card.is-wide .terre-title { font-size: 36px; max-width: 22ch; }
-  .terre-body {
-    font-size: 14px;
-    line-height: 1.55;
-    opacity: 0.86;
-    max-width: 34ch;
-    margin: 0;
-    flex: 1;
-  }
-  .terre-card.is-wide .terre-body { max-width: 58ch; }
-  .terre-stat {
-    margin-top: 28px;
-    padding-top: 18px;
-    border-top: 1px solid currentColor;
-    border-color: rgba(127,127,127,0.18);
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 18px;
-  }
-  .terre-ink .terre-stat, .terre-green .terre-stat { border-color: rgba(243,241,236,0.18); }
-  .terre-brass .terre-stat { border-color: rgba(20,20,15,0.22); }
-  .terre-stat .k {
-    font-family: var(--f-mono);
-    font-size: 10.5px;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    opacity: 0.72;
-  }
-  .terre-stat .v {
-    font-family: var(--f-display);
-    font-size: 30px;
-    line-height: 1;
-    letter-spacing: -0.02em;
-    white-space: nowrap;
-  }
-  .terre-ink .terre-stat .v, .terre-green .terre-stat .v { color: var(--accent-brass); }
-
-  @media (max-width: 1000px) {
-    .terres-grid { grid-template-columns: repeat(2, 1fr); }
-    .terre-card.is-wide { grid-column: span 2; }
-  }
-  @media (max-width: 640px) {
-    .terres-grid { grid-template-columns: 1fr; }
-    .terre-card.is-wide { grid-column: auto; }
   }
 
   /* ── Territoire (V7-adapted cartography) ──────────────────────────────── */
@@ -2199,28 +2029,8 @@
     color: rgba(243,241,236,0.4);
   }
 
-  /* ── Presence map (A: inline SVG · B: MapLibre) — spike comparison ─────── */
-  .territoire-versions { display: flex; flex-direction: column; gap: 46px; margin-top: 10px; }
-  .version-badge {
-    padding: 0 var(--edge);
-    margin-bottom: 12px;
-    display: flex; align-items: center; gap: 10px;
-    font-family: var(--f-mono);
-    font-size: 11px;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: rgba(243,241,236,0.6);
-  }
-  .version-badge .vb-id {
-    display: inline-flex; align-items: center; justify-content: center;
-    width: 22px; height: 22px;
-    border: 1px solid var(--accent-brass);
-    color: var(--accent-brass);
-    border-radius: 4px;
-    font-size: 12px;
-  }
-
-  /* Country geometry (Version A, inline SVG) */
+  /* ── Presence map (inline SVG) ───────────────────────────────────────── */
+  /* Country geometry */
   .t-country {
     fill: rgba(243,241,236,0.05);
     stroke: rgba(243,241,236,0.16);
@@ -2258,7 +2068,7 @@
     stroke-linejoin: round;
   }
 
-  /* Floating tooltip (Version A) */
+  /* Floating tooltip */
   .t-map-tip {
     position: absolute;
     z-index: 6;
@@ -2274,24 +2084,6 @@
   }
   .t-map-tip b { color: var(--paper); font-size: 12.5px; font-weight: 500; }
   .t-map-tip-n { color: var(--accent-brass); font-family: var(--f-mono); font-size: 10.5px; letter-spacing: 0.08em; }
-
-  /* MapLibre canvas + popup skin (Version B) */
-  /* Higher specificity than maplibre-gl.css's `.maplibregl-map{position:relative}`,
-     which is added to this same element and would otherwise collapse its height. */
-  .territoire-map .t-ml-canvas { position: absolute; inset: 0; z-index: 1; }
-  .maplibregl-popup.t-ml-pop .maplibregl-popup-content {
-    background: rgba(10,19,17,0.92);
-    border: 1px solid rgba(184,153,104,0.5);
-    border-radius: 6px;
-    padding: 6px 10px;
-    color: var(--paper);
-    box-shadow: 0 6px 20px rgba(0,0,0,0.45);
-    display: flex; flex-direction: column; gap: 2px;
-  }
-  .maplibregl-popup.t-ml-pop .maplibregl-popup-content b { font-size: 12.5px; font-weight: 500; color: var(--paper); }
-  .maplibregl-popup.t-ml-pop .maplibregl-popup-content span { color: var(--accent-brass); font-family: var(--f-mono); font-size: 10.5px; letter-spacing: 0.08em; }
-  .maplibregl-popup.t-ml-pop .maplibregl-popup-tip { display: none; }
-  .maplibregl-popup.t-ml-pop.lit .maplibregl-popup-content { border-color: var(--accent-brass); }
 
   /* Legend + panel additions */
   .t-legend { margin-top: 16px; display: flex; flex-direction: column; gap: 9px; }

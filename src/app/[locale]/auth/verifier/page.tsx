@@ -1,5 +1,10 @@
 import { resendConfirmation } from "../actions";
 import { getTranslations, getLocale } from "next-intl/server";
+import { pageMetadata } from "@/lib/seo/metadata";
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+  return pageMetadata({ locale: (await params).locale, page: "verify" });
+}
 
 // Après une inscription quand Supabase exige la confirmation de l'e-mail.
 export default async function VerifyPage({

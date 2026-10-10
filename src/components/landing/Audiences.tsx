@@ -2,7 +2,7 @@ import Link from "next/link";
 import { getLocale, getTranslations } from "next-intl/server";
 import { SectionHead } from "./SectionHead";
 
-export async function Audiences() {
+export async function Audiences({ num }: { num: string }) {
   const locale = await getLocale();
   const a = await getTranslations("audiences");
   const la = await getTranslations("landing.audiences");
@@ -12,7 +12,7 @@ export async function Audiences() {
   return (
     <section className="sect" id="apropos">
       <SectionHead
-        num={la("head.eyebrow")}
+        num={num}
         titlePre={la("head.titlePre")}
         titleItalic={la("head.titleItalic")}
         kicker={la("head.kicker")}

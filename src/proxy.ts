@@ -9,6 +9,9 @@ const intlMiddleware = createIntlMiddleware({
   locales: [...locales],
   defaultLocale,
   localePrefix: "always",
+  // Les balises hreflang sont posées par page (lib/seo) ; l'en-tête Link du
+  // middleware en déclarerait d'autres (x-default « / », pages privées).
+  alternateLinks: false,
 });
 
 // Espace protégé → rôle attendu (null = tout utilisateur connecté, renvoyé

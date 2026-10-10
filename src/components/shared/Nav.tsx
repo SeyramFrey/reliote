@@ -7,7 +7,15 @@ import { LangSwitch } from "./LangSwitch";
 import { NavAccount, NavAccountMobile, useSignedIn } from "./NavAccount";
 import { cn } from "@/lib/utils";
 
-export function Nav({ dark = false }: { dark?: boolean }) {
+export function Nav({
+  dark = false,
+  showJournal = false,
+}: {
+  dark?: boolean;
+  /** Seule la landing sait si le Journal a du contenu publié ; ailleurs le
+   *  lien est masqué plutôt que de mener vers une section absente. */
+  showJournal?: boolean;
+}) {
   const locale = useLocale();
   const t = useTranslations("nav");
   const [scrolled, setScrolled] = useState(false);
@@ -20,15 +28,14 @@ export function Nav({ dark = false }: { dark?: boolean }) {
   }, []);
 
   // "Architectes" est désormais "Sélection" — la section publique présente la
-  // méthode + preuves agrégées, pas un catalogue. La route /architectes existe
-  // toujours mais c'est privé (espace client matché).
+  // méthode + preuves agrégées, pas un catalogue.
   const links: { id: string; href: string }[] = [
     { id: "architects", href: `/${locale}#architectes` },
     { id: "approach",   href: `/${locale}#approche` },
     { id: "projects",   href: `/${locale}#projets` },
     { id: "journal",    href: `/${locale}#journal` },
     { id: "about",      href: `/${locale}#apropos` },
-  ];
+  ].filter((l) => showJournal || l.id !== "journal");
 
   return (
     <header className={cn(
