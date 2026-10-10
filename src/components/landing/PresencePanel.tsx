@@ -1,8 +1,7 @@
 import { AFRICAN_COUNTRIES } from "@/lib/countries/africa";
 import type { Presence } from "@/lib/countries/presence";
 
-// Shared right-hand panel for the Territoire block — real data, identical for
-// both map versions during the spike so only the map itself is being compared.
+// Right-hand panel of the Territoire block — real data (counts only).
 // Pure presentational component (no hooks) → renders on the server.
 
 const TOTAL = AFRICAN_COUNTRIES.length; // 54 eligible countries

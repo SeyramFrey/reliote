@@ -5,10 +5,10 @@ const withNextIntl = createNextIntlPlugin("./src/lib/i18n/request.ts");
 
 // En-têtes de sécurité appliqués à toutes les réponses.
 // La CSP ne restreint volontairement pas encore script-src/style-src : Next.js
-// injecte des scripts inline, MapLibre crée des workers blob: et CKEditor a ses
-// propres besoins — une CSP de scripts stricte demande des nonces et sera posée
-// à part. Les directives ci-dessous ne touchent pas au rendu et ferment déjà le
-// clickjacking, l'injection de <base> et de plugins, et les formulaires détournés.
+// injecte des scripts inline et CKEditor a ses propres besoins — une CSP de
+// scripts stricte demande des nonces et sera posée à part. Les directives
+// ci-dessous ne touchent pas au rendu et ferment déjà le clickjacking,
+// l'injection de <base> et de plugins, et les formulaires détournés.
 const securityHeaders = [
   {
     key: "Content-Security-Policy",
