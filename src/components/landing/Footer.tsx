@@ -1,7 +1,7 @@
 import { getLocale, getTranslations } from "next-intl/server";
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/server";
-import { LEGAL_SLUGS, type LegalSlug } from "@/lib/legal/page";
+import type { LegalSlug } from "@/lib/legal/page";
+import { getPublishedLegalSlugs } from "@/lib/legal/published";
 import { getPublishedMedia } from "@/lib/landing/data";
 
 type FooterLink = { key: string; href: string };
@@ -38,14 +38,7 @@ export async function Footer() {
   // On ne cite que les pages effectivement publiées : la policy « legal public
   // read » de 0012 filtre les brouillons, donc un texte encore en relecture
   // juridique n'apparaît pas — plutôt que d'annoncer un lien qui renvoie 404.
-  const supabase = await createClient();
-  const [legalRes, media] = await Promise.all([
-    supabase.from("legal_pages").select("slug").order("sort_order", { ascending: true }),
-    getPublishedMedia(),
-  ]);
-  const rows = (legalRes.data ?? []) as { slug: string }[];
-  const available = new Set(rows.map((r) => r.slug));
-  const publishedSlugs = LEGAL_SLUGS.filter((s) => available.has(s));
+  const [publishedSlugs, media] = await Promise.all([getPublishedLegalSlugs(), getPublishedMedia()]);
 
   const cols = [
     { h: f("platform"), links: PLATFORM.filter((l) => l.key !== "journal" || media.length > 0) },

@@ -28,11 +28,11 @@ export default function Project5() {
       {rows.map(([k, val]) => (
         <div key={k} className="flex justify-between gap-4 py-3 border-b border-[var(--hairline-soft)]">
           <dt className="eyebrow">{k}</dt>
-          <dd className="text-sm text-right">{val}</dd>
+          <dd className="text-sm text-right min-w-0 [overflow-wrap:anywhere]">{val}</dd>
         </div>
       ))}
       <p className="mt-6 text-sm text-concrete-1">{t("fields.project_description")}</p>
-      <p className="text-sm">{v.project_description || "—"}</p>
+      <p className="text-sm [overflow-wrap:anywhere]">{v.project_description || "—"}</p>
     </dl>
   );
 }

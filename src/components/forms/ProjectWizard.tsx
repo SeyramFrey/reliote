@@ -10,6 +10,7 @@ import Step2 from "./steps/Project2";
 import Step3 from "./steps/Project3";
 import Step4 from "./steps/Project4";
 import Step5 from "./steps/Project5";
+import { LegalNotice } from "@/components/shared/LegalNotice";
 import { submitProject } from "@/app/[locale]/projets/initier/actions";
 import { ProjectWizardContext, type ProjectWizardAccount } from "./projectWizardContext";
 
@@ -53,7 +54,14 @@ function writeDraft(values: Partial<ProjectInput> | null) {
 
 type Outcome = null | { kind: "error"; message: string } | { kind: "exists" } | { kind: "wrongRole" } | { kind: "confirm"; email: string };
 
-export function ProjectWizard({ account }: { account: ProjectWizardAccount }) {
+export function ProjectWizard({
+  account,
+  legalSlugs = [],
+}: {
+  account: ProjectWizardAccount;
+  /** Pages légales publiées, pour la mention sous l'envoi. */
+  legalSlugs?: readonly string[];
+}) {
   const t = useTranslations("wizardClient");
   const locale = useLocale();
   const [step, setStep] = useState(1);
@@ -160,6 +168,7 @@ export function ProjectWizard({ account }: { account: ProjectWizardAccount }) {
           nextLabel={step === 5 ? t("submit") : t("next")}
           backLabel={t("back")}
           submitting={submitting}
+          footnote={step === 5 ? <LegalNotice published={legalSlugs} action="project" /> : undefined}
         >
           <Current />
           {outcome?.kind === "exists" && (

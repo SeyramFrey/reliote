@@ -20,6 +20,7 @@ export function WizardShell({
   backLabel,
   submitting,
   wide = false,
+  footnote,
 }: {
   step: number;
   totalSteps: number;
@@ -33,6 +34,8 @@ export function WizardShell({
   backLabel: string;
   submitting?: boolean;
   wide?: boolean;
+  /** Sous les boutons, p. ex. la mention CGU à la dernière étape. */
+  footnote?: ReactNode;
 }) {
   return (
     <div className="min-h-screen grid grid-cols-1 md:grid-cols-[320px_1fr] bg-paper">
@@ -145,6 +148,7 @@ export function WizardShell({
               <span className="inline-block w-[9px] h-[9px] border-r border-t border-current rotate-45" />
             </button>
           </div>
+          {footnote && <div className="mt-5 flex justify-end text-right">{footnote}</div>}
         </div>
       </section>
     </div>

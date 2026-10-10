@@ -2,6 +2,8 @@ import { signUp } from "../actions";
 import { getTranslations, getLocale } from "next-intl/server";
 import { displayAuthError } from "@/lib/auth/authError";
 import { pageMetadata } from "@/lib/seo/metadata";
+import { LegalNotice } from "@/components/shared/LegalNotice";
+import { getPublishedLegalSlugs } from "@/lib/legal/published";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   return pageMetadata({ locale: (await params).locale, page: "register" });
@@ -17,6 +19,7 @@ export default async function RegisterPage({
   const t = await getTranslations("auth");
   const { role: roleParam, error } = await searchParams;
   const role = roleParam === "architect" ? "architect" : "client";
+  const legalSlugs = await getPublishedLegalSlugs();
 
   return (
     <div className="min-h-screen grid grid-cols-1 md:grid-cols-[420px_1fr] bg-paper">
@@ -105,6 +108,7 @@ export default async function RegisterPage({
               {t("createAccount")}
               <span className="inline-block w-[9px] h-[9px] border-r border-t border-current rotate-45" />
             </button>
+            <LegalNotice published={legalSlugs} action="register" className="md:col-span-2" />
           </form>
           <p className="mt-10 text-sm text-concrete-1">
             <a href={`/${locale}/auth/login`} className="hover:text-ink">

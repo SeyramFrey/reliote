@@ -3,6 +3,7 @@ import { Footer } from "@/components/landing/Footer";
 import { ProjectWizard } from "@/components/forms/ProjectWizard";
 import type { ProjectWizardAccount } from "@/components/forms/projectWizardContext";
 import { createClient } from "@/lib/supabase/server";
+import { getPublishedLegalSlugs } from "@/lib/legal/published";
 import { pageMetadata } from "@/lib/seo/metadata";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
@@ -28,7 +29,7 @@ export default async function Page() {
   return (
     <>
       <Nav />
-      <ProjectWizard account={account} />
+      <ProjectWizard account={account} legalSlugs={await getPublishedLegalSlugs()} />
       <Footer />
     </>
   );

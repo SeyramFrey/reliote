@@ -748,7 +748,7 @@
         "description": "Describe your building project in Africa in a few minutes. A Reliote duo replies within 48 business hours with verified architects."
       },
       "join": {
-        "title": "Join Reliote",
+        "title": "Architect application",
         "description": "Architects practising in Africa: join a selective index and receive qualified projects from owners worldwide."
       },
       "joinThanks": {
@@ -798,5 +798,15 @@
       "home": "Back to home",
       "ref": "Reference"
     }
+  },
+  "legalNotice": {
+    "action": {
+      "register": "creating your account",
+      "project": "sending your project",
+      "architect": "sending your application"
+    },
+    "both": "By {action}, you accept the <cgu>terms of use</cgu> and acknowledge our <privacy>privacy policy</privacy>.",
+    "cguOnly": "By {action}, you accept the <cgu>terms of use</cgu>.",
+    "privacyOnly": "By {action}, you acknowledge our <privacy>privacy policy</privacy>."
   }
 }

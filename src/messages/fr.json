@@ -748,7 +748,7 @@
         "description": "Décrivez votre projet de construction en Afrique en quelques minutes. Un binôme Reliote vous répond sous 48 heures ouvrées avec des architectes vérifiés."
       },
       "join": {
-        "title": "Rejoindre Reliote",
+        "title": "Candidature architecte",
         "description": "Architectes exerçant en Afrique : rejoignez un index restreint et recevez des projets qualifiés de porteurs du monde entier."
       },
       "joinThanks": {
@@ -798,5 +798,15 @@
       "home": "Retour à l'accueil",
       "ref": "Référence"
     }
+  },
+  "legalNotice": {
+    "action": {
+      "register": "créant votre compte",
+      "project": "envoyant votre projet",
+      "architect": "envoyant votre candidature"
+    },
+    "both": "En {action}, vous acceptez les <cgu>conditions générales d’utilisation</cgu> et prenez connaissance de notre <privacy>politique de confidentialité</privacy>.",
+    "cguOnly": "En {action}, vous acceptez les <cgu>conditions générales d’utilisation</cgu>.",
+    "privacyOnly": "En {action}, vous prenez connaissance de notre <privacy>politique de confidentialité</privacy>."
   }
 }
