@@ -35,3 +35,15 @@ describe("signUpOutcome", () => {
     ).toEqual({ kind: "error", message: "weak password" });
   });
 });
+
+describe("signUpOutcome — existing unconfirmed account", () => {
+  const now = new Date("2026-10-10T12:00:00Z");
+  it("treats a user created long before this sign-up as already registered", () => {
+    const res = { data: { user: { id: "u1", identities: [{}], created_at: "2026-10-01T09:00:00Z" }, session: null }, error: null };
+    expect(signUpOutcome(res, now)).toEqual({ kind: "already_registered" });
+  });
+  it("keeps a user created just now as needing confirmation", () => {
+    const res = { data: { user: { id: "u1", identities: [{}], created_at: "2026-10-10T11:59:58Z" }, session: null }, error: null };
+    expect(signUpOutcome(res, now)).toEqual({ kind: "needs_confirmation", userId: "u1" });
+  });
+});

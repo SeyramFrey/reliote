@@ -25,8 +25,10 @@ type InsertedProject = {
   budget_range: string | null;
 };
 
+// Codes d'erreur traduits par le formulaire (wizardClient.errors.*), plus
+// « exists » et « wrongRole » qui ont un affichage dédié.
 export type SubmitProjectResult =
-  | { error: "exists" | "wrongRole" | string }
+  | { error: "exists" | "wrongRole" | "validation" | "insert" | "weak" | "generic" }
   | { needsConfirmation: true; email: string };
 
 // Dépôt d'un projet. Le porteur a toujours un compte : soit il est connecté,
@@ -37,7 +39,7 @@ export async function submitProject(
 ): Promise<SubmitProjectResult | void> {
   const parsed = projectSchemaFor(mode).safeParse(input);
   if (!parsed.success) {
-    return { error: parsed.error.issues[0]?.message ?? "Validation error" };
+    return { error: "validation" };
   }
   const data = parsed.data as ProjectInput;
   const locale = safeLocale((await cookies()).get("NEXT_LOCALE")?.value);
@@ -65,7 +67,7 @@ export async function submitProject(
     email = user.email ?? "";
     clientName = [profile.first_name, profile.last_name].filter(Boolean).join(" ") || email;
   } else {
-    if (mode !== "guest" || !data.email || !data.password) return { error: "Validation error" };
+    if (mode !== "guest" || !data.email || !data.password) return { error: "validation" };
     const res = await supabase.auth.signUp({
       email: data.email,
       password: data.password,
@@ -81,7 +83,7 @@ export async function submitProject(
     });
     const outcome = signUpOutcome(res);
     if (outcome.kind === "already_registered") return { error: "exists" };
-    if (outcome.kind === "error") return { error: outcome.message };
+    if (outcome.kind === "error") return { error: outcome.code === "weak_password" ? "weak" : "generic" };
     userId = outcome.userId;
     needsConfirmation = outcome.kind === "needs_confirmation";
     email = data.email;
@@ -109,7 +111,7 @@ export async function submitProject(
     .select("id, project_type, required_specialties, project_country, project_location, budget_range")
     .single()) as { data: InsertedProject | null; error: { message: string } | null };
 
-  if (error || !inserted) return { error: error?.message ?? "Insert failed" };
+  if (error || !inserted) return { error: "insert" };
 
   // Matching automatique (top 5 enregistrés, l'admin choisit ensuite).
   const { data: architects } = (await service

@@ -70,7 +70,8 @@ type MeetingRow = {
 };
 
 const ERRORS_FR: Record<string, string> = {
-  notVerified: "Seul un architecte vérifié peut être proposé.",
+  notVerified: "Seul un architecte vérifié peut être proposé ou recevoir un rendez-vous.",
+  projectClosed: "Ce projet est clôturé.",
   meetingOpen: "Un rendez-vous est déjà ouvert pour ce projet.",
   needTwo: "Il faut au moins deux architectes proposés pour demander au porteur de choisir.",
   badSlot: "Créneau, fuseau ou lien visio invalide (le lien doit commencer par https://).",

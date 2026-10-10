@@ -31,7 +31,7 @@ describe("projectSchemaFor('member')", () => {
   it("rejects an unselected country with a clear message", () => {
     const r = schema.safeParse({ ...project, project_country: "" });
     expect(r.success).toBe(false);
-    expect(r.error?.issues[0]?.message).toBe("Pays du chantier requis");
+    expect(r.error?.issues[0]?.message).toBe("countryRequired");
   });
 
   it("rejects a non-African country", () => {
@@ -50,6 +50,14 @@ describe("projectSchemaFor('guest')", () => {
     const r = schema.safeParse({ ...guest, password: "1234567" });
     expect(r.success).toBe(false);
     expect(r.error?.issues[0]?.path).toEqual(["password"]);
+    expect(r.error?.issues[0]?.message).toBe("passwordMin");
+  });
+
+  it("uses translation codes, never library default messages", () => {
+    const r = schema.safeParse({ ...guest, first_name: "", email: "nope", project_description: "x", required_specialties: [] });
+    const messages = r.error?.issues.map((i) => i.message) ?? [];
+    expect(messages).toEqual(expect.arrayContaining(["firstNameRequired", "emailInvalid", "descriptionMin", "specialtiesMin"]));
+    for (const m of messages) expect(m).toMatch(/^[a-z][A-Za-z]+$/);
   });
 
   it("requires first and last name and a valid email", () => {

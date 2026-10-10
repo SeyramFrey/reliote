@@ -330,6 +330,12 @@
       "confirmTitle": "One last step.",
       "confirmBody": "Confirm your email address using the link sent to {email}, then sign in to follow your project.",
       "network": "Sending failed (connection lost?). What you typed is kept: please try again."
+    },
+    "errors": {
+      "validation": "Some details are incomplete: check the previous steps.",
+      "insert": "Your project could not be saved. Please try again.",
+      "weak": "Password too weak: make it longer or more varied.",
+      "generic": "Something went wrong. Please try again."
     }
   },
   "wizardArchitect": {
@@ -1004,5 +1010,15 @@
       "cancelled": "Cancelled"
     },
     "video": "Video link"
+  },
+  "validation": {
+    "descriptionMin": "At least 100 characters.",
+    "specialtiesMin": "Choose at least one speciality.",
+    "countryRequired": "Choose the build country.",
+    "locationMin": "Enter the city or site.",
+    "firstNameRequired": "First name required.",
+    "lastNameRequired": "Last name required.",
+    "emailInvalid": "Invalid email address.",
+    "passwordMin": "At least 8 characters."
   }
 }

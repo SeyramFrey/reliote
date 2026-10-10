@@ -2,6 +2,7 @@
 import { useFormContext } from "react-hook-form";
 import { useTranslations } from "next-intl";
 import { AFRICAN_COUNTRIES_SORTED } from "@/lib/countries/africa";
+import { FieldError } from "../FieldError";
 
 // Native <select> styled like the wizard's other underlined inputs.
 // Lists all 54 African countries; only those flagged `available: true` are selectable.
@@ -43,11 +44,7 @@ export function CountrySelectField({
           ▾
         </span>
       </div>
-      {error && (
-        <span className="text-xs text-red-700 block mt-1">
-          {String(error.message)}
-        </span>
-      )}
+      <FieldError message={error?.message} />
     </label>
   );
 }

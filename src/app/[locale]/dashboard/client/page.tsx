@@ -7,6 +7,7 @@ import { chooseProposal, declineProposal, declineMeeting } from "./actions";
 import { ConfirmMeetingButton } from "@/components/dashboard/ConfirmMeetingButton";
 import { countryTimeZone, formatMeetingTime } from "@/lib/time/meetingTime";
 import { safeLocale } from "@/lib/auth/safeRedirect";
+import { shortlistVisible } from "@/lib/workflow/guards";
 
 type Project = {
   id: string;
@@ -15,6 +16,7 @@ type Project = {
   project_location: string;
   status: string;
   created_at: string;
+  choice_requested_at: string | null;
 };
 
 type Engagement = { id: string; project_id: string; architect_id: string; status: string };
@@ -84,7 +86,7 @@ export default async function ClientDashboard({
   const [{ data: projectsData }, { data: engagementsData }, { data: meetingsData }] = await Promise.all([
     supabase
       .from("client_projects")
-      .select("id, project_type, project_country, project_location, status, created_at")
+      .select("id, project_type, project_country, project_location, status, created_at, choice_requested_at")
       .order("created_at", { ascending: false }) as unknown as Promise<{ data: Project[] | null }>,
     supabase
       .from("client_engagements")
@@ -145,7 +147,13 @@ export default async function ClientDashboard({
       project: p,
       proposals: engagements.filter((e) => e.project_id === p.id && e.status === "proposed"),
     }))
-    .filter((c) => c.proposals.length >= 2 && !hasOpenMeeting(c.project.id));
+    .filter((c) =>
+      shortlistVisible({
+        choiceRequested: !!c.project.choice_requested_at,
+        proposedCount: c.proposals.length,
+        hasOpenMeeting: hasOpenMeeting(c.project.id),
+      }),
+    );
 
   const placeOf = (p: Project | undefined) => (p ? `${p.project_location}, ${p.project_country}` : "");
   const label = (p: Project | undefined) => (p ? `${tt(p.project_type as "other")} · ${placeOf(p)}` : "");

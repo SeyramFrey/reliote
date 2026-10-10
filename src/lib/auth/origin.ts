@@ -1,14 +1,16 @@
 import "server-only";
 import { headers } from "next/headers";
+import { resolveOrigin } from "./resolveOrigin";
 
 // Origine publique du site pour les liens envoyés par e-mail (confirmation,
-// mot de passe oublié). SITE_URL fait foi ; à défaut (dev, préproduction sans
-// variable), on reprend l'hôte de la requête en cours.
+// mot de passe oublié, liens des notifications). Voir resolveOrigin.
 export async function appOrigin(): Promise<string> {
-  const configured = process.env.SITE_URL?.replace(/\/+$/, "");
-  if (configured) return configured;
   const h = await headers();
-  const host = h.get("x-forwarded-host") ?? h.get("host") ?? "localhost:3000";
-  const proto = h.get("x-forwarded-proto") ?? (host.startsWith("localhost") ? "http" : "https");
-  return `${proto}://${host}`;
+  return resolveOrigin({
+    siteUrl: process.env.SITE_URL,
+    vercelEnv: process.env.VERCEL_ENV,
+    vercelProdUrl: process.env.VERCEL_PROJECT_PRODUCTION_URL,
+    host: h.get("x-forwarded-host") ?? h.get("host"),
+    proto: h.get("x-forwarded-proto"),
+  });
 }

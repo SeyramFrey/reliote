@@ -19,6 +19,21 @@ function esc(s: string): string {
 
 type Slot = { scheduledAt: string; projectTimeZone: string };
 
+const PROJECT_TYPE_LABELS: Record<string, [fr: string, en: string]> = {
+  residential: ["Résidentiel", "Residential"],
+  hospitality: ["Hôtellerie", "Hospitality"],
+  commercial: ["Commercial", "Commercial"],
+  urban: ["Urbain", "Urban"],
+  cultural: ["Culturel", "Cultural"],
+  other: ["Autre", "Other"],
+};
+
+export function projectTypeLabel(type: string, loc0: string): string {
+  const loc = L(loc0);
+  const l = PROJECT_TYPE_LABELS[type];
+  return l ? pick(loc, l[0], l[1]) : type;
+}
+
 function when(d: Slot, loc: Loc): string {
   try {
     return esc(formatMeetingTime(d.scheduledAt, { locale: loc, projectTimeZone: d.projectTimeZone }));
@@ -94,7 +109,7 @@ export function projectReceivedEmail(
   const eyebrow = pick(loc, "Accusé de réception", "Project received");
   const title = pick(loc, `Merci, ${esc(d.clientName)}.`, `Thank you, ${esc(d.clientName)}.`);
   const rows: [string, string][] = [
-    [pick(loc, "Type", "Type"), esc(d.projectType)],
+    [pick(loc, "Type", "Type"), esc(projectTypeLabel(d.projectType, loc))],
     [pick(loc, "Pays du chantier", "Build country"), esc(d.projectCountry)],
     [pick(loc, "Localité", "Locality"), esc(d.projectLocation)],
     [pick(loc, "Correspondances", "Matches"), String(d.matchCount)],

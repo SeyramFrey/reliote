@@ -8,11 +8,13 @@ import {
   meetingProposedEmail,
   meetingCancelledEmail,
   proposalsReadyEmail,
+  projectTypeLabel,
 } from "@/lib/email/templates";
 import { appOrigin } from "@/lib/auth/origin";
 import { safeAdminReturn } from "@/lib/auth/safeRedirect";
 import { countryTimeZone, zonedWallTimeToUtc, TIMEZONE_CHOICES } from "@/lib/time/meetingTime";
 import { advanceProject, ACTIVE_MEETING_STATUSES } from "@/lib/workflow/projectState";
+import { canPropose, canSchedule } from "@/lib/workflow/guards";
 
 // Toutes les mutations passent par le service client (bypass RLS) APRÈS le
 // garde-fou requireAdmin(). Les server actions sont des endpoints POST
@@ -86,6 +88,16 @@ async function projectInfo(s: Svc, projectId: string): Promise<ProjectInfo | nul
   return data;
 }
 
+// Statuts courants du projet et de l'architecte, pour revérifier côté
+// serveur ce que l'interface se contente de masquer.
+async function statusesFor(s: Svc, projectId: string, architectId: string) {
+  const [{ data: proj }, { data: arch }] = (await Promise.all([
+    s.from("client_projects").select("status").eq("id", projectId).single(),
+    s.from("architect_profiles").select("status").eq("id", architectId).single(),
+  ])) as [{ data: { status: string } | null }, { data: { status: string } | null }];
+  return { projectStatus: proj?.status ?? "closed", architectStatus: arch?.status };
+}
+
 async function activeMeetingCount(s: Svc, projectId: string): Promise<number> {
   const { count } = await s
     .from("meetings")
@@ -106,12 +118,9 @@ export async function proposeArchitect(formData: FormData): Promise<void> {
   if (!projectId || !architectId) throw new Error("Missing project or architect");
 
   const s = createServiceClient();
-  const { data: arch } = (await s
-    .from("architect_profiles")
-    .select("status")
-    .eq("id", architectId)
-    .single()) as { data: { status: string } | null };
-  if (arch?.status !== "verified") fail(projectId, "notVerified");
+  const st = await statusesFor(s, projectId, architectId);
+  if (st.projectStatus === "closed") fail(projectId, "projectClosed");
+  if (!canPropose(st)) fail(projectId, "notVerified");
 
   const { data: existing } = (await s
     .from("client_engagements")
@@ -189,6 +198,11 @@ export async function askClientToChoose(formData: FormData): Promise<void> {
   if ((proposed ?? 0) < 2) fail(projectId, "needTwo");
   if ((await activeMeetingCount(s, projectId)) > 0) fail(projectId, "meetingOpen");
 
+  check(
+    await table(s, "client_projects").update({ choice_requested_at: new Date().toISOString() }).eq("id", projectId),
+    projectId,
+  );
+
   const proj = await projectInfo(s, projectId);
   if (proj?.email) {
     const locs = await localesFor(s, [proj.user_id]);
@@ -235,18 +249,19 @@ async function emailMeeting(
   const porteurLoc = (proj.user_id && locs.get(proj.user_id)) || "fr";
   const archLoc = (arch?.user_id && locs.get(arch.user_id)) || "fr";
   const origin = await appOrigin();
+  const label = (loc: string) => `${projectTypeLabel(proj.project_type, loc)} · ${proj.project_location}`;
   const common = {
     scheduledAt: slot.iso,
     projectTimeZone: countryTimeZone(proj.project_country),
     videoUrl: slot.videoUrl,
-    projectLabel: [proj.project_type, proj.project_location].filter(Boolean).join(" · "),
     rescheduled,
   };
   const client = meetingProposedEmail(porteurLoc, "client", {
     ...common,
+    projectLabel: label(porteurLoc),
     ctaUrl: `${origin}/${porteurLoc}/dashboard/client`,
   });
-  const architect = meetingProposedEmail(archLoc, "architect", common);
+  const architect = meetingProposedEmail(archLoc, "architect", { ...common, projectLabel: label(archLoc) });
   await Promise.all([
     sendEmail({ to: proj.email, cc: adminEmail(), subject: client.subject, html: client.html }),
     arch?.email ? sendEmail({ to: arch.email, subject: architect.subject, html: architect.html }) : Promise.resolve(),
@@ -271,6 +286,9 @@ export async function scheduleMeeting(formData: FormData): Promise<void> {
     .eq("architect_id", architectId)
     .maybeSingle()) as { data: { status: string } | null };
   if (!eng || !["proposed", "engaged"].includes(eng.status)) fail(projectId, "notProposed");
+  const st = await statusesFor(s, projectId, architectId);
+  if (st.projectStatus === "closed") fail(projectId, "projectClosed");
+  if (!canSchedule(st)) fail(projectId, "notVerified");
   if ((await activeMeetingCount(s, projectId)) > 0) fail(projectId, "meetingOpen");
 
   check(
@@ -363,13 +381,15 @@ export async function setMeetingStatus(formData: FormData): Promise<void> {
         .eq("id", mtg.architect_id)
         .single()) as { data: { email: string; user_id: string | null } | null };
       const locs = await localesFor(s, [proj.user_id, arch?.user_id]);
-      const d = {
+      const cLoc = (proj.user_id && locs.get(proj.user_id)) || "fr";
+      const aLoc = (arch?.user_id && locs.get(arch.user_id)) || "fr";
+      const d = (loc: string) => ({
         scheduledAt: mtg.scheduled_at,
         projectTimeZone: countryTimeZone(proj.project_country),
-        projectLabel: [proj.project_type, proj.project_location].filter(Boolean).join(" · "),
-      };
-      const c = meetingCancelledEmail((proj.user_id && locs.get(proj.user_id)) || "fr", "client", d);
-      const a = meetingCancelledEmail((arch?.user_id && locs.get(arch.user_id)) || "fr", "architect", d);
+        projectLabel: `${projectTypeLabel(proj.project_type, loc)} · ${proj.project_location}`,
+      });
+      const c = meetingCancelledEmail(cLoc, "client", d(cLoc));
+      const a = meetingCancelledEmail(aLoc, "architect", d(aLoc));
       await Promise.all([
         sendEmail({ to: proj.email, subject: c.subject, html: c.html }),
         arch?.email ? sendEmail({ to: arch.email, subject: a.subject, html: a.html }) : Promise.resolve(),

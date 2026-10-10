@@ -2,6 +2,7 @@
 import { useFormContext } from "react-hook-form";
 import { useLocale, useTranslations } from "next-intl";
 import { useProjectWizardAccount } from "../projectWizardContext";
+import { FieldError } from "../FieldError";
 
 const input =
   "w-full mt-1 bg-transparent border-b border-[var(--hairline)] py-2 outline-none focus:border-green";
@@ -18,10 +19,7 @@ export default function Project4() {
   const locale = useLocale();
   const account = useProjectWizardAccount();
 
-  const err = (name: string) =>
-    errors[name] ? (
-      <span className="text-xs text-red-700">{String(errors[name]?.message)}</span>
-    ) : null;
+  const err = (name: string) => <FieldError message={errors[name]?.message} />;
 
   if (account.mode === "member") {
     return (

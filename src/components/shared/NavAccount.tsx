@@ -12,7 +12,10 @@ export function useSignedIn(): boolean | null {
   const [signedIn, setSignedIn] = useState<boolean | null>(null);
   useEffect(() => {
     const supabase = createClient();
-    supabase.auth.getUser().then(({ data }) => setSignedIn(!!data.user));
+    // Simple indication d'interface : la session locale suffit (getUser ferait
+    // un aller-retour réseau à chaque page). Les accès réels sont vérifiés
+    // côté serveur.
+    supabase.auth.getSession().then(({ data }) => setSignedIn(!!data.session));
     const { data: sub } = supabase.auth.onAuthStateChange((_event, session) =>
       setSignedIn(!!session?.user),
     );

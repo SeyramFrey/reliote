@@ -330,6 +330,12 @@
       "confirmTitle": "Plus qu’une étape.",
       "confirmBody": "Confirmez votre adresse e-mail grâce au lien envoyé à {email}, puis connectez-vous pour suivre votre projet.",
       "network": "L’envoi n’a pas abouti (connexion interrompue ?). Votre saisie est conservée : réessayez."
+    },
+    "errors": {
+      "validation": "Certaines informations sont incomplètes : vérifiez les étapes précédentes.",
+      "insert": "Votre projet n’a pas pu être enregistré. Réessayez.",
+      "weak": "Mot de passe trop faible : allongez-le ou variez les caractères.",
+      "generic": "Une erreur est survenue. Réessayez."
     }
   },
   "wizardArchitect": {
@@ -1004,5 +1010,15 @@
       "cancelled": "Annulé"
     },
     "video": "Lien visio"
+  },
+  "validation": {
+    "descriptionMin": "100 caractères minimum.",
+    "specialtiesMin": "Choisissez au moins une spécialité.",
+    "countryRequired": "Choisissez le pays du chantier.",
+    "locationMin": "Indiquez la ville ou le site.",
+    "firstNameRequired": "Prénom requis.",
+    "lastNameRequired": "Nom requis.",
+    "emailInvalid": "Adresse e-mail invalide.",
+    "passwordMin": "8 caractères minimum."
   }
 }

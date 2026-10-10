@@ -187,3 +187,12 @@ describe("newArchitectAdminEmail", () => {
     expect(m.html).toContain('href="https://reliote.test/fr/admin/architectes/a1"');
   });
 });
+
+describe("project type labels in emails", () => {
+  const base = { clientName: "Awa", projectType: "hospitality", projectCountry: "Sénégal", projectLocation: "Dakar", matchCount: 1 };
+  it("shows a readable, translated project type", () => {
+    expect(projectReceivedEmail("fr", base).html).toContain("Hôtellerie");
+    expect(projectReceivedEmail("en", base).html).toContain("Hospitality");
+    expect(projectReceivedEmail("fr", base).html).not.toContain(">hospitality<");
+  });
+});

@@ -171,6 +171,7 @@ export type Database = {
       client_projects: {
         Row: {
           budget_range: string | null
+          choice_requested_at: string | null
           client_name: string
           created_at: string
           email: string
@@ -188,6 +189,7 @@ export type Database = {
         }
         Insert: {
           budget_range?: string | null
+          choice_requested_at?: string | null
           client_name: string
           created_at?: string
           email: string
@@ -205,6 +207,7 @@ export type Database = {
         }
         Update: {
           budget_range?: string | null
+          choice_requested_at?: string | null
           client_name?: string
           created_at?: string
           email?: string

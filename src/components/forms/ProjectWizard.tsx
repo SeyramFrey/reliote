@@ -121,7 +121,7 @@ export function ProjectWizard({ account }: { account: ProjectWizardAccount }) {
     } else if (res.error === "wrongRole") {
       setOutcome({ kind: "wrongRole" });
     } else {
-      setOutcome({ kind: "error", message: res.error });
+      setOutcome({ kind: "error", message: t(`errors.${res.error}` as "errors.generic") });
     }
   }
 

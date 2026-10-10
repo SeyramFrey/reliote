@@ -14,6 +14,7 @@ import { countryTimeZone } from "@/lib/time/meetingTime";
 import { appOrigin } from "@/lib/auth/origin";
 import { safeLocale } from "@/lib/auth/safeRedirect";
 import { advanceProject, ACTIVE_MEETING_STATUSES } from "@/lib/workflow/projectState";
+import { shortlistVisible } from "@/lib/workflow/guards";
 
 // Actions du PORTEUR. Chacune vérifie que l'utilisateur possède le projet
 // avant toute écriture ; les réponses aux RDV passent par sa session (RLS
@@ -67,12 +68,26 @@ export async function chooseProposal(formData: FormData): Promise<void> {
   const project = await ownedProject(s, projectId, userId);
   if (!project) back(formData, "error=notAllowed");
 
-  const { count: openMeetings } = await s
-    .from("meetings")
-    .select("id", { count: "exact", head: true })
-    .eq("project_id", projectId)
-    .in("status", [...ACTIVE_MEETING_STATUSES]);
-  if ((openMeetings ?? 0) > 0) back(formData, "error=notAllowed");
+  const [{ count: openMeetings }, { count: proposedCount }, { data: proj }] = await Promise.all([
+    s
+      .from("meetings")
+      .select("id", { count: "exact", head: true })
+      .eq("project_id", projectId)
+      .in("status", [...ACTIVE_MEETING_STATUSES]),
+    s
+      .from("client_engagements")
+      .select("id", { count: "exact", head: true })
+      .eq("project_id", projectId)
+      .eq("status", "proposed"),
+    s.from("client_projects").select("choice_requested_at").eq("id", projectId).single() as unknown as Promise<{
+      data: { choice_requested_at: string | null } | null;
+    }>,
+  ]);
+  const visible = shortlistVisible({
+    choiceRequested: !!proj?.choice_requested_at,
+    proposedCount: proposedCount ?? 0,
+    hasOpenMeeting: (openMeetings ?? 0) > 0,
+  });
 
   const { data: chosen } = (await s
     .from("client_engagements")
@@ -82,6 +97,9 @@ export async function chooseProposal(formData: FormData): Promise<void> {
     .eq("status", "proposed")
     .maybeSingle()) as { data: { id: string; architect_profiles: { anon_handle: string | null } | null } | null };
   if (!chosen) back(formData, "error=notAllowed");
+  // Double clic : le premier envoi a déjà écarté les autres profils, la
+  // présélection n'est plus visible — le choix est fait, rien à renvoyer.
+  if (!visible) back(formData, (proposedCount ?? 0) === 1 && (openMeetings ?? 0) === 0 ? "notice=chosen" : "error=notAllowed");
 
   const { error: declineErr } = await table(s, "client_engagements")
     .update({ status: "declined" })
@@ -182,7 +200,13 @@ export async function declineMeeting(formData: FormData): Promise<void> {
     .select("id, project_id, scheduled_at")) as {
     data: { id: string; project_id: string; scheduled_at: string }[] | null;
   };
-  if (!updated || updated.length === 0) back(formData, "error=notAllowed");
+  if (!updated || updated.length === 0) {
+    // Double clic : le RDV est peut-être déjà décliné par le premier envoi.
+    const { data: current } = (await supabase.from("meetings").select("status").eq("id", meetingId).maybeSingle()) as {
+      data: { status: string } | null;
+    };
+    back(formData, current?.status === "declined" ? "notice=meetingDeclined" : "error=notAllowed");
+  }
 
   const s = createServiceClient();
   const mtg = updated[0];

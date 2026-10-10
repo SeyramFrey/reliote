@@ -1,6 +1,7 @@
 "use client";
 import { useFormContext } from "react-hook-form";
 import { useTranslations } from "next-intl";
+import { FieldError } from "../FieldError";
 import { CountrySelectField } from "../fields/CountrySelectField";
 
 export default function Project3() {
@@ -25,11 +26,7 @@ export default function Project3() {
           placeholder={t("placeholders.location")}
           className="w-full mt-1 bg-transparent border-b border-[var(--hairline)] py-2 outline-none focus:border-green"
         />
-        {errors.project_location && (
-          <span className="text-xs text-red-700">
-            {String(errors.project_location.message)}
-          </span>
-        )}
+        <FieldError message={errors.project_location?.message} />
       </label>
       <label className="block">
         <span className="eyebrow">{t("fields.budget_range")}</span>
