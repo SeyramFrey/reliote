@@ -25,6 +25,7 @@ import {
   currentViewer,
   engagementsFor,
   findArchitectThread,
+  getOrCreateAdmissionThread,
   getOrCreateArchitectThread,
   getOrCreateClientThread,
   loadThreadView,
@@ -319,4 +320,22 @@ export async function removeAttachment(attachmentId: string): Promise<ActionResu
     .eq("id", attachmentId)
     .is("removed_at", null);
   return error ? fail("generic") : { ok: true };
+}
+
+/** Fiche projet : ouvre (ou crée) le fil avec le porteur. */
+export async function openClientThread(formData: FormData): Promise<void> {
+  const projectId = String(formData.get("projectId") ?? "");
+  const admin = await adminViewer();
+  if (!admin) redirect("/fr/admin");
+  const id = await getOrCreateClientThread(projectId, admin.userId);
+  redirect(`/fr/admin/messages/${id}`);
+}
+
+/** Fiche architecte : ouvre (ou crée) son fil d'admission. */
+export async function openAdmissionThread(formData: FormData): Promise<void> {
+  const architectId = String(formData.get("architectId") ?? "");
+  const admin = await adminViewer();
+  if (!admin) redirect("/fr/admin");
+  const id = await getOrCreateAdmissionThread(architectId, admin.userId);
+  redirect(`/fr/admin/messages/${id}`);
 }

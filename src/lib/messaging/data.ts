@@ -109,6 +109,37 @@ export async function threadContext(thread: ThreadRow): Promise<ThreadContext> {
   return { thread, project, architect, engagements, ownerUserId };
 }
 
+/** Contextes de plusieurs fils en trois requêtes (listes, compteurs). */
+export async function threadContexts(threads: ThreadRow[]): Promise<ThreadContext[]> {
+  if (threads.length === 0) return [];
+  const s = svc();
+  const projectIds = [...new Set(threads.map((t) => t.project_id).filter((x): x is string => !!x))];
+  const architectIds = [...new Set(threads.map((t) => t.architect_id).filter((x): x is string => !!x))];
+  const [{ data: projects }, { data: architects }, { data: engs }] = await Promise.all([
+    projectIds.length
+      ? s.from("client_projects").select(PROJECT_COLS).in("id", projectIds)
+      : Promise.resolve({ data: [] }),
+    architectIds.length
+      ? s.from("architect_profiles").select(ARCHITECT_COLS).in("id", architectIds)
+      : Promise.resolve({ data: [] }),
+    projectIds.length
+      ? s.from("client_engagements").select("project_id, architect_id, status").in("project_id", projectIds)
+      : Promise.resolve({ data: [] }),
+  ]);
+  const pById = new Map(((projects ?? []) as ProjectLite[]).map((p) => [p.id, p]));
+  const aById = new Map(((architects ?? []) as ArchitectLite[]).map((a) => [a.id, a]));
+  const engRows = (engs ?? []) as { project_id: string; architect_id: string; status: string }[];
+  return threads.map((thread) => {
+    const project = thread.project_id ? (pById.get(thread.project_id) ?? null) : null;
+    const architect = thread.architect_id ? (aById.get(thread.architect_id) ?? null) : null;
+    const engagements = engRows
+      .filter((e) => e.project_id === thread.project_id)
+      .map((e) => ({ architectId: e.architect_id, status: e.status as EngagementStatus }));
+    const ownerUserId = thread.kind === "project_client" ? (project?.user_id ?? null) : (architect?.user_id ?? null);
+    return { thread, project, architect, engagements, ownerUserId };
+  });
+}
+
 /** Le fil et son contexte si le lecteur peut le voir, sinon null. */
 export async function canViewThread(viewer: Viewer, threadId: string): Promise<ThreadContext | null> {
   const { data } = await svc().from("message_threads").select(THREAD_COLS).eq("id", threadId).maybeSingle();
@@ -420,7 +451,7 @@ export async function listThreads(viewer: Viewer, locale: string): Promise<Threa
       .select(THREAD_COLS)
       .eq("architect_id", viewer.architectId);
     const rows = (threads ?? []) as ThreadRow[];
-    const ctxs = await Promise.all(rows.map((t) => threadContext(t)));
+    const ctxs = await threadContexts(rows);
     const unread = await unreadByThread(ctxs.map((c) => ({ id: c.thread.id, ownerUserId: viewer.userId })), "owner");
     const admission = ctxs.find((c) => c.thread.kind === "architect_admission");
     const items: ThreadSummary[] = [
@@ -462,7 +493,7 @@ export async function listThreads(viewer: Viewer, locale: string): Promise<Threa
     .select(THREAD_COLS)
     .order("last_message_at", { ascending: false, nullsFirst: false })
     .limit(300);
-  const ctxs = await Promise.all(((threads ?? []) as ThreadRow[]).map((t) => threadContext(t)));
+  const ctxs = await threadContexts((threads ?? []) as ThreadRow[]);
   const unread = await unreadByThread(ctxs.map((c) => ({ id: c.thread.id, ownerUserId: c.ownerUserId })), "admin");
   return ctxs
     .map((c) => {

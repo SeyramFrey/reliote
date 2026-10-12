@@ -3,11 +3,12 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useLocale } from "next-intl";
 
-export function AdminShell({ children }: { children: React.ReactNode }) {
+export function AdminShell({ children, unread = 0 }: { children: React.ReactNode; unread?: number }) {
   const pathname = usePathname();
   const locale = useLocale();
-  const tabs = [
+  const tabs: { href: string; label: string; badge?: number }[] = [
     { href: `/${locale}/admin`, label: "Vue d'ensemble" },
+    { href: `/${locale}/admin/messages`, label: "Messages", badge: unread },
     { href: `/${locale}/admin/architectes`, label: "Architectes" },
     { href: `/${locale}/admin/projets`, label: "Projets" },
     { href: `/${locale}/admin/rdv`, label: "RDV" },
@@ -25,10 +26,17 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
               key={t.href}
               href={t.href}
               className={`block py-2 text-sm border-l-2 pl-3 transition-colors ${
-                pathname === t.href ? "border-green text-ink" : "border-transparent text-concrete-1 hover:text-ink"
+                pathname === t.href || (t.href.endsWith("/messages") && pathname.startsWith(t.href))
+                  ? "border-green text-ink"
+                  : "border-transparent text-concrete-1 hover:text-ink"
               }`}
             >
               {t.label}
+              {t.badge ? (
+                <span className="ml-2 bg-green text-paper text-[11px] px-2 py-0.5 rounded-full" aria-label={`${t.badge} non lus`}>
+                  {t.badge}
+                </span>
+              ) : null}
             </Link>
           ))}
         </nav>

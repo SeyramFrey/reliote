@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { createClient } from "@/lib/supabase/client";
 import { signOut } from "@/app/[locale]/auth/actions";
+import { unreadMessagesTotal } from "@/lib/messaging/actions";
+import { usePathname } from "next/navigation";
 
 // État de connexion lu côté navigateur. `null` tant qu'il n'est pas connu :
 // rien n'est rendu avant, pour ne pas afficher « Se connecter » une fraction
@@ -26,10 +28,38 @@ export function useSignedIn(): boolean | null {
 
 const textLink = "text-[13px] opacity-80 hover:opacity-100 transition-opacity";
 
+// Messages non lus de l'utilisateur connecté, relus à chaque navigation.
+function useUnreadMessages(enabled: boolean): number {
+  const [count, setCount] = useState(0);
+  const pathname = usePathname();
+  useEffect(() => {
+    if (!enabled) return;
+    let alive = true;
+    unreadMessagesTotal()
+      .then((n) => alive && setCount(n))
+      .catch(() => {});
+    return () => {
+      alive = false;
+    };
+  }, [enabled, pathname]);
+  return enabled ? count : 0;
+}
+
+function UnreadDot({ count, label }: { count: number; label: string }) {
+  if (count <= 0) return null;
+  return (
+    <span className="ml-1.5 inline-flex min-w-[18px] h-[18px] items-center justify-center rounded-full bg-brass text-ink text-[10.5px] font-medium px-1" aria-label={label}>
+      {count > 99 ? "99+" : count}
+    </span>
+  );
+}
+
 // Écrans ≥ sm : liens texte à côté du sélecteur de langue.
 export function NavAccount({ signedIn }: { signedIn: boolean | null }) {
   const locale = useLocale();
   const t = useTranslations("nav");
+  const tm = useTranslations("messaging");
+  const unread = useUnreadMessages(signedIn === true);
   if (signedIn === null) return null;
   if (!signedIn) {
     return (
@@ -42,6 +72,7 @@ export function NavAccount({ signedIn }: { signedIn: boolean | null }) {
     <div className="flex items-center gap-3.5">
       <Link href={`/${locale}/dashboard`} className={textLink}>
         {t("mySpace")}
+        <UnreadDot count={unread} label={tm("unread", { count: unread })} />
       </Link>
       <form action={signOut.bind(null, locale)}>
         <button className={textLink}>{t("signOut")}</button>
@@ -55,6 +86,8 @@ export function NavAccount({ signedIn }: { signedIn: boolean | null }) {
 export function NavAccountMobile() {
   const locale = useLocale();
   const t = useTranslations("nav");
+  const tm = useTranslations("messaging");
+  const unread = useUnreadMessages(true);
   return (
     <div className="flex items-center gap-2.5">
       <Link
@@ -62,6 +95,7 @@ export function NavAccountMobile() {
         className="inline-flex items-center px-4 py-3 bg-green text-paper text-[13px] font-medium hover:bg-green-deep transition-colors"
       >
         {t("mySpace")}
+        <UnreadDot count={unread} label={tm("unread", { count: unread })} />
       </Link>
       <form action={signOut.bind(null, locale)}>
         <button aria-label={t("signOut")} title={t("signOut")} className="p-2 opacity-80 hover:opacity-100">
