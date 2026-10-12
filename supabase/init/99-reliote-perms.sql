@@ -25,6 +25,9 @@ alter role supabase_auth_admin    with login password 'reliote_dev_pwd';
 alter role supabase_storage_admin with login password 'reliote_dev_pwd';
 
 grant anon, authenticated, service_role to authenticator;
+-- Storage bascule de rôle pour chaque requête (set_config('role', …)) : sans
+-- ces appartenances, toute opération storage échoue en 42501.
+grant anon, authenticated, service_role to supabase_storage_admin;
 
 -- ---------- public schema permissions ----------
 grant usage  on schema public to anon, authenticated, service_role;
@@ -83,3 +86,17 @@ alter default privileges in schema storage grant all on tables    to anon, authe
 alter default privileges in schema storage grant all on functions to anon, authenticated, service_role;
 alter default privileges in schema storage grant all on sequences to anon, authenticated, service_role;
 alter role supabase_storage_admin set search_path = storage, public;
+
+-- ---------- storage schema ----------
+-- Créé par le service storage (propriétaire supabase_storage_admin) ; on lui
+-- donne les droits d'une pile Supabase standard. La RLS de storage.objects
+-- continue de s'appliquer à anon et authenticated.
+do $$ begin
+  if to_regnamespace('storage') is not null then
+    grant usage on schema storage to anon, authenticated, service_role;
+    grant all on all tables in schema storage to anon, authenticated, service_role;
+    grant all on all sequences in schema storage to anon, authenticated, service_role;
+    grant all on all functions in schema storage to anon, authenticated, service_role;
+    alter default privileges for role supabase_storage_admin in schema storage grant all on tables to anon, authenticated, service_role;
+  end if;
+end $$;
