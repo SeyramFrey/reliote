@@ -229,8 +229,8 @@ export function ThreadView({
         <ForwardDialog
           attachment={forwarding}
           onCancel={() => setForwarding(null)}
-          onSubmit={async (note, confirmed) => {
-            const res = await forwardAttachment({ attachmentId: forwarding.id, note, confirmed });
+          onSubmit={async (note, confirmed, fileName) => {
+            const res = await forwardAttachment({ attachmentId: forwarding.id, note, confirmed, fileName });
             if ("error" in res) return res.error;
             setForwarding(null);
             await refresh();

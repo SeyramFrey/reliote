@@ -12,10 +12,16 @@ export function ForwardDialog({
 }: {
   attachment: AttachmentView;
   onCancel: () => void;
-  onSubmit: (note: string, confirmed: boolean) => Promise<string | null>;
+  onSubmit: (note: string, confirmed: boolean, fileName: string) => Promise<string | null>;
 }) {
   const t = useTranslations("messaging");
   const [note, setNote] = useState("");
+  const dot = attachment.name.lastIndexOf(".");
+  const ext = dot > 0 ? attachment.name.slice(dot) : "";
+  // Avant le RDV, pas de nom pré-rempli : celui d'origine trahit souvent l'agence.
+  const [fileName, setFileName] = useState(
+    attachment.forward?.needsCheck ? "" : dot > 0 ? attachment.name.slice(0, dot) : attachment.name,
+  );
   const [checked, setChecked] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -40,7 +46,7 @@ export function ForwardDialog({
           }
           setBusy(true);
           setError(null);
-          const err = await onSubmit(note, checked);
+          const err = await onSubmit(note, checked, fileName);
           setBusy(false);
           if (err) setError(t(`errors.${err}` as "errors.generic"));
         }}
@@ -50,6 +56,26 @@ export function ForwardDialog({
           {title}
         </h2>
         <p className="mt-2 text-sm text-concrete-1 [overflow-wrap:anywhere]">{attachment.name}</p>
+
+        <label className="block mt-5">
+          <span className="eyebrow">{t("forwardName")}</span>
+          <span className="mt-1 flex items-baseline gap-1 border border-[var(--hairline)] focus-within:border-green p-2">
+            <input
+              value={fileName}
+              onChange={(e) => setFileName(e.target.value)}
+              placeholder={attachment.forward?.needsCheck ? "document-reliote" : undefined}
+              maxLength={110}
+              className="flex-1 min-w-0 bg-transparent outline-none text-[15px]"
+            />
+            <span className="mono text-[12px] text-concrete-2">{ext}</span>
+          </span>
+        </label>
+
+        {needsCheck && (
+          <p className="mt-3 text-[13px] text-concrete-1">
+            {attachment.forward?.scrubbable ? t("forwardScrubbed") : `⚠ ${t("forwardNotScrubbable")}`}
+          </p>
+        )}
 
         <label className="block mt-5">
           <span className="eyebrow">{t("forwardNote")}</span>

@@ -865,10 +865,15 @@
       "fileMissing": "A file was not received. Please try again.",
       "checkRequired": "Tick the check before forwarding.",
       "noTarget": "No destination conversation for this document.",
-      "generic": "Something went wrong. Please try again."
+      "generic": "Something went wrong. Please try again.",
+      "scrubFailed": "Cleaning the file failed (protected or damaged file): it was not forwarded. Export it as an unprotected PDF.",
+      "scrubEmbedded": "This document contains embedded objects (files, linked sheets…) that cannot be cleaned: export it to PDF, then forward the PDF."
     },
     "history": "History",
     "editedVersion": "Before edit",
-    "deletedVersion": "Deleted text"
+    "deletedVersion": "Deleted text",
+    "forwardName": "Forwarded file name",
+    "forwardScrubbed": "File properties (author, software, photo location) will be removed from the forwarded copy.",
+    "forwardNotScrubbable": "This format (DWG, DXF, HEIC) cannot be cleaned automatically: open it to check the title block and file properties."
   }
 }

@@ -15,6 +15,7 @@ import {
   type ThreadKind,
 } from "./rules";
 import type { AttachmentView, MessageView, ThreadSummary, ThreadView, Viewer } from "./types";
+import { isScrubbable } from "./files";
 
 // Lectures de la messagerie. Client service (contourne la RLS) : chaque
 // fonction reçoit le lecteur et ne renvoie que ce qu'il a le droit de voir.
@@ -343,7 +344,7 @@ export async function buildThreadView(
 
   // Transfert (admin) : vers le fil porteur depuis le fil architecte, ou vers le
   // fil de l'architecte retenu (s'il existe et est ouvert) depuis le fil porteur.
-  let forward: AttachmentView["forward"] | undefined;
+  let forward: Omit<NonNullable<AttachmentView["forward"]>, "scrubbable"> | undefined;
   if (isAdmin && forwardTarget(ctx.thread.kind)) {
     const needsCheck = needsAnonymityCheck(retainedStatus);
     if (ctx.thread.kind === "project_architect" && writable) forward = { target: "client", needsCheck };
@@ -363,7 +364,9 @@ export async function buildThreadView(
       removed: !!a.removed_at,
       forwarded: !!a.forwarded_from,
       href: `/api/messages/files/${a.id}`,
-      ...(forward && !a.removed_at ? { forward } : {}),
+      ...(forward && !a.removed_at
+        ? { forward: { ...forward, scrubbable: isScrubbable(a.file_name.slice(a.file_name.lastIndexOf(".") + 1)) } }
+        : {}),
     });
     byMessage.set(a.message_id, list);
   }
