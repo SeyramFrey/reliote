@@ -4,6 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { setArchitectStatus } from "../actions";
 import { ARCHITECT_STATUS_FR } from "@/lib/workflow/labels";
+import { openAdmissionThread } from "@/lib/messaging/actions";
 
 type Architect = {
   id: string;
@@ -67,6 +68,12 @@ export default async function AdminArchitectDetail({ params }: { params: Promise
         </h1>
         <span className="mono uppercase text-[11px] tracking-[0.18em] text-green">{ARCHITECT_STATUS_FR[a.status]}</span>
       </div>
+      <form action={openAdmissionThread} className="mt-4">
+        <input type="hidden" name="architectId" value={a.id} />
+        <button className="px-4 py-2 border border-[var(--hairline)] text-sm hover:border-ink">
+          Conversation « dossier d&apos;admission »
+        </button>
+      </form>
 
       <section className="mt-8 grid grid-cols-1 md:grid-cols-[200px_1fr] gap-8">
         <div>

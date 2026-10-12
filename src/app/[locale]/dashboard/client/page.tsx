@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
 import { getLocale, getTranslations } from "next-intl/server";
 import Link from "next/link";
+import { MessagesLink } from "@/components/messaging/MessagesLink";
 import { notFound } from "next/navigation";
 import { chooseProposal, declineProposal, declineMeeting } from "./actions";
 import { ConfirmMeetingButton } from "@/components/dashboard/ConfirmMeetingButton";
@@ -164,9 +165,12 @@ export default async function ClientDashboard({
       <p className="eyebrow">{t("eyebrow")}</p>
       <div className="flex flex-wrap items-end justify-between gap-4 mt-4">
         <h1 className="font-light text-[clamp(40px,5vw,72px)] leading-[1.05]">{t("title")}</h1>
-        <Link href={`/${locale}/projets/initier`} className={btnGhost}>
-          {t("newProject")}
-        </Link>
+        <div className="flex flex-wrap gap-3">
+          <MessagesLink href="/dashboard/client/messages" />
+          <Link href={`/${locale}/projets/initier`} className={btnGhost}>
+            {t("newProject")}
+          </Link>
+        </div>
       </div>
 
       {notice && (

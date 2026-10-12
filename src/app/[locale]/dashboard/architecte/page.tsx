@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
 import { getLocale, getTranslations } from "next-intl/server";
 import Link from "next/link";
+import { MessagesLink } from "@/components/messaging/MessagesLink";
 import { notFound } from "next/navigation";
 import { MAX_SCORE } from "@/lib/matching/score";
 import { countryTimeZone, formatMeetingTime } from "@/lib/time/meetingTime";
@@ -133,9 +134,12 @@ export default async function ArchitectDashboard() {
   return (
     <section className="page-edge py-16">
       <p className="eyebrow">{t("eyebrow")}</p>
-      <h1 className="font-light text-[clamp(40px,5vw,72px)] leading-[1.05] mt-4">
-        {arch.first_name} {arch.last_name}
-      </h1>
+      <div className="flex flex-wrap items-end justify-between gap-4 mt-4">
+        <h1 className="font-light text-[clamp(40px,5vw,72px)] leading-[1.05]">
+          {arch.first_name} {arch.last_name}
+        </h1>
+        <MessagesLink href="/dashboard/architecte/messages" />
+      </div>
       <p className="text-concrete-1 mt-3 max-w-[64ch]">
         <span className="eyebrow mr-2">{t("status")}</span>
         {t(`statusText.${arch.status}`)}

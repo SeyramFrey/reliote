@@ -15,6 +15,8 @@ import {
   scheduleMeeting,
   closeProject,
 } from "../actions";
+import { openArchitectThread, openClientThread } from "@/lib/messaging/actions";
+import { retainedArchitectId, type EngagementStatus } from "@/lib/messaging/rules";
 
 type Project = {
   id: string;
@@ -141,6 +143,19 @@ export default async function AdminProjectDetail({
   const proposedCount = engagements.filter((e) => e.status === "proposed").length;
   const hasActiveMeeting = meetings.some((m) => ACTIVE_MEETINGS.has(m.status));
   const closed = project.status === "closed";
+  // Messagerie : fil porteur, et fil de l'architecte retenu (seul engagement
+  // encore actif) une fois le choix fait.
+  const retained = retainedArchitectId(
+    engagements.map((e) => ({ architectId: e.architect_id, status: e.status as EngagementStatus })),
+  );
+  const retainedEngagement = retained ? engagementFor(retained) : undefined;
+  const { data: threadRows } = await s
+    .from("message_threads")
+    .select("id, kind, architect_id")
+    .eq("project_id", id);
+  const clientThreadId = threadRows?.find((t) => t.kind === "project_client")?.id ?? null;
+  const architectThreads = (threadRows ?? []).filter((t) => t.kind === "project_architect");
+  const retainedThreadId = architectThreads.find((t) => t.architect_id === retained)?.id ?? null;
 
   return (
     <>
@@ -193,6 +208,61 @@ export default async function AdminProjectDetail({
           ) : null}
         </div>
       </section>
+
+      {/* ── Messages ──────────────────────────────────────────────────── */}
+      <div className="mt-12">
+        <h2 className="font-light text-2xl">Messages</h2>
+        <div className="mt-4 flex flex-wrap gap-3 items-center">
+          {clientThreadId ? (
+            <Link href={`/${locale}/admin/messages/${clientThreadId}`} className="px-4 py-2 border border-[var(--hairline)] text-sm hover:border-ink">
+              Conversation avec le porteur
+            </Link>
+          ) : (
+            <form action={openClientThread}>
+              <input type="hidden" name="projectId" value={project.id} />
+              <button className="px-4 py-2 border border-[var(--hairline)] text-sm hover:border-ink">
+                Écrire au porteur
+              </button>
+            </form>
+          )}
+          {retained && retainedThreadId ? (
+            <Link href={`/${locale}/admin/messages/${retainedThreadId}`} className="px-4 py-2 border border-[var(--hairline)] text-sm hover:border-ink">
+              Conversation avec l&apos;architecte retenu
+            </Link>
+          ) : retained ? (
+            <form action={openArchitectThread}>
+              <input type="hidden" name="projectId" value={project.id} />
+              <input type="hidden" name="architectId" value={retained} />
+              <button className="px-4 py-2 bg-green text-paper text-sm hover:bg-green-deep">
+                Ouvrir un fil avec l&apos;architecte retenu
+                {retainedEngagement?.architect_profiles
+                  ? ` (${retainedEngagement.architect_profiles.first_name} ${retainedEngagement.architect_profiles.last_name})`
+                  : ""}
+              </button>
+            </form>
+          ) : (
+            <p className="text-concrete-1 text-sm max-w-[60ch]">
+              Le fil architecte s&apos;ouvre une fois l&apos;architecte retenu (choix du porteur, ou proposition unique).
+            </p>
+          )}
+        </div>
+        {architectThreads.filter((t) => t.architect_id !== retained).length > 0 && (
+          <ul className="mt-3 text-sm text-concrete-1 space-y-1">
+            {architectThreads
+              .filter((t) => t.architect_id !== retained)
+              .map((t) => {
+                const a = engagementFor(t.architect_id ?? "")?.architect_profiles;
+                return (
+                  <li key={t.id}>
+                    <Link href={`/${locale}/admin/messages/${t.id}`} className="underline underline-offset-2 hover:text-ink">
+                      Fil fermé{a ? ` — ${a.first_name} ${a.last_name}` : ""}
+                    </Link>
+                  </li>
+                );
+              })}
+          </ul>
+        )}
+      </div>
 
       {/* ── Propositions en cours ─────────────────────────────────────── */}
       <div className="mt-12">

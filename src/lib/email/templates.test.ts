@@ -12,6 +12,8 @@ import {
   architectStatusEmail,
   proposalsDeclinedAdminEmail,
   newArchitectAdminEmail,
+  newMessageEmail,
+  newMessageAdminEmail,
 } from "./templates";
 
 describe("projectReceivedEmail", () => {
@@ -194,5 +196,25 @@ describe("project type labels in emails", () => {
     expect(projectReceivedEmail("fr", base).html).toContain("Hôtellerie");
     expect(projectReceivedEmail("en", base).html).toContain("Hospitality");
     expect(projectReceivedEmail("fr", base).html).not.toContain(">hospitality<");
+  });
+});
+
+describe("newMessageEmail", () => {
+  it("is French by default, English on request, and links to the thread", () => {
+    const fr = newMessageEmail("fr", { ctaUrl: "https://reliote.test/fr/dashboard/client/messages/p1" });
+    expect(fr.subject).toMatch(/nouveau message/i);
+    expect(fr.html).toContain('href="https://reliote.test/fr/dashboard/client/messages/p1"');
+    const en = newMessageEmail("en", { ctaUrl: "https://reliote.test/en/dashboard/client/messages/p1" });
+    expect(en.subject).toMatch(/new message/i);
+  });
+});
+
+describe("newMessageAdminEmail", () => {
+  it("names the thread (escaped) and links to it", () => {
+    const m = newMessageAdminEmail({ threadLabel: "<b>Villa</b> — Awa", adminUrl: "https://reliote.test/fr/admin/messages/t1" });
+    expect(m.subject).toMatch(/nouveau message/i);
+    expect(m.html).not.toContain("<b>Villa</b>");
+    expect(m.html).toContain("&lt;b&gt;Villa&lt;/b&gt;");
+    expect(m.html).toContain('href="https://reliote.test/fr/admin/messages/t1"');
   });
 });

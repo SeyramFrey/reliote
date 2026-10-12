@@ -12,6 +12,18 @@ docker compose up -d
 - API gateway: http://localhost:54321
 - Studio: http://localhost:54323
 
+## Realtime (messagerie)
+
+The `realtime` service (Supabase Realtime) serves `ws://localhost:54321/realtime/v1/`.
+On a volume created before it existed, run once, then restart Kong (it reads
+`kong.yml` only at startup):
+
+```bash
+# REALTIME_SECRET_KEY_BASE must be set in .env (openssl rand -hex 32)
+docker compose exec -e PGPASSWORD=$POSTGRES_PASSWORD db psql -U supabase_admin -d postgres -f /docker-entrypoint-initdb.d/98-realtime.sql
+./render-kong.sh && docker compose up -d realtime && docker compose restart kong
+```
+
 Migrations and seed are mounted into `/docker-entrypoint-initdb.d/` and applied on first DB init only.
 
 ## Re-apply migrations after schema changes

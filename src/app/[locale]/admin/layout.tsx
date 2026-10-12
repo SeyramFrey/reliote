@@ -4,6 +4,7 @@ import { getLocale } from "next-intl/server";
 import { Nav } from "@/components/shared/Nav";
 import { AdminShell } from "@/components/admin/AdminShell";
 import { pageMetadata } from "@/lib/seo/metadata";
+import { unreadTotal } from "@/lib/messaging/data";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   return pageMetadata({ locale: (await params).locale, page: "admin" });
@@ -22,11 +23,12 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     .eq("id", user.id)
     .single() as { data: Profile | null };
   if (prof?.role !== "admin") notFound();
+  const unread = await unreadTotal({ userId: user.id, role: "admin", architectId: null });
   return (
     <>
       <Nav />
       <main className="pt-24">
-        <AdminShell>{children}</AdminShell>
+        <AdminShell unread={unread}>{children}</AdminShell>
       </main>
     </>
   );

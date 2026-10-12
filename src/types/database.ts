@@ -40,6 +40,7 @@ export type Database = {
           user_id: string | null
           years_experience: number
         }
+        ComputedFields: never
         Insert: {
           anon_handle?: string | null
           availability?: Database["public"]["Enums"]["availability_status"]
@@ -122,6 +123,7 @@ export type Database = {
           proposed_at: string
           status: Database["public"]["Enums"]["engagement_status"]
         }
+        ComputedFields: never
         Insert: {
           architect_id: string
           charter_accepted?: boolean
@@ -187,6 +189,7 @@ export type Database = {
           timeline: string | null
           user_id: string | null
         }
+        ComputedFields: never
         Insert: {
           budget_range?: string | null
           choice_requested_at?: string | null
@@ -240,6 +243,7 @@ export type Database = {
           created_at: string
           engagement_id: string
         }
+        ComputedFields: never
         Insert: {
           architect_relay: string
           client_relay: string
@@ -267,33 +271,34 @@ export type Database = {
           cite: string | null
           coordinates: string | null
           created_at: string
-          hotspots: Json
+          hotspots: NonNullable<Json>
           id: string
           location: string | null
           published: boolean
           quote_en: string | null
           quote_fr: string | null
-          rows: Json
-          slides: Json
+          rows: NonNullable<Json>
+          slides: NonNullable<Json>
           sort_order: number
-          stats: Json
+          stats: NonNullable<Json>
           title_en: string
           title_fr: string
         }
+        ComputedFields: never
         Insert: {
           cite?: string | null
           coordinates?: string | null
           created_at?: string
-          hotspots?: Json
+          hotspots?: NonNullable<Json>
           id?: string
           location?: string | null
           published?: boolean
           quote_en?: string | null
           quote_fr?: string | null
-          rows?: Json
-          slides?: Json
+          rows?: NonNullable<Json>
+          slides?: NonNullable<Json>
           sort_order?: number
-          stats?: Json
+          stats?: NonNullable<Json>
           title_en: string
           title_fr: string
         }
@@ -301,16 +306,16 @@ export type Database = {
           cite?: string | null
           coordinates?: string | null
           created_at?: string
-          hotspots?: Json
+          hotspots?: NonNullable<Json>
           id?: string
           location?: string | null
           published?: boolean
           quote_en?: string | null
           quote_fr?: string | null
-          rows?: Json
-          slides?: Json
+          rows?: NonNullable<Json>
+          slides?: NonNullable<Json>
           sort_order?: number
-          stats?: Json
+          stats?: NonNullable<Json>
           title_en?: string
           title_fr?: string
         }
@@ -331,6 +336,7 @@ export type Database = {
           title_fr: string
           updated_at: string
         }
+        ComputedFields: never
         Insert: {
           body_en?: string
           body_fr?: string
@@ -367,15 +373,16 @@ export type Database = {
           created_at: string
           id: string
           project_id: string
-          reasons: Json
+          reasons: NonNullable<Json>
           score: number
         }
+        ComputedFields: never
         Insert: {
           architect_id: string
           created_at?: string
           id?: string
           project_id: string
-          reasons?: Json
+          reasons?: NonNullable<Json>
           score: number
         }
         Update: {
@@ -383,7 +390,7 @@ export type Database = {
           created_at?: string
           id?: string
           project_id?: string
-          reasons?: Json
+          reasons?: NonNullable<Json>
           score?: number
         }
         Relationships: [
@@ -425,6 +432,7 @@ export type Database = {
           title_fr: string
           url: string | null
         }
+        ComputedFields: never
         Insert: {
           created_at?: string
           date?: string | null
@@ -469,6 +477,7 @@ export type Database = {
           updated_at: string
           video_url: string | null
         }
+        ComputedFields: never
         Insert: {
           architect_id: string
           charter_accepted?: boolean
@@ -526,6 +535,232 @@ export type Database = {
           },
         ]
       }
+      message_attachments: {
+        Row: {
+          created_at: string
+          file_name: string
+          forwarded_from: string | null
+          id: string
+          message_id: string
+          mime_type: string
+          removed_at: string | null
+          size_bytes: number
+          storage_path: string
+          thread_id: string
+        }
+        ComputedFields: never
+        Insert: {
+          created_at?: string
+          file_name: string
+          forwarded_from?: string | null
+          id?: string
+          message_id: string
+          mime_type: string
+          removed_at?: string | null
+          size_bytes: number
+          storage_path: string
+          thread_id: string
+        }
+        Update: {
+          created_at?: string
+          file_name?: string
+          forwarded_from?: string | null
+          id?: string
+          message_id?: string
+          mime_type?: string
+          removed_at?: string | null
+          size_bytes?: number
+          storage_path?: string
+          thread_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "message_attachments_forwarded_from_fkey"
+            columns: ["forwarded_from"]
+            isOneToOne: false
+            referencedRelation: "message_attachments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "message_attachments_message_id_fkey"
+            columns: ["message_id"]
+            isOneToOne: false
+            referencedRelation: "messages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "message_attachments_thread_id_fkey"
+            columns: ["thread_id"]
+            isOneToOne: false
+            referencedRelation: "message_threads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      message_revisions: {
+        Row: {
+          action: string
+          body: string
+          id: string
+          message_id: string
+          revised_at: string
+          revised_by: string | null
+        }
+        ComputedFields: never
+        Insert: {
+          action: string
+          body: string
+          id?: string
+          message_id: string
+          revised_at?: string
+          revised_by?: string | null
+        }
+        Update: {
+          action?: string
+          body?: string
+          id?: string
+          message_id?: string
+          revised_at?: string
+          revised_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "message_revisions_message_id_fkey"
+            columns: ["message_id"]
+            isOneToOne: false
+            referencedRelation: "messages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      message_thread_reads: {
+        Row: {
+          last_read_at: string
+          thread_id: string
+          user_id: string
+        }
+        ComputedFields: never
+        Insert: {
+          last_read_at?: string
+          thread_id: string
+          user_id: string
+        }
+        Update: {
+          last_read_at?: string
+          thread_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "message_thread_reads_thread_id_fkey"
+            columns: ["thread_id"]
+            isOneToOne: false
+            referencedRelation: "message_threads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      message_threads: {
+        Row: {
+          admin_notified_at: string | null
+          architect_id: string | null
+          created_at: string
+          created_by: string | null
+          id: string
+          kind: Database["public"]["Enums"]["thread_kind"]
+          last_message_at: string | null
+          owner_notified_at: string | null
+          project_id: string | null
+        }
+        ComputedFields: never
+        Insert: {
+          admin_notified_at?: string | null
+          architect_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          kind: Database["public"]["Enums"]["thread_kind"]
+          last_message_at?: string | null
+          owner_notified_at?: string | null
+          project_id?: string | null
+        }
+        Update: {
+          admin_notified_at?: string | null
+          architect_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          kind?: Database["public"]["Enums"]["thread_kind"]
+          last_message_at?: string | null
+          owner_notified_at?: string | null
+          project_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "message_threads_architect_id_fkey"
+            columns: ["architect_id"]
+            isOneToOne: false
+            referencedRelation: "architect_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "message_threads_architect_id_fkey"
+            columns: ["architect_id"]
+            isOneToOne: false
+            referencedRelation: "architect_profiles_anon"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "message_threads_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "client_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      messages: {
+        Row: {
+          author_id: string | null
+          author_side: Database["public"]["Enums"]["message_side"]
+          body: string
+          created_at: string
+          deleted_at: string | null
+          edited_at: string | null
+          id: string
+          thread_id: string
+        }
+        ComputedFields: never
+        Insert: {
+          author_id?: string | null
+          author_side: Database["public"]["Enums"]["message_side"]
+          body?: string
+          created_at?: string
+          deleted_at?: string | null
+          edited_at?: string | null
+          id?: string
+          thread_id: string
+        }
+        Update: {
+          author_id?: string | null
+          author_side?: Database["public"]["Enums"]["message_side"]
+          body?: string
+          created_at?: string
+          deleted_at?: string | null
+          edited_at?: string | null
+          id?: string
+          thread_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "messages_thread_id_fkey"
+            columns: ["thread_id"]
+            isOneToOne: false
+            referencedRelation: "message_threads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           created_at: string
@@ -535,6 +770,7 @@ export type Database = {
           locale: string
           role: Database["public"]["Enums"]["user_role"]
         }
+        ComputedFields: never
         Insert: {
           created_at?: string
           first_name?: string | null
@@ -559,8 +795,7 @@ export type Database = {
         Row: {
           anon_handle: string | null
           availability:
-            | Database["public"]["Enums"]["availability_status"]
-            | null
+            Database["public"]["Enums"]["availability_status"] | null
           diploma: string | null
           id: string | null
           languages: string[] | null
@@ -571,11 +806,11 @@ export type Database = {
           status: Database["public"]["Enums"]["architect_status"] | null
           years_bracket: string | null
         }
+        ComputedFields: never
         Insert: {
           anon_handle?: string | null
           availability?:
-            | Database["public"]["Enums"]["availability_status"]
-            | null
+            Database["public"]["Enums"]["availability_status"] | null
           diploma?: string | null
           id?: string | null
           languages?: string[] | null
@@ -589,8 +824,7 @@ export type Database = {
         Update: {
           anon_handle?: string | null
           availability?:
-            | Database["public"]["Enums"]["availability_status"]
-            | null
+            Database["public"]["Enums"]["availability_status"] | null
           diploma?: string | null
           id?: string | null
           languages?: string[] | null
@@ -605,17 +839,23 @@ export type Database = {
       }
     }
     Functions: {
-      [_ in never]: never
+      message_unread_counts: {
+        Args: {
+          p_side: Database["public"]["Enums"]["message_side"]
+          p_thread_ids: string[]
+          p_user: string
+        }
+        Returns: {
+          thread_id: string
+          unread: number
+        }[]
+      }
     }
     Enums: {
       architect_status: "pending" | "verified" | "rejected" | "paused"
       availability_status: "available" | "busy" | "unavailable"
       engagement_status:
-        | "proposed"
-        | "engaged"
-        | "declined"
-        | "cancelled"
-        | "expired"
+        "proposed" | "engaged" | "declined" | "cancelled" | "expired"
       fee_currency: "EUR" | "XOF"
       meeting_status:
         | "proposed"
@@ -624,6 +864,7 @@ export type Database = {
         | "rescheduled"
         | "completed"
         | "cancelled"
+      message_side: "admin" | "owner"
       project_status:
         | "new"
         | "matched"
@@ -639,6 +880,8 @@ export type Database = {
         | "urban"
         | "cultural"
         | "other"
+      thread_kind:
+        "project_client" | "project_architect" | "architect_admission"
       user_role: "client" | "architect" | "admin"
     }
     CompositeTypes: {
@@ -655,12 +898,12 @@ export type Tables<
   DefaultSchemaTableNameOrOptions extends
     | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
     | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
         DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
-    : never = never,
+    : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -682,13 +925,12 @@ export type Tables<
 
 export type TablesInsert<
   DefaultSchemaTableNameOrOptions extends
-    | keyof DefaultSchema["Tables"]
-    | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
+    keyof DefaultSchema["Tables"] | { schema: keyof DatabaseWithoutInternals },
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-    : never = never,
+    : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -707,13 +949,12 @@ export type TablesInsert<
 
 export type TablesUpdate<
   DefaultSchemaTableNameOrOptions extends
-    | keyof DefaultSchema["Tables"]
-    | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
+    keyof DefaultSchema["Tables"] | { schema: keyof DatabaseWithoutInternals },
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-    : never = never,
+    : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -732,13 +973,12 @@ export type TablesUpdate<
 
 export type Enums<
   DefaultSchemaEnumNameOrOptions extends
-    | keyof DefaultSchema["Enums"]
-    | { schema: keyof DatabaseWithoutInternals },
-  EnumName extends DefaultSchemaEnumNameOrOptions extends {
+    keyof DefaultSchema["Enums"] | { schema: keyof DatabaseWithoutInternals },
+  EnumName extends (DefaultSchemaEnumNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
-    : never = never,
+    : never) = never,
 > = DefaultSchemaEnumNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -751,11 +991,11 @@ export type CompositeTypes<
   PublicCompositeTypeNameOrOptions extends
     | keyof DefaultSchema["CompositeTypes"]
     | { schema: keyof DatabaseWithoutInternals },
-  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
+  CompositeTypeName extends (PublicCompositeTypeNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
-    : never = never,
+    : never) = never,
 > = PublicCompositeTypeNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -785,6 +1025,7 @@ export const Constants = {
         "completed",
         "cancelled",
       ],
+      message_side: ["admin", "owner"],
       project_status: [
         "new",
         "matched",
@@ -802,8 +1043,12 @@ export const Constants = {
         "cultural",
         "other",
       ],
+      thread_kind: [
+        "project_client",
+        "project_architect",
+        "architect_admission",
+      ],
       user_role: ["client", "architect", "admin"],
     },
   },
 } as const
-
