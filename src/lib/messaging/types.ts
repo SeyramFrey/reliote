@@ -12,7 +12,7 @@ export type AttachmentView = {
   forwarded: boolean;
   href: string;
   /** Admin seulement : transfert possible vers l'autre fil du projet. */
-  forward?: { target: "client" | "architect"; needsCheck: boolean };
+  forward?: { target: "client" | "architect"; needsCheck: boolean; scrubbable: boolean };
 };
 
 export type MessageView = {

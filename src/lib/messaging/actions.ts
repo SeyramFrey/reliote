@@ -9,6 +9,7 @@ import {
   MESSAGE_BUCKET,
   attachmentPathBelongs,
   checkAttachment,
+  forwardFileName,
   mimeForExtension,
   storagePathFor,
 } from "./files";
@@ -37,6 +38,7 @@ import {
   type ThreadRow,
 } from "./data";
 import { notifyNewMessage } from "./notify";
+import { scrubFile } from "./scrub";
 import type { ActionResult, ThreadView, Viewer } from "./types";
 
 // Toutes les écritures de la messagerie. Chaque action revérifie le lecteur,
@@ -269,6 +271,8 @@ export async function forwardAttachment(input: {
   attachmentId: string;
   note: string;
   confirmed: boolean;
+  /** Nouveau nom (facultatif) ; l'extension d'origine est conservée. */
+  fileName?: string;
 }): Promise<ActionResult> {
   const admin = await adminViewer();
   if (!admin) return fail("notAllowed");
@@ -303,14 +307,35 @@ export async function forwardAttachment(input: {
   if (!writableCtx(target)) return fail("readOnly");
 
   const retainedStatus = source.engagements.find((e) => e.architectId === retained)?.status ?? null;
-  if (needsAnonymityCheck(retainedStatus) && !input.confirmed) return fail("checkRequired");
+  const beforeReveal = needsAnonymityCheck(retainedStatus);
+  if (beforeReveal && !input.confirmed) return fail("checkRequired");
   const note = String(input.note ?? "").trim();
   if (note.length > MAX_BODY) return fail("tooLong");
 
   const ext = att.storage_path.slice(att.storage_path.lastIndexOf(".") + 1);
   const newPath = storagePathFor(targetId, randomUUID(), ext);
-  const { error: copyErr } = await s.storage.from(MESSAGE_BUCKET).copy(att.storage_path, newPath);
-  if (copyErr) return fail("generic");
+  const fileName = forwardFileName(String(input.fileName ?? ""), att.file_name);
+  let size = Number(att.size_bytes);
+  if (beforeReveal) {
+    // Avant le RDV confirmé : copie nettoyée de ses métadonnées (auteur,
+    // logiciel, EXIF…) quand le format le permet.
+    const { data: blob, error: dlErr } = await s.storage.from(MESSAGE_BUCKET).download(att.storage_path);
+    if (dlErr || !blob) return fail("generic");
+    let bytes: Uint8Array;
+    try {
+      bytes = (await scrubFile(new Uint8Array(await blob.arrayBuffer()), ext)).bytes;
+    } catch {
+      return fail("scrubFailed");
+    }
+    const { error: upErr } = await s.storage
+      .from(MESSAGE_BUCKET)
+      .upload(newPath, bytes, { contentType: att.mime_type, upsert: false });
+    if (upErr) return fail("generic");
+    size = bytes.byteLength;
+  } else {
+    const { error: copyErr } = await s.storage.from(MESSAGE_BUCKET).copy(att.storage_path, newPath);
+    if (copyErr) return fail("generic");
+  }
 
   const { data: msg, error } = await s
     .from("messages")
@@ -322,9 +347,9 @@ export async function forwardAttachment(input: {
     message_id: msg.id,
     thread_id: targetId,
     storage_path: newPath,
-    file_name: att.file_name,
+    file_name: fileName,
     mime_type: att.mime_type,
-    size_bytes: att.size_bytes,
+    size_bytes: size,
     forwarded_from: att.id,
   });
   await touchThread(targetId, admin.userId, { authorRead: false });

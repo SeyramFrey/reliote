@@ -6,6 +6,7 @@ import {
   storagePathFor,
   attachmentPathBelongs,
   mimeForExtension,
+  forwardFileName,
 } from "./files";
 
 describe("checkAttachment", () => {
@@ -69,5 +70,21 @@ describe("mimeForExtension", () => {
     expect(mimeForExtension("pdf")).toBe("application/pdf");
     expect(mimeForExtension("dwg")).toBe("application/acad");
     expect(mimeForExtension("bin")).toBe("application/octet-stream");
+  });
+});
+
+describe("forwardFileName", () => {
+  it("keeps the original name when none is given", () => {
+    expect(forwardFileName("", "Esquisse Atelier Kofi.pdf")).toBe("Esquisse Atelier Kofi.pdf");
+    expect(forwardFileName("   ", "plan.dwg")).toBe("plan.dwg");
+  });
+  it("always keeps the original extension", () => {
+    expect(forwardFileName("Esquisse RDC", "Atelier Kofi.pdf")).toBe("Esquisse RDC.pdf");
+    expect(forwardFileName("Esquisse RDC.PDF", "x.pdf")).toBe("Esquisse RDC.PDF");
+    expect(forwardFileName("plan.exe", "x.pdf")).toBe("plan.exe.pdf");
+  });
+  it("cleans paths and control characters", () => {
+    expect(forwardFileName("../../secret\\nom", "x.pdf")).toBe("nom.pdf");
+    expect(forwardFileName("pl\u0000an", "x.dwg")).toBe("plan.dwg");
   });
 });

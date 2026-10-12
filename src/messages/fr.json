@@ -865,10 +865,14 @@
       "fileMissing": "Un fichier n'a pas été reçu. Réessayez.",
       "checkRequired": "Cochez la vérification avant de transmettre.",
       "noTarget": "Aucune conversation de destination pour ce document.",
-      "generic": "Une erreur est survenue. Réessayez."
+      "generic": "Une erreur est survenue. Réessayez.",
+      "scrubFailed": "Le nettoyage du fichier a échoué : il n'a pas été transmis."
     },
     "history": "Historique",
     "editedVersion": "Avant modification",
-    "deletedVersion": "Texte supprimé"
+    "deletedVersion": "Texte supprimé",
+    "forwardName": "Nom du fichier transmis",
+    "forwardScrubbed": "Les propriétés du fichier (auteur, logiciel, localisation des photos) seront effacées de la copie transmise.",
+    "forwardNotScrubbable": "Ce format (DWG, DXF, HEIC) ne peut pas être nettoyé automatiquement : ouvrez-le pour vérifier le cartouche et les propriétés du fichier."
   }
 }

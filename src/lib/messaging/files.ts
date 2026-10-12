@@ -70,3 +70,21 @@ export function attachmentPathBelongs(path: string, threadId: string): boolean {
 export function mimeForExtension(ext: string): string {
   return MIME[ext.toLowerCase()] ?? "application/octet-stream";
 }
+
+// Nom d'un document transmis : celui choisi par l'admin (nettoyé), sinon
+// l'original. L'extension d'origine est toujours conservée, le contenu ne
+// changeant pas de format.
+export function forwardFileName(requested: string, original: string): string {
+  const clean = sanitizeFileName(String(requested ?? ""));
+  if (!clean) return original;
+  const dot = original.lastIndexOf(".");
+  const ext = dot >= 0 ? original.slice(dot + 1) : "";
+  if (!ext || clean.toLowerCase().endsWith(`.${ext.toLowerCase()}`)) return clean;
+  return sanitizeFileName(`${clean}.${ext}`);
+}
+
+// Formats dont les métadonnées sont nettoyées à la transmission (voir
+// scrub.ts) ; ici sans dépendance pour que les vues puissent l'utiliser.
+export function isScrubbable(ext: string): boolean {
+  return ["pdf", "jpg", "jpeg", "png", "webp", "docx", "xlsx"].includes(ext.toLowerCase());
+}
