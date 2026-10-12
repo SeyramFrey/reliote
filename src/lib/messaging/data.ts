@@ -291,12 +291,23 @@ export async function buildThreadView(
   const messages = page.slice(0, PAGE_SIZE).reverse();
 
   const ids = messages.map((m) => m.id);
-  const [{ data: atts }, { data: reads }] = await Promise.all([
+  const edited = messages.filter((m) => m.edited_at || m.deleted_at).map((m) => m.id);
+  const [{ data: atts }, { data: reads }, { data: revs }] = await Promise.all([
     ids.length
       ? s.from("message_attachments").select("id, message_id, file_name, size_bytes, removed_at, forwarded_from").in("message_id", ids)
       : Promise.resolve({ data: [] as AttachmentRow[] }),
     s.from("message_thread_reads").select("user_id, last_read_at").eq("thread_id", ctx.thread.id),
+    // Historique des modifications : admin seulement.
+    isAdmin && edited.length
+      ? s.from("message_revisions").select("message_id, body, action, revised_at").in("message_id", edited).order("revised_at")
+      : Promise.resolve({ data: [] as { message_id: string; body: string; action: string; revised_at: string }[] }),
   ]);
+  const revisionsByMessage = new Map<string, { body: string; action: "edit" | "delete"; at: string }[]>();
+  for (const r of revs ?? []) {
+    const list = revisionsByMessage.get(r.message_id) ?? [];
+    list.push({ body: r.body, action: r.action === "delete" ? "delete" : "edit", at: r.revised_at });
+    revisionsByMessage.set(r.message_id, list);
+  }
 
   // Dernière lecture de l'autre côté : le propriétaire pour l'admin, n'importe
   // quel admin pour le propriétaire.
@@ -353,6 +364,7 @@ export async function buildThreadView(
       editableUntil: mine && writable ? editableUntilFor({ createdAt: m.created_at, deletedAt: m.deleted_at }) : null,
       seen: m.author_side === side && isSeen(m.created_at, otherLastRead),
       attachments: deleted ? [] : (byMessage.get(m.id) ?? []),
+      ...(isAdmin && revisionsByMessage.has(m.id) ? { revisions: revisionsByMessage.get(m.id) } : {}),
     };
   });
 

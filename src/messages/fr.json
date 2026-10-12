@@ -866,6 +866,9 @@
       "checkRequired": "Cochez la vérification avant de transmettre.",
       "noTarget": "Aucune conversation de destination pour ce document.",
       "generic": "Une erreur est survenue. Réessayez."
-    }
+    },
+    "history": "Historique",
+    "editedVersion": "Avant modification",
+    "deletedVersion": "Texte supprimé"
   }
 }

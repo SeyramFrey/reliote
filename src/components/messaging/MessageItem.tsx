@@ -131,6 +131,23 @@ export function MessageItem({
         )}
       </div>
 
+      {m.revisions && m.revisions.length > 0 && (
+        <details className="mt-1.5 text-[12.5px] text-concrete-1 max-w-full">
+          <summary className="cursor-pointer hover:text-ink">{t("history")}</summary>
+          <ol className="mt-1.5 space-y-1.5 border-l border-[var(--hairline)] pl-3">
+            {m.revisions.map((r, i) => (
+              <li key={i} className="[overflow-wrap:anywhere] whitespace-pre-wrap">
+                <span className="mono text-[10.5px] uppercase tracking-[0.1em] text-concrete-2">
+                  {r.action === "delete" ? t("deletedVersion") : t("editedVersion")} ·{" "}
+                  {new Date(r.at).toLocaleString(locale === "en" ? "en-GB" : "fr-FR")}
+                </span>
+                <br />
+                {r.body || "—"}
+              </li>
+            ))}
+          </ol>
+        </details>
+      )}
       {editable && !editing && (
         <div className="flex gap-3 mt-1.5 text-[12px] text-concrete-1">
           <button

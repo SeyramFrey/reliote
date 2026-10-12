@@ -866,6 +866,9 @@
       "checkRequired": "Tick the check before forwarding.",
       "noTarget": "No destination conversation for this document.",
       "generic": "Something went wrong. Please try again."
-    }
+    },
+    "history": "History",
+    "editedVersion": "Before edit",
+    "deletedVersion": "Deleted text"
   }
 }

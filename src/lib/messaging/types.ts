@@ -28,6 +28,8 @@ export type MessageView = {
   editableUntil: string | null;
   seen: boolean;
   attachments: AttachmentView[];
+  /** Admin seulement : versions antérieures (modification / suppression). */
+  revisions?: { body: string; action: "edit" | "delete"; at: string }[];
 };
 
 export type ThreadView = {
