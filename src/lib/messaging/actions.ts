@@ -17,6 +17,7 @@ import {
   canOpenArchitectThread,
   forwardTarget,
   needsAnonymityCheck,
+  needsReadUpdate,
   retainedArchitectId,
   threadWritable,
 } from "./rules";
@@ -202,7 +203,15 @@ export async function deleteMessage(messageId: string): Promise<ActionResult> {
 export async function markRead(threadId: string): Promise<ActionResult> {
   const vt = await viewerAndThread(threadId);
   if (!vt) return fail("notAllowed");
-  await svc()
+  const s = svc();
+  const other = viewerSide(vt.viewer) === "admin" ? "owner" : "admin";
+  const [{ data: cur }, { data: latest }] = await Promise.all([
+    s.from("message_thread_reads").select("last_read_at").eq("thread_id", threadId).eq("user_id", vt.viewer.userId).maybeSingle(),
+    s.from("messages").select("created_at").eq("thread_id", threadId).eq("author_side", other)
+      .order("created_at", { ascending: false }).limit(1).maybeSingle(),
+  ]);
+  if (!needsReadUpdate(cur?.last_read_at ?? null, latest?.created_at ?? null)) return { ok: true };
+  await s
     .from("message_thread_reads")
     .upsert({ thread_id: threadId, user_id: vt.viewer.userId, last_read_at: new Date().toISOString() });
   return { ok: true };

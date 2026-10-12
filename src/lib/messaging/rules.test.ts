@@ -10,6 +10,7 @@ import {
   shouldNotify,
   forwardTarget,
   needsAnonymityCheck,
+  needsReadUpdate,
   type EngagementLite,
 } from "./rules";
 
@@ -124,5 +125,21 @@ describe("forwardTarget / needsAnonymityCheck", () => {
     expect(needsAnonymityCheck("engaged")).toBe(false);
     expect(needsAnonymityCheck("proposed")).toBe(true);
     expect(needsAnonymityCheck(null)).toBe(true);
+  });
+});
+
+describe("needsReadUpdate", () => {
+  // Écrire l'accusé de lecture émet un événement temps réel qui recharge le fil :
+  // sans ce garde-fou, lecture → événement → rechargement → lecture… en boucle.
+  it("writes the first receipt of a thread", () => {
+    expect(needsReadUpdate(null, null)).toBe(true);
+  });
+  it("does not rewrite when nothing new arrived from the other side", () => {
+    expect(needsReadUpdate("2026-10-13T10:00:00Z", null)).toBe(false);
+    expect(needsReadUpdate("2026-10-13T10:00:00Z", "2026-10-13T09:00:00Z")).toBe(false);
+    expect(needsReadUpdate("2026-10-13T10:00:00Z", "2026-10-13T10:00:00Z")).toBe(false);
+  });
+  it("updates when the other side wrote since", () => {
+    expect(needsReadUpdate("2026-10-13T10:00:00Z", "2026-10-13T10:00:01Z")).toBe(true);
   });
 });

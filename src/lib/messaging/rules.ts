@@ -78,3 +78,10 @@ export function forwardTarget(kind: ThreadKind): ThreadKind | null {
 export function needsAnonymityCheck(retainedStatus: EngagementStatus | null): boolean {
   return retainedStatus !== "engaged";
 }
+
+// N'écrire l'accusé de lecture que s'il change quelque chose : chaque écriture
+// émet un événement temps réel qui recharge le fil (sinon boucle sans fin).
+export function needsReadUpdate(currentLastRead: string | null, latestOtherSideAt: string | null): boolean {
+  if (!currentLastRead) return true;
+  return !!latestOtherSideAt && Date.parse(latestOtherSideAt) > Date.parse(currentLastRead);
+}
