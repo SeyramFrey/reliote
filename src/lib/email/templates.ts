@@ -354,3 +354,32 @@ export function newArchitectAdminEmail(d: { name: string; country: string; admin
     html: shell({ eyebrow: "Admin · Architectes", title: "Un dossier attend votre vérification.", body }),
   };
 }
+
+// ── 13. Nouveau message (→ porteur / architecte) ─────────────────────────────
+// Jamais le contenu du message : il peut contenir des informations que la
+// boîte mail n'a pas à conserver, et le lien ramène dans l'espace sécurisé.
+export function newMessageEmail(loc0: string, d: { ctaUrl: string }) {
+  const loc = L(loc0);
+  const body =
+    p(
+      pick(
+        loc,
+        "L'équipe Reliote vous a écrit. Le message et ses éventuels documents vous attendent dans votre espace.",
+        "The Reliote team has written to you. The message and any documents are waiting in your space.",
+      ),
+    ) + cta(d.ctaUrl, pick(loc, "Lire le message", "Read the message"));
+  return {
+    subject: pick(loc, "Nouveau message de Reliote", "New message from Reliote"),
+    html: shell({ eyebrow: pick(loc, "Messagerie", "Messages"), title: pick(loc, "Vous avez un nouveau message.", "You have a new message."), body }),
+  };
+}
+
+// ── 14. Nouveau message (→ admin) ────────────────────────────────────────────
+export function newMessageAdminEmail(d: { threadLabel: string; adminUrl: string }) {
+  const body =
+    detailBox([["Conversation", esc(d.threadLabel)]]) + cta(d.adminUrl, "Ouvrir la conversation");
+  return {
+    subject: "Nouveau message — Reliote",
+    html: shell({ eyebrow: "Admin · Messages", title: "Un nouveau message vous attend.", body }),
+  };
+}

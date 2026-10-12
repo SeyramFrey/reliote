@@ -485,3 +485,10 @@ export async function unreadTotal(viewer: Viewer): Promise<number> {
   const list = await listThreads(viewer, "fr");
   return list.reduce((n, t) => n + t.unread, 0);
 }
+
+/** Libellé du fil tel que l'admin le voit (e-mails admin). */
+export async function adminThreadLabel(ctx: ThreadContext): Promise<string> {
+  const l = await labels("fr");
+  const { title, subtitle } = titles(l, ctx, { userId: "", role: "admin", architectId: null });
+  return `${title} — ${subtitle}`;
+}
