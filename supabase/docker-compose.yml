@@ -13,6 +13,7 @@ services:
       JWT_EXP: ${JWT_EXPIRY:-3600}
     volumes:
       - reliote-db-data:/var/lib/postgresql/data
+      - ./init/98-realtime.sql:/docker-entrypoint-initdb.d/98-realtime.sql:ro
       - ./init/99-reliote-perms.sql:/docker-entrypoint-initdb.d/99-reliote-perms.sql:ro
       # Reliote schema + seed mounted but NOT auto-applied — applied via apply-migrations.sh
       # after GoTrue has run its own auth-schema migrations.
@@ -149,6 +150,34 @@ services:
       - reliote-storage-data:/var/lib/storage
 
   # On-the-fly image transformations (resize/crop) for Storage requests with ?width=…&height=…
+  realtime:
+    # Supabase Realtime (messagerie). Le nom d'hôte sert d'identifiant de
+    # tenant : « realtime-dev » est le tenant créé par SEED_SELF_HOST, d'où ce
+    # container_name imposé (Kong l'appelle par ce nom).
+    image: supabase/realtime:v2.34.47
+    container_name: realtime-dev.supabase-realtime
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      PORT: 4000
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: supabase_admin
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+      DB_NAME: postgres
+      DB_AFTER_CONNECT_QUERY: "SET search_path TO _realtime"
+      DB_ENC_KEY: supabaserealtime
+      API_JWT_SECRET: ${JWT_SECRET}
+      SECRET_KEY_BASE: ${REALTIME_SECRET_KEY_BASE}
+      ERL_AFLAGS: -proto_dist inet_tcp
+      DNS_NODES: "''"
+      RLIMIT_NOFILE: "10000"
+      APP_NAME: realtime
+      SEED_SELF_HOST: "true"
+      RUN_JANITOR: "true"
+
   imgproxy:
     image: darthsim/imgproxy:v3.21.0
     container_name: reliote-imgproxy
