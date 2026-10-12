@@ -88,3 +88,15 @@ describe("forwardFileName", () => {
     expect(forwardFileName("pl\u0000an", "x.dwg")).toBe("plan.dwg");
   });
 });
+
+describe("forwardFileName — leaks through the name", () => {
+  it("falls back to the given neutral name instead of the original", () => {
+    expect(forwardFileName("", "Esquisse Atelier Kofi.pdf", "document-reliote")).toBe("document-reliote.pdf");
+  });
+  it("treats a bare extension as no name", () => {
+    expect(forwardFileName(".pdf", "x.pdf", "document-reliote")).toBe("document-reliote.pdf");
+  });
+  it("strips bidirectional control characters", () => {
+    expect(forwardFileName("plan\u202Efdp.exe", "x.pdf")).toBe("planfdp.exe.pdf");
+  });
+});

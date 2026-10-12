@@ -18,7 +18,10 @@ export function ForwardDialog({
   const [note, setNote] = useState("");
   const dot = attachment.name.lastIndexOf(".");
   const ext = dot > 0 ? attachment.name.slice(dot) : "";
-  const [fileName, setFileName] = useState(dot > 0 ? attachment.name.slice(0, dot) : attachment.name);
+  // Avant le RDV, pas de nom pré-rempli : celui d'origine trahit souvent l'agence.
+  const [fileName, setFileName] = useState(
+    attachment.forward?.needsCheck ? "" : dot > 0 ? attachment.name.slice(0, dot) : attachment.name,
+  );
   const [checked, setChecked] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -60,6 +63,7 @@ export function ForwardDialog({
             <input
               value={fileName}
               onChange={(e) => setFileName(e.target.value)}
+              placeholder={attachment.forward?.needsCheck ? "document-reliote" : undefined}
               maxLength={110}
               className="flex-1 min-w-0 bg-transparent outline-none text-[15px]"
             />

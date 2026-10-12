@@ -37,7 +37,8 @@ function extensionOf(name: string): string {
 
 export function sanitizeFileName(name: string): string {
   const base = name.split(/[\\/]/).pop() ?? "";
-  const clean = base.replace(/[\u0000-\u001f\u007f]/g, "").trim();
+  // Caractères de contrôle et de direction (U+202E peut maquiller l'extension).
+  const clean = base.replace(/[\u0000-\u001f\u007f\u200e\u200f\u202a-\u202e\u2066-\u2069]/g, "").trim();
   if (clean.length <= MAX_NAME) return clean;
   const ext = extensionOf(clean);
   const stem = clean.slice(0, clean.length - (ext ? ext.length + 1 : 0));
@@ -72,15 +73,17 @@ export function mimeForExtension(ext: string): string {
 }
 
 // Nom d'un document transmis : celui choisi par l'admin (nettoyé), sinon
-// l'original. L'extension d'origine est toujours conservée, le contenu ne
-// changeant pas de format.
-export function forwardFileName(requested: string, original: string): string {
-  const clean = sanitizeFileName(String(requested ?? ""));
-  if (!clean) return original;
+// `fallback` (nom neutre avant le RDV : le nom d'origine trahit souvent
+// l'agence), sinon l'original. L'extension d'origine est toujours conservée.
+export function forwardFileName(requested: string, original: string, fallback?: string): string {
   const dot = original.lastIndexOf(".");
   const ext = dot >= 0 ? original.slice(dot + 1) : "";
-  if (!ext || clean.toLowerCase().endsWith(`.${ext.toLowerCase()}`)) return clean;
-  return sanitizeFileName(`${clean}.${ext}`);
+  const withExt = (name: string) =>
+    !ext || name.toLowerCase().endsWith(`.${ext.toLowerCase()}`) ? name : sanitizeFileName(`${name}.${ext}`);
+  const clean = sanitizeFileName(String(requested ?? ""));
+  const stem = ext && clean.toLowerCase().endsWith(`.${ext.toLowerCase()}`) ? clean.slice(0, -(ext.length + 1)) : clean;
+  if (stem.trim()) return withExt(clean);
+  return fallback ? withExt(sanitizeFileName(fallback)) : original;
 }
 
 // Formats dont les métadonnées sont nettoyées à la transmission (voir

@@ -38,7 +38,7 @@ import {
   type ThreadRow,
 } from "./data";
 import { notifyNewMessage } from "./notify";
-import { scrubFile } from "./scrub";
+import { ScrubRefused, scrubFile } from "./scrub";
 import type { ActionResult, ThreadView, Viewer } from "./types";
 
 // Toutes les écritures de la messagerie. Chaque action revérifie le lecteur,
@@ -314,7 +314,7 @@ export async function forwardAttachment(input: {
 
   const ext = att.storage_path.slice(att.storage_path.lastIndexOf(".") + 1);
   const newPath = storagePathFor(targetId, randomUUID(), ext);
-  const fileName = forwardFileName(String(input.fileName ?? ""), att.file_name);
+  const fileName = forwardFileName(String(input.fileName ?? ""), att.file_name, beforeReveal ? "document-reliote" : undefined);
   let size = Number(att.size_bytes);
   if (beforeReveal) {
     // Avant le RDV confirmé : copie nettoyée de ses métadonnées (auteur,
@@ -324,9 +324,11 @@ export async function forwardAttachment(input: {
     let bytes: Uint8Array;
     try {
       bytes = (await scrubFile(new Uint8Array(await blob.arrayBuffer()), ext)).bytes;
-    } catch {
-      return fail("scrubFailed");
+    } catch (e) {
+      // Jamais l'original à la place : un document non nettoyable n'est pas transmis.
+      return fail(e instanceof ScrubRefused && e.reason === "embedded" ? "scrubEmbedded" : "scrubFailed");
     }
+    if (bytes.byteLength > MAX_FILE_BYTES) return fail("fileSize");
     const { error: upErr } = await s.storage
       .from(MESSAGE_BUCKET)
       .upload(newPath, bytes, { contentType: att.mime_type, upsert: false });
