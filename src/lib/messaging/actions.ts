@@ -57,12 +57,17 @@ async function viewerAndThread(threadId: string): Promise<{ viewer: Viewer; ctx:
   return ctx ? { viewer, ctx } : null;
 }
 
-async function touchThread(threadId: string, userId: string) {
+// Après un envoi, l'auteur a forcément lu le fil où il écrit. Pas après une
+// transmission : l'admin n'a pas lu le fil de destination, et marquer ce fil
+// comme lu masquerait les messages du porteur et lui afficherait un faux « Vu ».
+async function touchThread(threadId: string, userId: string, opts: { authorRead: boolean }) {
   const s = svc();
   const now = new Date().toISOString();
   await Promise.all([
     s.from("message_threads").update({ last_message_at: now }).eq("id", threadId),
-    s.from("message_thread_reads").upsert({ thread_id: threadId, user_id: userId, last_read_at: now }),
+    opts.authorRead
+      ? s.from("message_thread_reads").upsert({ thread_id: threadId, user_id: userId, last_read_at: now })
+      : Promise.resolve(),
   ]);
 }
 
@@ -139,7 +144,7 @@ export async function sendMessage(input: {
       return fail("generic");
     }
   }
-  await touchThread(input.threadId, viewer.userId);
+  await touchThread(input.threadId, viewer.userId, { authorRead: true });
   await notifyNewMessage(ctx, side);
   return { ok: true };
 }
@@ -217,14 +222,21 @@ export async function markRead(threadId: string): Promise<ActionResult> {
   return { ok: true };
 }
 
+// `before` : page plus ancienne. `since` : tout ce qui est postérieur au plus
+// ancien message déjà affiché — un rafraîchissement couvre ainsi toute la
+// fenêtre chargée, sans qu'un message ne glisse hors de l'écran.
 export async function refreshThread(
   threadId: string,
   locale: string,
-  before?: string,
+  opts: { before?: string; since?: string } = {},
 ): Promise<ActionResult<{ view: ThreadView }>> {
   const viewer = await currentViewer();
   if (!viewer) return fail("notAllowed");
-  const view = await loadThreadView(viewer, threadId, { locale: locale === "en" ? "en" : "fr", before });
+  const view = await loadThreadView(viewer, threadId, {
+    locale: locale === "en" ? "en" : "fr",
+    before: typeof opts.before === "string" ? opts.before : undefined,
+    since: typeof opts.since === "string" ? opts.since : undefined,
+  });
   return view ? { ok: true, view } : fail("notAllowed");
 }
 
@@ -315,7 +327,7 @@ export async function forwardAttachment(input: {
     size_bytes: att.size_bytes,
     forwarded_from: att.id,
   });
-  await touchThread(targetId, admin.userId);
+  await touchThread(targetId, admin.userId, { authorRead: false });
   await notifyNewMessage(target, "admin");
   return { ok: true };
 }

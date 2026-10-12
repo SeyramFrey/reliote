@@ -35,8 +35,11 @@ export function ThreadView({
   const t = useTranslations("messaging");
   const locale = useLocale();
   const [view, setView] = useState(initial);
-  const [older, setOlder] = useState<MessageView[]>([]);
+  // Tous les messages chargés (pages anciennes comprises), du plus ancien au
+  // plus récent. Un rafraîchissement remplace toute cette fenêtre.
+  const [messages, setMessages] = useState<MessageView[]>(initial.messages);
   const [hasOlder, setHasOlder] = useState(initial.hasOlder);
+  const oldestRef = useRef<string | undefined>(initial.messages[0]?.createdAt);
   const [pending, setPending] = useState<Pending[]>([]);
   const [forwarding, setForwarding] = useState<AttachmentView | null>(null);
   const [now, setNow] = useState(() => Date.now());
@@ -45,8 +48,14 @@ export function ThreadView({
   const isAdmin = view.viewerSide === "admin";
 
   const refresh = useCallback(async () => {
-    const r = await refreshThread(view.id, locale);
-    if ("ok" in r) setView(r.view);
+    const since = oldestRef.current;
+    const r = await refreshThread(view.id, locale, since ? { since } : {});
+    if ("ok" in r) {
+      setView(r.view);
+      setMessages(r.view.messages);
+      setHasOlder(r.view.hasOlder);
+      oldestRef.current = r.view.messages[0]?.createdAt ?? since;
+    }
     if (document.visibilityState === "visible") await markRead(view.id);
   }, [view.id, locale]);
 
@@ -61,11 +70,6 @@ export function ThreadView({
     const id = setInterval(() => setNow(Date.now()), 15_000);
     return () => clearInterval(id);
   }, []);
-
-  const messages = useMemo(() => {
-    const ids = new Set(view.messages.map((m) => m.id));
-    return [...older.filter((m) => !ids.has(m.id)), ...view.messages];
-  }, [older, view.messages]);
 
   // « Vu » sous mon dernier message vu par l'autre côté.
   const seenId = useMemo(() => {
@@ -85,10 +89,14 @@ export function ThreadView({
     const first = messages[0];
     if (!first) return;
     stick.current = false;
-    const r = await refreshThread(view.id, locale, first.createdAt);
+    const r = await refreshThread(view.id, locale, { before: first.createdAt });
     if ("ok" in r) {
-      setOlder((o) => [...r.view.messages, ...o]);
+      setMessages((list) => {
+        const ids = new Set(list.map((m) => m.id));
+        return [...r.view.messages.filter((m) => !ids.has(m.id)), ...list];
+      });
       setHasOlder(r.view.hasOlder);
+      if (r.view.messages[0]) oldestRef.current = r.view.messages[0].createdAt;
     }
   };
 

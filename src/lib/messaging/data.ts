@@ -9,7 +9,6 @@ import {
   needsAnonymityCheck,
   retainedArchitectId,
   threadWritable,
-  unreadCount,
   type EngagementLite,
   type EngagementStatus,
   type Side,
@@ -261,7 +260,7 @@ type AttachmentRow = {
 export async function loadThreadView(
   viewer: Viewer,
   threadId: string,
-  opts: { locale: string; before?: string },
+  opts: { locale: string; before?: string; since?: string },
 ): Promise<ThreadView | null> {
   const ctx = await canViewThread(viewer, threadId);
   if (!ctx) return null;
@@ -271,24 +270,45 @@ export async function loadThreadView(
 export async function buildThreadView(
   viewer: Viewer,
   ctx: ThreadContext,
-  opts: { locale: string; before?: string },
+  opts: { locale: string; before?: string; since?: string },
 ): Promise<ThreadView> {
   const s = svc();
   const l = await labels(opts.locale);
   const side = viewerSide(viewer);
   const isAdmin = side === "admin";
 
-  let q = s
-    .from("messages")
-    .select("id, author_id, author_side, body, created_at, edited_at, deleted_at")
-    .eq("thread_id", ctx.thread.id)
-    .order("created_at", { ascending: false })
-    .limit(PAGE_SIZE + 1);
-  if (opts.before) q = q.lt("created_at", opts.before);
-  const { data: rows } = await q;
-  const page = (rows ?? []) as MessageRow[];
-  const hasOlder = page.length > PAGE_SIZE;
-  const messages = page.slice(0, PAGE_SIZE).reverse();
+  let messages: MessageRow[];
+  let hasOlder: boolean;
+  const cols = "id, author_id, author_side, body, created_at, edited_at, deleted_at";
+  if (opts.since) {
+    // Toute la fenêtre déjà affichée, plus les nouveaux messages.
+    const { data: rows } = await s
+      .from("messages")
+      .select(cols)
+      .eq("thread_id", ctx.thread.id)
+      .gte("created_at", opts.since)
+      .order("created_at", { ascending: true })
+      .limit(1000);
+    messages = (rows ?? []) as MessageRow[];
+    const { count } = await s
+      .from("messages")
+      .select("id", { count: "exact", head: true })
+      .eq("thread_id", ctx.thread.id)
+      .lt("created_at", opts.since);
+    hasOlder = (count ?? 0) > 0;
+  } else {
+    let q = s
+      .from("messages")
+      .select(cols)
+      .eq("thread_id", ctx.thread.id)
+      .order("created_at", { ascending: false })
+      .limit(PAGE_SIZE + 1);
+    if (opts.before) q = q.lt("created_at", opts.before);
+    const { data: rows } = await q;
+    const page = (rows ?? []) as MessageRow[];
+    hasOlder = page.length > PAGE_SIZE;
+    messages = page.slice(0, PAGE_SIZE).reverse();
+  }
 
   const ids = messages.map((m) => m.id);
   const edited = messages.filter((m) => m.edited_at || m.deleted_at).map((m) => m.id);
@@ -383,33 +403,20 @@ export async function buildThreadView(
 }
 
 // ── Listes et non-lus ─────────────────────────────────────────────────────
-type MiniMessage = { thread_id: string; author_side: Side; created_at: string; deleted_at: string | null };
-
+// Non-lus calculés en base (0018) : aucune limite de lignes, un seul aller-retour.
 async function unreadByThread(
   threads: { id: string; ownerUserId: string | null }[],
   side: Side,
+  userId: string,
 ): Promise<Map<string, number>> {
   const out = new Map<string, number>();
   if (threads.length === 0) return out;
-  const s = svc();
-  const ids = threads.map((t) => t.id);
-  const [{ data: msgs }, { data: reads }] = await Promise.all([
-    s.from("messages").select("thread_id, author_side, created_at, deleted_at").in("thread_id", ids),
-    s.from("message_thread_reads").select("thread_id, user_id, last_read_at").in("thread_id", ids),
-  ]);
-  for (const t of threads) {
-    const mine = (reads ?? []).filter(
-      (r) => r.thread_id === t.id && (side === "admin" ? r.user_id !== t.ownerUserId : r.user_id === t.ownerUserId),
-    );
-    const lastRead = mine.reduce<string | null>(
-      (max, r) => (!max || Date.parse(r.last_read_at) > Date.parse(max) ? r.last_read_at : max),
-      null,
-    );
-    const list = ((msgs ?? []) as MiniMessage[])
-      .filter((m) => m.thread_id === t.id)
-      .map((m) => ({ side: m.author_side, createdAt: m.created_at, deleted: !!m.deleted_at }));
-    out.set(t.id, unreadCount(list, side, lastRead));
-  }
+  const { data } = await svc().rpc("message_unread_counts", {
+    p_thread_ids: threads.map((t) => t.id),
+    p_side: side,
+    p_user: userId,
+  });
+  for (const row of data ?? []) out.set(row.thread_id, Number(row.unread));
   return out;
 }
 
@@ -438,6 +445,7 @@ export async function listThreads(viewer: Viewer, locale: string): Promise<Threa
     const unread = await unreadByThread(
       [...byProject.values()].map((t) => ({ id: t.id, ownerUserId: viewer.userId })),
       "owner",
+      viewer.userId,
     );
     return ps
       .map((p) => {
@@ -464,7 +472,11 @@ export async function listThreads(viewer: Viewer, locale: string): Promise<Threa
       .eq("architect_id", viewer.architectId);
     const rows = (threads ?? []) as ThreadRow[];
     const ctxs = await threadContexts(rows);
-    const unread = await unreadByThread(ctxs.map((c) => ({ id: c.thread.id, ownerUserId: viewer.userId })), "owner");
+    const unread = await unreadByThread(
+      ctxs.map((c) => ({ id: c.thread.id, ownerUserId: viewer.userId })),
+      "owner",
+      viewer.userId,
+    );
     const admission = ctxs.find((c) => c.thread.kind === "architect_admission");
     const items: ThreadSummary[] = [
       {
@@ -506,7 +518,11 @@ export async function listThreads(viewer: Viewer, locale: string): Promise<Threa
     .order("last_message_at", { ascending: false, nullsFirst: false })
     .limit(300);
   const ctxs = await threadContexts((threads ?? []) as ThreadRow[]);
-  const unread = await unreadByThread(ctxs.map((c) => ({ id: c.thread.id, ownerUserId: c.ownerUserId })), "admin");
+  const unread = await unreadByThread(
+    ctxs.map((c) => ({ id: c.thread.id, ownerUserId: c.ownerUserId })),
+    "admin",
+    viewer.userId,
+  );
   return ctxs
     .map((c) => {
       const { title, subtitle } = titles(l, c, viewer);

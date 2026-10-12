@@ -839,7 +839,17 @@ export type Database = {
       }
     }
     Functions: {
-      [_ in never]: never
+      message_unread_counts: {
+        Args: {
+          p_side: Database["public"]["Enums"]["message_side"]
+          p_thread_ids: string[]
+          p_user: string
+        }
+        Returns: {
+          thread_id: string
+          unread: number
+        }[]
+      }
     }
     Enums: {
       architect_status: "pending" | "verified" | "rejected" | "paused"

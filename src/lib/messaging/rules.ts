@@ -49,15 +49,6 @@ export function isSeen(createdAt: string, otherSideLastRead: string | null): boo
   return !!otherSideLastRead && Date.parse(otherSideLastRead) >= Date.parse(createdAt);
 }
 
-export function unreadCount(
-  messages: { side: Side; createdAt: string; deleted: boolean }[],
-  viewerSide: Side,
-  lastRead: string | null,
-): number {
-  const since = lastRead ? Date.parse(lastRead) : -Infinity;
-  return messages.filter((m) => m.side !== viewerSide && !m.deleted && Date.parse(m.createdAt) > since).length;
-}
-
 // Un e-mail par heure au plus — sauf si le destinataire a lu le fil depuis le
 // dernier e-mail : le message suivant mérite alors une nouvelle alerte.
 export function shouldNotify(p: { lastNotifiedAt: string | null; recipientLastReadAt: string | null; now: Date }): boolean {

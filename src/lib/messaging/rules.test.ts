@@ -6,7 +6,6 @@ import {
   canEditMessage,
   editableUntil,
   isSeen,
-  unreadCount,
   shouldNotify,
   forwardTarget,
   needsAnonymityCheck,
@@ -81,20 +80,6 @@ describe("isSeen", () => {
     expect(isSeen("2026-10-13T10:00:00Z", null)).toBe(false);
     expect(isSeen("2026-10-13T10:00:00Z", "2026-10-13T10:00:00Z")).toBe(true);
     expect(isSeen("2026-10-13T10:00:00Z", "2026-10-13T09:59:59Z")).toBe(false);
-  });
-});
-
-describe("unreadCount", () => {
-  const msgs = [
-    { side: "admin" as const, createdAt: "2026-10-13T10:00:00Z", deleted: false },
-    { side: "admin" as const, createdAt: "2026-10-13T11:00:00Z", deleted: false },
-    { side: "admin" as const, createdAt: "2026-10-13T12:00:00Z", deleted: true },
-    { side: "owner" as const, createdAt: "2026-10-13T13:00:00Z", deleted: false },
-  ];
-  it("counts the other side's live messages after my last read", () => {
-    expect(unreadCount(msgs, "owner", null)).toBe(2);
-    expect(unreadCount(msgs, "owner", "2026-10-13T10:30:00Z")).toBe(1);
-    expect(unreadCount(msgs, "admin", null)).toBe(1);
   });
 });
 
