@@ -16,4 +16,6 @@ if ! grep -q "export type Database" "$tmp"; then
   exit 1
 fi
 mv "$tmp" src/types/database.ts
+# Le générateur récent n'indente plus sa sortie.
+npx --yes prettier --write --no-semi src/types/database.ts > /dev/null
 echo "Generated src/types/database.ts"
