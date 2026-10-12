@@ -37,7 +37,6 @@ function extensionOf(name: string): string {
 
 export function sanitizeFileName(name: string): string {
   const base = name.split(/[\\/]/).pop() ?? "";
-  // eslint-disable-next-line no-control-regex
   const clean = base.replace(/[\u0000-\u001f\u007f]/g, "").trim();
   if (clean.length <= MAX_NAME) return clean;
   const ext = extensionOf(clean);
