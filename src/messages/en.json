@@ -169,7 +169,7 @@
     "button": "Start a project"
   },
   "auth": {
-    "loginEyebrow": "Client area",
+    "loginEyebrow": "Your Reliote space",
     "loginTitle": "Sign in",
     "registerEyebrow": "Create account",
     "registerClientTitle": "Join Reliote — as a client",
