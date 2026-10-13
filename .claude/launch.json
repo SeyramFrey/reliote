@@ -6,6 +6,12 @@
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "dev"],
       "port": 3000
+    },
+    {
+      "name": "reliote-dev-cloud",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev:cloud"],
+      "port": 3000
     }
   ]
 }
