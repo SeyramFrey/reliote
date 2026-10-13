@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { defaultLocale, locales } from "@/lib/i18n/config";
 import { siteUrl } from "@/lib/seo/site";
 import { fontVariables } from "../fonts";
+import { RecoveryHashHandler } from "@/components/auth/RecoveryHashHandler";
 import "@/styles/globals.css";
 import "@/styles/landing.css";
 
@@ -55,6 +56,7 @@ export default async function LocaleLayout({ children, params }: Props) {
     >
       <body>
         <NextIntlClientProvider locale={locale} messages={messages}>
+          <RecoveryHashHandler locale={locale} />
           {children}
         </NextIntlClientProvider>
       </body>

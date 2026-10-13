@@ -1,5 +1,6 @@
 "use server";
 import { createClient } from "@/lib/supabase/server";
+import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 import { redirect } from "next/navigation";
 import { safeLocale, safeRedirectPath } from "@/lib/auth/safeRedirect";
 import { signUpOutcome } from "@/lib/auth/signUpOutcome";
@@ -66,12 +67,21 @@ export async function signOut(locale: string) {
   redirect(`/${safeLocale(locale)}`);
 }
 
+// Flux implicite, pas PKCE : le lien PKCE ne marche que dans le navigateur qui a
+// fait la demande. Ici la session revient dans le fragment de l'URL, lue par
+// RecoveryHashHandler, quel que soit l'appareil qui ouvre l'e-mail. (Avec un
+// SMTP personnalisé, le modèle supabase/templates/recovery.html mène plutôt à
+// /auth/confirm.)
 export async function forgot(formData: FormData) {
-  const supabase = await createClient();
   const email = String(formData.get("email"));
   const locale = safeLocale(formData.get("locale"));
+  const supabase = createSupabaseClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    { auth: { flowType: "implicit", persistSession: false, autoRefreshToken: false } },
+  );
   await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: `${await appOrigin()}/${locale}/auth/callback?type=recovery`,
+    redirectTo: `${await appOrigin()}/${locale}/auth/login`,
   });
   redirect(`/${locale}/auth/login?sent=1`);
 }

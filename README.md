@@ -53,16 +53,21 @@ In production, create the admin from the Supabase dashboard, then promote it:
 
 ## Password reset (Supabase Cloud settings)
 
-The reset email must link to `/auth/confirm?token_hash=…`, which works on any
-device. Supabase's default link (`{{ .ConfirmationURL }}`) only works in the
-browser that made the request, and falls back to the Site URL when the redirect
-is not allow-listed. In the Supabase dashboard:
+The reset request uses Supabase's implicit flow: the default email link sends
+the user back to the site with the session in the URL fragment, which
+`RecoveryHashHandler` (mounted in the locale layout, so any landing page works)
+turns into a session before opening `/auth/reset`. It works on any device, and
+also for invitations sent from the dashboard. In the Supabase dashboard:
 
 1. **Authentication → URL Configuration**: *Site URL* = the public site
-   (`https://…` in production; `http://localhost:3000` only works on the
-   machine running the app). *Redirect URLs*: add `<site>/**`.
-2. **Authentication → Emails → Reset Password**: paste
-   [`supabase/templates/recovery.html`](supabase/templates/recovery.html).
+   (`https://reliote.vercel.app`; `http://localhost:3000` only works on the
+   machine running the app). *Redirect URLs*: add `<site>/**` and
+   `http://localhost:3000/**`.
+2. Optional, needs custom SMTP (Supabase locks templates without it):
+   **Authentication → Emails → Reset Password** ←
+   [`supabase/templates/recovery.html`](supabase/templates/recovery.html). Its
+   `/auth/confirm?token_hash=…` link is only used on a click, so mail scanners
+   that open links can't burn it.
 
 ## Routes
 
