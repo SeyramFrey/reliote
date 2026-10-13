@@ -34,12 +34,15 @@ export default async function LoginPage({
           <span className="eyebrow">{t("password")}</span>
           <input name="password" type="password" required autoComplete="current-password" className="w-full mt-1 bg-transparent border-b border-[var(--hairline)] py-2 outline-none focus:border-green" />
         </label>
+        <p className="text-right">
+          <a href={`/${locale}/auth/forgot`} className="text-sm text-concrete-1 underline underline-offset-4 hover:text-ink">
+            {t("forgot")}
+          </a>
+        </p>
         <button className="mt-6 inline-flex items-center gap-2 px-5 py-3 bg-green text-paper text-sm">{t("signIn")}</button>
       </form>
       <p className="mt-8 text-sm text-concrete-1">
         <a href={`/${locale}/auth/register`}>{t("noAccount")}</a>
-        {" · "}
-        <a href={`/${locale}/auth/forgot`}>{t("forgot")}</a>
       </p>
     </main>
   );

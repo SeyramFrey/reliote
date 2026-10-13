@@ -6,6 +6,7 @@ import { signUpOutcome } from "@/lib/auth/signUpOutcome";
 import { dashboardPathFor } from "@/lib/auth/roles";
 import { appOrigin } from "@/lib/auth/origin";
 import { authErrorCodeFrom } from "@/lib/auth/authError";
+import { recoveryTokenFrom } from "@/lib/auth/recoveryToken";
 
 export async function signIn(formData: FormData) {
   const supabase = await createClient();
@@ -75,8 +76,21 @@ export async function forgot(formData: FormData) {
   redirect(`/${locale}/auth/login?sent=1`);
 }
 
+// Lien « mot de passe oublié » (page /auth/confirm) : on n'échange le jeton
+// qu'au clic, pour qu'un scanner d'e-mails qui ouvre le lien ne le consomme pas.
+export async function confirmRecovery(formData: FormData) {
+  const locale = safeLocale(formData.get("locale"));
+  const tokenHash = recoveryTokenFrom(formData.get("token_hash") as string | null, "recovery");
+  if (!tokenHash) redirect(`/${locale}/auth/forgot?error=expired`);
+
+  const supabase = await createClient();
+  const { error } = await supabase.auth.verifyOtp({ type: "recovery", token_hash: tokenHash });
+  if (error) redirect(`/${locale}/auth/forgot?error=expired`);
+  redirect(`/${locale}/auth/reset`);
+}
+
 // Fin du parcours « mot de passe oublié » : la session de récupération a été
-// ouverte par le callback ; on fixe le nouveau mot de passe.
+// ouverte par le callback ou par confirmRecovery ; on fixe le nouveau mot de passe.
 export async function updatePassword(formData: FormData) {
   const locale = safeLocale(formData.get("locale"));
   const password = String(formData.get("password") ?? "");

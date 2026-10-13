@@ -1,0 +1,18 @@
+<!--
+  Modèle Supabase « Reset Password » (Authentication → Emails → Reset Password).
+  Sujet : Reliote — réinitialiser votre mot de passe
+
+  Le lien pointe vers /auth/confirm avec un token_hash : il fonctionne quel que
+  soit l'appareil qui ouvre l'e-mail (le lien par défaut, {{ .ConfirmationURL }},
+  exige le même navigateur que la demande). La locale est choisie par le site.
+-->
+<h2>Réinitialiser votre mot de passe</h2>
+<p>Vous avez demandé à changer le mot de passe de votre compte Reliote.</p>
+<p>
+  <a href="{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=recovery">
+    Choisir un nouveau mot de passe
+  </a>
+</p>
+<p>Ce lien est valable une heure et ne sert qu'une fois. Si vous n'êtes pas à l'origine de cette demande, ignorez cet e-mail.</p>
+<hr />
+<p><em>You asked to reset your Reliote password. Use the link above to choose a new one. If this wasn't you, ignore this email.</em></p>
