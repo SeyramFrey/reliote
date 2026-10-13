@@ -601,14 +601,14 @@ cd .. && git add supabase/migrations/0003_triggers.sql && git commit -m "feat(db
 -- Idempotent: re-runnable.
 
 -- Admin: insert into auth.users directly (self-hosted only).
--- Email: admin@reliote.test  Password: ReliotePass2026!
+-- Email: admin@reliote.test  Password: (see README — set via RELIOTE_DEV_ADMIN_PASSWORD)
 insert into auth.users (id, instance_id, aud, role, email, encrypted_password, email_confirmed_at, raw_user_meta_data, created_at, updated_at)
 values (
   '00000000-0000-0000-0000-00000000a001',
   '00000000-0000-0000-0000-000000000000',
   'authenticated', 'authenticated',
   'admin@reliote.test',
-  crypt('ReliotePass2026!', gen_salt('bf')),
+  crypt('<dev password>', gen_salt('bf')),
   now(),
   jsonb_build_object('role','admin','full_name','Reliote Admin','locale','fr'),
   now(), now()
@@ -1524,7 +1524,7 @@ EN: same keys translated.
 
 - [ ] **Step 7: Test the auth round-trip**
 
-Run `npm run dev`. Go to `/fr/auth/login`, log in with `admin@reliote.test / ReliotePass2026!`. Expected: redirected to `/fr/admin` (which doesn't exist yet → 404, that's OK). Visit `/fr/auth/register?role=architect`, create a test account → redirected to `/fr/architectes/rejoindre` (404 for now, OK). Stop.
+Run `npm run dev`. Go to `/fr/auth/login`, log in with `admin@reliote.test / <RELIOTE_DEV_ADMIN_PASSWORD>`. Expected: redirected to `/fr/admin` (which doesn't exist yet → 404, that's OK). Visit `/fr/auth/register?role=architect`, create a test account → redirected to `/fr/architectes/rejoindre` (404 for now, OK). Stop.
 
 - [ ] **Step 8: Commit**
 
@@ -3465,7 +3465,7 @@ npm run dev    # http://localhost:3000
 
 ## Seeded accounts
 
-- Admin — `admin@reliote.test` / `ReliotePass2026!`
+- Admin — `admin@reliote.test` / `<RELIOTE_DEV_ADMIN_PASSWORD>`
 - 8 architects pre-loaded (status `verified`)
 - 3 demo client projects
 
