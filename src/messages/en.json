@@ -196,6 +196,8 @@
     "newPassword": "New password",
     "confirmPassword": "Confirm password",
     "savePassword": "Save",
+    "confirmRecoveryHint": "Your link is valid. Continue to choose a new password.",
+    "confirmRecovery": "Continue",
     "verifyEyebrow": "One last step",
     "verifyTitle": "Check your inbox",
     "verifyBody": "A confirmation link was sent to {email}. Click it to activate your account, then sign in.",

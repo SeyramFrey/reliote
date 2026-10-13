@@ -51,6 +51,19 @@ The seed also adds 8 verified demo architects and 3 demo client projects (no rea
 In production, create the admin from the Supabase dashboard, then promote it:
 `update public.profiles set role = 'admin' where id = '<user id>';`
 
+## Password reset (Supabase Cloud settings)
+
+The reset email must link to `/auth/confirm?token_hash=…`, which works on any
+device. Supabase's default link (`{{ .ConfirmationURL }}`) only works in the
+browser that made the request, and falls back to the Site URL when the redirect
+is not allow-listed. In the Supabase dashboard:
+
+1. **Authentication → URL Configuration**: *Site URL* = the public site
+   (`https://…` in production; `http://localhost:3000` only works on the
+   machine running the app). *Redirect URLs*: add `<site>/**`.
+2. **Authentication → Emails → Reset Password**: paste
+   [`supabase/templates/recovery.html`](supabase/templates/recovery.html).
+
 ## Routes
 
 - `/fr` and `/en` — landing page (10 sections)
