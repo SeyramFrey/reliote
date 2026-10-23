@@ -168,18 +168,18 @@
   }
 
   .hero-headline {
-    font-family: var(--f-sans);
+    font-family: var(--f-display);
     font-weight: 300;
     font-size: clamp(48px, 7.5vw, 116px);
     line-height: 0.96;
-    letter-spacing: -0.025em;
+    letter-spacing: -0.015em;
     margin: 0;
     text-wrap: balance;
   }
   .hero-headline em {
     font-family: var(--f-display);
     font-style: italic;
-    font-weight: 400;
+    font-weight: inherit;
     letter-spacing: -0.005em;
   }
 
@@ -284,15 +284,15 @@
   }
   .sect-title {
     grid-column: 3 / span 7;
-    font-family: var(--f-sans);
+    font-family: var(--f-display);
     font-weight: 300;
     font-size: clamp(32px, 4.5vw, 60px);
     line-height: 1.02;
-    letter-spacing: -0.022em;
+    letter-spacing: -0.012em;
     margin: 0;
     text-wrap: balance;
   }
-  .sect-title em { font-family: var(--f-display); font-style: italic; font-weight: 400; }
+  .sect-title em { font-family: var(--f-display); font-style: italic; font-weight: inherit; }
   .sect-kicker {
     grid-column: 10 / span 3;
     font-size: 14px;
@@ -638,14 +638,14 @@
   }
   .aud-card.dark .aud-head { color: rgba(243,241,236,0.6); }
   .aud-title {
-    font-family: var(--f-sans);
+    font-family: var(--f-display);
     font-weight: 300;
     font-size: 36px;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.012em;
     line-height: 1.04;
     margin: 0 0 18px;
   }
-  .aud-title em { font-family: var(--f-display); font-style: italic; font-weight: 400; }
+  .aud-title em { font-family: var(--f-display); font-style: italic; font-weight: inherit; }
   .aud-body { font-size: 14px; line-height: 1.6; color: var(--concrete-1); max-width: 42ch; }
   .aud-card.dark .aud-body { color: rgba(243,241,236,0.78); }
   .aud-list {
@@ -719,10 +719,10 @@
     color: var(--concrete-2);
   }
   .j-title {
-    font-family: var(--f-sans);
+    font-family: var(--f-display);
     font-size: 22px;
     line-height: 1.18;
-    letter-spacing: -0.014em;
+    letter-spacing: -0.005em;
     font-weight: 400;
     margin: 0;
     text-wrap: balance;
@@ -767,15 +767,15 @@
     align-items: end;
   }
   .cta-title {
-    font-family: var(--f-sans);
+    font-family: var(--f-display);
     font-weight: 300;
     font-size: clamp(40px, 6vw, 88px);
     line-height: 0.98;
-    letter-spacing: -0.025em;
+    letter-spacing: -0.015em;
     margin: 0;
     text-wrap: balance;
   }
-  .cta-title em { font-family: var(--f-display); font-style: italic; font-weight: 400; }
+  .cta-title em { font-family: var(--f-display); font-style: italic; font-weight: inherit; }
 
   /* Error screens (404 / error / global-error) — CTA band grammar, full frame */
   .err-screen { min-height: 100svh; display: flex; align-items: center; }
@@ -788,8 +788,8 @@
   .err-eyebrow { color: rgba(243,241,236,0.6); margin-bottom: 22px; }
   .err-body { max-width: 52ch; margin: 24px 0 0; color: rgba(243,241,236,0.78); font-size: 15px; line-height: 1.6; }
   .err-alt { margin-top: 36px; padding-top: 24px; border-top: 1px solid rgba(243,241,236,0.16); }
-  .err-alt-title { margin: 0; font-size: clamp(20px, 2.4vw, 28px); font-weight: 300; }
-  .err-alt-title em { font-family: var(--f-display); font-style: italic; font-weight: 400; }
+  .err-alt-title { margin: 0; font-family: var(--f-display); font-size: clamp(20px, 2.4vw, 28px); font-weight: 300; }
+  .err-alt-title em { font-family: var(--f-display); font-style: italic; font-weight: inherit; }
   .err-alt .err-body { margin-top: 10px; font-size: 14px; }
   .err-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 40px; }
   .err-foot { margin-top: 28px; font-size: 10.5px; letter-spacing: 0.16em; color: rgba(243,241,236,0.45); text-transform: uppercase; }
@@ -1060,8 +1060,8 @@
   .drawer-close:hover { background: rgba(255,255,255,0.1); }
   .drawer-body { padding: 32px 36px 28px; display: flex; flex-direction: column; gap: 18px; }
   .drawer-title {
-    font-family: var(--f-sans); font-weight: 300;
-    font-size: 36px; letter-spacing: -0.022em;
+    font-family: var(--f-display); font-weight: 300;
+    font-size: 36px; letter-spacing: -0.012em;
     margin: 0; line-height: 1.04;
   }
   .drawer-sub { color: var(--concrete-1); font-size: 14px; }
@@ -1265,9 +1265,9 @@
   }
   .pillar-x .px-stat-big {
     font-family: var(--f-display);
-    font-size: clamp(56px, 8vw, 112px);
+    font-size: clamp(44px, 6.2vw, 88px);
     line-height: 0.9;
-    letter-spacing: -0.03em;
+    letter-spacing: -0.02em;
     color: var(--ink);
     transition: color 400ms ease;
   }
@@ -1532,10 +1532,10 @@
     margin-top: 4px;
   }
   .tl-title {
-    font-family: var(--f-sans);
+    font-family: var(--f-display);
     font-weight: 400;
     font-size: 24px;
-    letter-spacing: -0.012em;
+    letter-spacing: -0.005em;
     margin: 36px 0 12px;
     line-height: 1.05;
   }
