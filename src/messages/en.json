@@ -436,9 +436,7 @@
       "cta": "Start a project"
     },
     "process": {
-      "live": "Live demonstration",
-      "pin": "Click a step to pin",
-      "startNow": "Start now →"
+      "stage": "Stage"
     },
     "territoire": {
       "eyebrow": "Territory",
