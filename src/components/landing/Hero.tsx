@@ -7,8 +7,23 @@ export function Hero() {
   const locale = useLocale();
   const t = useTranslations("hero");
   const bgRef = useRef<HTMLDivElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
-  // Subtle parallax on the background image.
+  // Vidéo de fond en boucle. React ne rend pas l'attribut `muted` côté serveur :
+  // on le pose ici avant de lancer la lecture, sinon les navigateurs mobiles
+  // refusent l'autoplay. Avec moins d'animations demandées, l'image fixe reste.
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    video.muted = true;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      video.pause();
+      return;
+    }
+    video.play().catch(() => {});
+  }, []);
+
+  // Subtle parallax on the background.
   useEffect(() => {
     const on = () => {
       if (!bgRef.current) return;
@@ -21,11 +36,20 @@ export function Hero() {
 
   return (
     <section className="hero" id="top">
-      <div
-        className="hero-bg"
-        ref={bgRef}
-        style={{ backgroundImage: "url(/assets/img-courtyard-pool.jpg)" }}
-      />
+      <div className="hero-bg" ref={bgRef}>
+        <video
+          ref={videoRef}
+          className="hero-video"
+          src="/assets/hero-flux.mp4"
+          poster="/assets/hero-flux.jpg"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+          aria-hidden="true"
+        />
+      </div>
       <div className="hero-grain" />
 
       <div

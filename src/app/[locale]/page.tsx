@@ -13,6 +13,7 @@ import { Audiences } from "@/components/landing/Audiences";
 import { Journal } from "@/components/landing/Journal";
 import { CtaBand } from "@/components/landing/CtaBand";
 import { Footer } from "@/components/landing/Footer";
+import { SmoothScroll } from "@/components/landing/SmoothScroll";
 import { getFeaturedRow, getPublishedMedia } from "@/lib/landing/data";
 import { toFeaturedContent } from "@/lib/landing/featured";
 import { numberSections, type LandingSection } from "@/lib/landing/sections";
@@ -63,6 +64,7 @@ export default async function Page() {
   return (
     <>
       <Nav dark showJournal={media.length > 0} />
+      <SmoothScroll />
       <main>
         <Hero />
         <StatsBar />

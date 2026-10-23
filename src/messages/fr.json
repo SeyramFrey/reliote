@@ -436,9 +436,7 @@
       "cta": "Initier un projet"
     },
     "process": {
-      "live": "Démonstration en direct",
-      "pin": "Cliquez sur une étape pour figer",
-      "startNow": "Commencer maintenant →"
+      "stage": "Palier"
     },
     "territoire": {
       "eyebrow": "Territoire",
