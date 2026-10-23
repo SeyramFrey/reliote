@@ -22,7 +22,7 @@ export function PhoneField({
     <label className="block">
       <span className="eyebrow">
         {label}
-        {required && <span className="text-brass ml-1">*</span>}
+        {required && <span className="text-gold-deep ml-1">*</span>}
       </span>
       <Controller
         control={control}

@@ -4,7 +4,12 @@
   --color-green:        #073E18;
   --color-green-deep:   #052b10;
   --color-green-soft:   #0a4a1f;
-  --color-brass:        #b89968;
+  /* Accent doré. `gold` sur fond sombre (9:1 sur water) ; `gold-deep` pour le
+     petit texte sur fond clair, où `gold` tombe à 1,8:1 sur paper. */
+  --color-gold:         #c9b37e;
+  --color-gold-deep:    #806b3b;
+  --color-gold-light:   #e0d1a6;
+  --color-gold-hover:   #d6c391;
   --color-paper:        #f3f1ec;
   --color-paper-2:      #ebe8e1;
   --color-ink:          #14140f;
@@ -76,14 +81,14 @@
 .legal-prose ul { list-style: disc; }
 .legal-prose ol { list-style: decimal; }
 .legal-prose li + li { margin-top: 0.4em; }
-.legal-prose li::marker { color: var(--color-brass); }
+.legal-prose li::marker { color: var(--color-gold-deep); }
 .legal-prose a {
   color: var(--color-green); text-decoration: underline;
   text-underline-offset: 3px; text-decoration-thickness: 1px;
 }
 .legal-prose a:hover { color: var(--color-green-soft); }
 .legal-prose blockquote {
-  border-left: 2px solid var(--color-brass);
+  border-left: 2px solid var(--color-gold-deep);
   padding-left: 1.1em; color: var(--color-concrete-2);
 }
 .legal-prose hr { border: none; height: 1px; background: var(--hairline); margin: 2.4em 0; }

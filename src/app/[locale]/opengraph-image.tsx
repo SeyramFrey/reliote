@@ -3,6 +3,7 @@ import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import fr from "@/messages/fr.json";
 import en from "@/messages/en.json";
+import { LOGO_RATIO, logoDataUri } from "@/components/shared/Logo";
 
 // Image de partage (Open Graph / Twitter) de toutes les pages localisées :
 // photo du hero assombrie, marque et promesse dans la langue de la page.
@@ -49,19 +50,8 @@ export default async function Image({ params }: { params: Promise<{ locale: stri
           }}
         >
           <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
-            <div
-              style={{
-                width: 44,
-                height: 44,
-                border: "1.5px solid rgba(243,241,236,0.7)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: 24,
-              }}
-            >
-              R
-            </div>
+            {/* eslint-disable-next-line @next/next/no-img-element -- rendered by next/og, not the browser */}
+            <img src={logoDataUri("#f3f1ec")} width={Math.round(52 * LOGO_RATIO)} height={52} alt="" />
             <div style={{ fontSize: 28, letterSpacing: 8 }}>RELIOTE</div>
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
@@ -72,7 +62,7 @@ export default async function Image({ params }: { params: Promise<{ locale: stri
               {m.meta.description}
             </div>
           </div>
-          <div style={{ display: "flex", height: 3, width: 96, background: "#b89968" }} />
+          <div style={{ display: "flex", height: 3, width: 96, background: "#c9b37e" }} />
         </div>
       </div>
     ),

@@ -14,7 +14,7 @@ export default function Architect2() {
       <CountrySelectField name="country" />
       <label className="block">
         <span className="eyebrow">
-          {t("fields.city")} <span className="text-brass">*</span>
+          {t("fields.city")} <span className="text-gold-deep">*</span>
         </span>
         <input
           {...register("city")}

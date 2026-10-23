@@ -77,7 +77,7 @@ function shell(opts: {
     `<table role="presentation" width="560" cellpadding="0" cellspacing="0" style="max-width:560px;width:100%;background:#f5f3ee;border:1px solid #d8d3c8;">` +
     `<tr><td style="padding:26px 36px;border-bottom:1px solid #d8d3c8;font-family:'Courier New',monospace;font-size:12px;letter-spacing:0.28em;text-transform:uppercase;color:#8a8577;">RELIOTE</td></tr>` +
     `<tr><td style="padding:36px 36px 40px;">` +
-    `<div style="font-family:'Courier New',monospace;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:#b89968;margin-bottom:18px;">${opts.eyebrow}</div>` +
+    `<div style="font-family:'Courier New',monospace;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:#806b3b;margin-bottom:18px;">${opts.eyebrow}</div>` +
     `<h1 style="margin:0 0 20px;font-weight:400;font-size:26px;line-height:1.25;color:#1a1a17;">${opts.title}</h1>` +
     `<div style="font-size:15px;line-height:1.6;color:#3a3730;">${opts.body}</div>` +
     (opts.note

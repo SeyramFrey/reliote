@@ -1,5 +1,6 @@
 import { getLocale, getTranslations } from "next-intl/server";
 import Link from "next/link";
+import { BrandMark } from "@/components/shared/BrandMark";
 import type { LegalSlug } from "@/lib/legal/page";
 import { getPublishedLegalSlugs } from "@/lib/legal/published";
 import { getPublishedMedia } from "@/lib/landing/data";
@@ -49,15 +50,7 @@ export async function Footer() {
     <footer className="footer">
       <div className="footer-grid">
         <div className="footer-brand-block">
-          <div className="brand">
-            <span
-              className="brand-mark"
-              style={{ borderColor: "rgba(243,241,236,0.6)" }}
-            >
-              R
-            </span>
-            <span className="brand-name">RELIOTE</span>
-          </div>
+          <BrandMark inverse size="lg" />
           <p className="footer-tag">{f("tag")}</p>
           <div style={{ marginTop: 28 }}>
             <span className="mono" style={axisStyle}>

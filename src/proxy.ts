@@ -70,5 +70,7 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!_next|api|favicon.ico|assets|.*\\..*).*)"],
+  // apple-icon : route d'image générée, sans extension — à exclure sinon
+  // next-intl la redirige vers /fr/apple-icon (404).
+  matcher: ["/((?!_next|api|apple-icon|assets|.*\\..*).*)"],
 };

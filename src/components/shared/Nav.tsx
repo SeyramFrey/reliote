@@ -45,7 +45,7 @@ export function Nav({
         : "bg-paper/85 backdrop-blur-md saturate-[1.05] border-[var(--hairline-soft)] py-3"),
       !scrolled && dark && "text-paper"
     )}>
-      <Link href={`/${locale}`} aria-label="Reliote"><BrandMark /></Link>
+      <Link href={`/${locale}`} aria-label="Reliote"><BrandMark inverse={dark} /></Link>
       <nav className="hidden md:flex gap-7 text-[13px]">
         {links.map((l) => (
           <Link key={l.id} href={l.href} className="opacity-80 hover:opacity-100 transition-opacity relative group">

@@ -48,7 +48,7 @@ function useUnreadMessages(enabled: boolean): number {
 function UnreadDot({ count, label }: { count: number; label: string }) {
   if (count <= 0) return null;
   return (
-    <span className="ml-1.5 inline-flex min-w-[18px] h-[18px] items-center justify-center rounded-full bg-brass text-ink text-[10.5px] font-medium px-1" aria-label={label}>
+    <span className="ml-1.5 inline-flex min-w-[18px] h-[18px] items-center justify-center rounded-full bg-gold text-ink text-[10.5px] font-medium px-1" aria-label={label}>
       {count > 99 ? "99+" : count}
     </span>
   );
