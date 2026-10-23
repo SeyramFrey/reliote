@@ -11,7 +11,7 @@ export default function Architect5() {
     <div className="space-y-8">
       <div>
         <span className="eyebrow">
-          {t("fields.availability")} <span className="text-brass">*</span>
+          {t("fields.availability")} <span className="text-gold-deep">*</span>
         </span>
         <div className="flex flex-wrap gap-2 mt-2">
           {opts.map((o) => (

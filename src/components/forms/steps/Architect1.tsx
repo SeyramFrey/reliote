@@ -14,7 +14,7 @@ export default function Architect1({ userId }: { userId: string }) {
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       <label className="block">
         <span className="eyebrow">
-          {t("fields.first_name")} <span className="text-brass">*</span>
+          {t("fields.first_name")} <span className="text-gold-deep">*</span>
         </span>
         <input
           {...register("first_name")}
@@ -28,7 +28,7 @@ export default function Architect1({ userId }: { userId: string }) {
       </label>
       <label className="block">
         <span className="eyebrow">
-          {t("fields.last_name")} <span className="text-brass">*</span>
+          {t("fields.last_name")} <span className="text-gold-deep">*</span>
         </span>
         <input
           {...register("last_name")}
@@ -42,7 +42,7 @@ export default function Architect1({ userId }: { userId: string }) {
       </label>
       <label className="block">
         <span className="eyebrow">
-          {t("fields.email")} <span className="text-brass">*</span>
+          {t("fields.email")} <span className="text-gold-deep">*</span>
         </span>
         <input
           type="email"

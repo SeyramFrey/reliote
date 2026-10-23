@@ -15,7 +15,7 @@ export default function Architect4() {
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       <label className="block">
         <span className="eyebrow">
-          {t("fields.years_experience")} <span className="text-brass">*</span>
+          {t("fields.years_experience")} <span className="text-gold-deep">*</span>
         </span>
         <input
           type="number"
@@ -33,7 +33,7 @@ export default function Architect4() {
       <label className="block">
         <span className="eyebrow">
           {t("fields.ordre_number")}{" "}
-          {ordreRequired && <span className="text-brass">*</span>}
+          {ordreRequired && <span className="text-gold-deep">*</span>}
         </span>
         <input
           {...register("ordre_number")}
@@ -54,7 +54,7 @@ export default function Architect4() {
       </div>
       <label className="block md:col-span-2">
         <span className="eyebrow">
-          {t("fields.description")} <span className="text-brass">*</span>
+          {t("fields.description")} <span className="text-gold-deep">*</span>
         </span>
         <textarea
           {...register("description")}

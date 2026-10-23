@@ -1,6 +1,7 @@
 "use client";
 import { AnimatePresence, motion } from "framer-motion";
 import { ReactNode } from "react";
+import { BrandMark } from "@/components/shared/BrandMark";
 
 type StepMeta = { n: string; t: string };
 
@@ -50,12 +51,7 @@ export function WizardShell({
           color: "var(--color-paper)",
         }}
       >
-        <div className="flex items-center gap-[10px]">
-          <span className="inline-grid place-items-center w-[22px] h-[22px] border border-current font-display text-[13px] leading-none pt-px">
-            R
-          </span>
-          <span className="font-sans font-medium tracking-[0.18em] text-[13px]">RELIOTE</span>
-        </div>
+        <BrandMark inverse />
         <span className="mono text-[10.5px] tracking-[0.18em] uppercase opacity-65">
           {eyebrow}
         </span>
@@ -70,7 +66,7 @@ export function WizardShell({
                   active
                     ? "text-paper"
                     : done
-                      ? "text-brass/90"
+                      ? "text-gold/90"
                       : "text-paper/55"
                 }`}
               >
@@ -79,7 +75,7 @@ export function WizardShell({
                 <span
                   className={`w-3.5 h-3.5 rounded-full border grid place-items-center text-[8px] leading-none ${
                     done
-                      ? "border-brass bg-brass text-water"
+                      ? "border-gold bg-gold text-water"
                       : active
                         ? "border-paper"
                         : "border-paper/40"

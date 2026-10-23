@@ -25,7 +25,7 @@ export function CountrySelectField({
   return (
     <label className="block">
       <span className="eyebrow">
-        {t(labelKey)} <span className="text-brass">*</span>
+        {t(labelKey)} <span className="text-gold-deep">*</span>
       </span>
       <div className="relative mt-1">
         <select

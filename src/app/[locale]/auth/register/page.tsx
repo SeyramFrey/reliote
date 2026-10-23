@@ -3,6 +3,7 @@ import { getTranslations, getLocale } from "next-intl/server";
 import { displayAuthError } from "@/lib/auth/authError";
 import { pageMetadata } from "@/lib/seo/metadata";
 import { LegalNotice } from "@/components/shared/LegalNotice";
+import { BrandMark } from "@/components/shared/BrandMark";
 import { getPublishedLegalSlugs } from "@/lib/legal/published";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
@@ -33,12 +34,7 @@ export default async function RegisterPage({
           color: "var(--color-paper)",
         }}
       >
-        <div className="flex items-center gap-[10px]">
-          <span className="inline-grid place-items-center w-[22px] h-[22px] border border-current font-display text-[13px] leading-none pt-px">
-            R
-          </span>
-          <span className="font-sans font-medium tracking-[0.18em] text-[13px]">RELIOTE</span>
-        </div>
+        <BrandMark inverse />
         <div>
           <p className="mono text-[10.5px] tracking-[0.18em] uppercase opacity-65 mb-4">
             {t("registerEyebrow")}

@@ -89,7 +89,7 @@ export default async function AdminArchitects({
                 <td>
                   <span
                     className={`mono uppercase text-[11px] tracking-[0.18em] ${
-                      a.status === "verified" ? "text-green" : a.status === "pending" ? "text-brass" : "text-concrete-2"
+                      a.status === "verified" ? "text-green" : a.status === "pending" ? "text-gold-deep" : "text-concrete-2"
                     }`}
                   >
                     {ARCHITECT_STATUS_FR[a.status]}

@@ -7,7 +7,7 @@ import type { Presence } from "@/lib/countries/presence";
 
 // Inline SVG of Africa, zero runtime dependency. One <path> per
 // mainland country + <circle> per small island state, keyed by iso2. Countries
-// with ≥1 verified architect are "lit" (brass fill); the rest are faint
+// with ≥1 verified architect are "lit" (gold fill); the rest are faint
 // outlines. Geometry is pre-projected (Mercator) in africaGeo.ts.
 
 const TOTAL = AFRICAN_COUNTRIES.length;
