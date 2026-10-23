@@ -1,25 +1,19 @@
-import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google";
+import localFont from "next/font/local";
 
 // Polices partagées par le layout localisé et les pages qui le remplacent
 // (global-not-found, global-error doivent fournir leur propre <html>).
+// Le texte et les intitulés viennent d'Adobe Fonts (voir adobe-fonts.tsx).
 
-const geist = Geist({
-  subsets: ["latin"],
-  variable: "--font-sans",
-  weight: ["300", "400", "500", "600", "700"],
-});
-
-const geistMono = Geist_Mono({
-  subsets: ["latin"],
-  variable: "--font-mono",
-  weight: ["300", "400", "500"],
-});
-
-const instrument = Instrument_Serif({
-  subsets: ["latin"],
+// TT Ramillas (TypeType) : titres, mots en italique et grands chiffres.
+const ramillas = localFont({
+  src: [
+    { path: "./fonts/ramillas/TTRamillas-Light.woff2", weight: "300", style: "normal" },
+    { path: "./fonts/ramillas/TTRamillas-LightItalic.woff2", weight: "300", style: "italic" },
+    { path: "./fonts/ramillas/TTRamillas-Regular.woff2", weight: "400", style: "normal" },
+    { path: "./fonts/ramillas/TTRamillas-Italic.woff2", weight: "400", style: "italic" },
+  ],
   variable: "--font-display",
-  weight: "400",
-  style: ["normal", "italic"],
+  display: "swap",
 });
 
-export const fontVariables = `${geist.variable} ${geistMono.variable} ${instrument.variable}`;
+export const fontVariables = ramillas.variable;

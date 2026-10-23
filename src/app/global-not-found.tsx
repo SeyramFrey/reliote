@@ -4,6 +4,7 @@ import { ErrorScreen } from "@/components/shared/ErrorScreen";
 import fr from "@/messages/fr.json";
 import en from "@/messages/en.json";
 import { fontVariables } from "./fonts";
+import { AdobeFonts } from "./adobe-fonts";
 import "@/styles/globals.css";
 import "@/styles/landing.css";
 
@@ -17,6 +18,7 @@ export default function GlobalNotFound() {
   return (
     <html lang="fr" className={fontVariables}>
       <body>
+        <AdobeFonts />
         {/* Titre posé ici plutôt que dans metadata : servie via
             app/not-found.tsx, la page hériterait sinon du titre du layout
             [locale] à l'hydratation. */}
