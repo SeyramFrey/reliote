@@ -9,6 +9,7 @@ import { readyVerdict } from "@/lib/intro/readiness";
 import { introFrame, holdTime, HOLD_AT } from "@/lib/intro/frame";
 import { introLayout } from "@/lib/intro/layout";
 import { IntroWordmark, letterProgress } from "./IntroWordmark";
+import { Logo } from "@/components/shared/Logo";
 
 // `ssr: false` n'est autorisé que dans un Client Component — en Server
 // Component, Next lève une erreur. C'est la raison pour laquelle le chargement
@@ -29,6 +30,7 @@ export function IntroOverlay({ onFinish }: { onFinish: () => void }) {
   const rootRef = useRef<HTMLDivElement>(null);
   const wordRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
+  const waitRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const skipRef = useRef<HTMLButtonElement>(null);
   const progressRef = useRef(0);
@@ -130,6 +132,15 @@ export function IntroOverlay({ onFinish }: { onFinish: () => void }) {
 
       const f = introFrame({ time, includeVideoAct });
 
+      // Sur connexion lente, le chunk 3D met plusieurs secondes : sans ça le
+      // visiteur regarde un écran vert vide avec un bouton « passer ».
+      // Après 0,4 s seulement : sur connexion rapide la 3D arrive avant, et le
+      // logo plat n'a aucune raison de se montrer.
+      if (waitRef.current) {
+        const attendre = !coreReadyRef.current && elapsed > 0.4;
+        waitRef.current.style.opacity = attendre ? "1" : "0";
+      }
+
       if (wordRef.current) wordRef.current.style.opacity = String(f.wordOpacity);
       if (gridRef.current) gridRef.current.style.opacity = String(f.gridOpacity);
 
@@ -211,6 +222,9 @@ export function IntroOverlay({ onFinish }: { onFinish: () => void }) {
       aria-label={t("label")}
     >
       <div className="intro-grid" ref={gridRef} />
+      <div className="intro-wait" ref={waitRef} aria-hidden="true">
+        <Logo className="intro-wait-logo" inverse />
+      </div>
       <MonogramScene
         progressRef={progressRef}
         holdAngleRef={holdAngleRef}

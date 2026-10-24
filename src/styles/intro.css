@@ -139,3 +139,30 @@
     }
   }
 }
+
+@layer components {
+  /* Tient la place du monogramme 3D tant que son module n'est pas chargé :
+     sur connexion lente c'était plusieurs secondes d'écran vert vide. Le logo
+     plat est déjà dans le bundle principal, il ne coûte rien de plus. */
+  .intro-wait {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    transition: opacity 0.5s ease;
+    pointer-events: none;
+  }
+  .intro-wait-logo {
+    width: clamp(70px, 9vw, 130px);
+    height: auto;
+    opacity: 0.55;
+    animation: intro-wait-pulse 2.4s ease-in-out infinite;
+  }
+  @keyframes intro-wait-pulse {
+    0%, 100% { opacity: 0.35; transform: scale(0.97); }
+    50%      { opacity: 0.7;  transform: scale(1.03); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .intro-wait-logo { animation: none; }
+  }
+}
