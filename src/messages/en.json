@@ -875,5 +875,9 @@
     "forwardName": "Forwarded file name",
     "forwardScrubbed": "File properties (author, software, photo location) will be removed from the forwarded copy.",
     "forwardNotScrubbable": "This format (DWG, DXF, HEIC) cannot be cleaned automatically: open it to check the title block and file properties."
+  },
+  "intro": {
+    "skip": "Skip intro",
+    "label": "Reliote opening animation"
   }
 }
