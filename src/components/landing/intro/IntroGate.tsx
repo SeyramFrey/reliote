@@ -24,7 +24,13 @@ function webglOk(): boolean {
 const subscribe = () => () => {};
 const getSnapshot = () =>
   shouldPlayIntro({
-    enabled: process.env.NEXT_PUBLIC_INTRO !== "0",
+    // Éteinte par défaut. Mesure du 2026-10-24, mobile bridé (4× CPU, Slow 4G) :
+    // LCP 2581 ms avec l'intro contre 2367 ms sans, pour un seuil de 2500 ms.
+    // La landing était déjà à 2367 ms — la cause est le CSS et les fontes
+    // bloquants, pas l'intro, qui n'ajoute que ~214 ms. Rallumer avec
+    // NEXT_PUBLIC_INTRO=1 une fois ce blocage traité ; `?intro=1` la force déjà
+    // pour la montrer.
+    enabled: process.env.NEXT_PUBLIC_INTRO === "1",
     queryIntro: new URLSearchParams(window.location.search).get("intro"),
     seenThisTab: hasSeenThisTab(window.sessionStorage),
     reducedMotion: window.matchMedia("(prefers-reduced-motion: reduce)").matches,
