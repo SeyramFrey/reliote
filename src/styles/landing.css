@@ -2056,119 +2056,118 @@ html.lenis, html.lenis body { height: auto; }
 /* ------------------------------------------------------------------ *
  * Section épinglée des piliers (« Une plateforme bâtie sur la confiance »)
  *
- * `--p` est la position continue dans la liste (0 → 4), écrite par le JS une
- * fois par image sur .pin-stage. Tout le reste en découle en CSS : l'écart
- * `--i − --p` donne le décalage, le flou et l'opacité de chaque panneau.
- * Le flou est ce qui dit « celui-ci arrive » — sans lui, ce n'est qu'un fondu.
+ * `--p` : position continue dans la liste (0 → 4), lissée, écrite une fois par
+ * image sur .pin-stage. Les panneaux en déduisent décalage, flou et opacité.
+ * Un pas vaut une hauteur de cadre : au repos, un seul panneau est à l'écran,
+ * ses voisins sont dehors et ne se montrent que pendant la transition.
  * ------------------------------------------------------------------ */
 @property --p { syntax: "<number>"; inherits: true; initial-value: 0; }
-/* héritable : le point doré est un enfant de .pin-arc-num et lit `--i` ;
-   sans héritage il repartait à 0 et restait invisible. */
 @property --i { syntax: "<number>"; inherits: true; initial-value: 0; }
+@property --d { syntax: "<number>"; inherits: true; initial-value: 1; }
 
 @layer components {
-  .pin-track {
-    position: relative;
-    /* une hauteur d'écran par principe : c'est la course du défilement */
-    height: 500vh;
-  }
+  .pin-track { position: relative; height: 500vh; }
   .pin-stage {
-    position: sticky;
-    top: 0;
-    height: 100vh;
-    display: grid;
-    grid-template-columns: 1fr minmax(0, 2.1fr);
-    align-items: center;
-    gap: clamp(24px, 5vw, 96px);
-    padding: 0 var(--edge);
+    position: sticky; top: 0; height: 100vh;
     overflow: hidden;
   }
 
-  /* ---- l'arc des numéros ---- */
-  .pin-arc { position: relative; height: min(70vh, 560px); }
+  /* ---- l'arc des numéros ------------------------------------------- */
+  /* Les numéros sont posés par le JS le long d'un cercle de grand rayon
+     centré hors écran à gauche : le courant tombe toujours à mi-hauteur. */
+  .pin-arc { position: absolute; inset: 0; pointer-events: none; }
   .pin-arc-line {
-    position: absolute; inset: 0; width: 100%; height: 100%;
-    stroke: var(--hairline); stroke-width: 0.25;
+    position: absolute;
+    /* le cercle est posé par son bord gauche : son point le plus à droite
+       tombe pile sur le numéro courant, comme chez orionix. Positionné sur son
+       centre, il balayait le milieu de l'écran derrière le texte. */
+    top: 50%; left: calc(20% - 104vh);
+    width: 104vh; height: 104vh;
+    margin-top: -52vh;
+    border-radius: 50%;
+    border: 1px solid var(--hairline-soft);
   }
   .pin-arc-num {
-    position: absolute;
-    transform: translate(-50%, -50%);
-    display: inline-flex; align-items: center; gap: 10px;
+    position: absolute; top: 0; left: 0;
+    display: inline-flex; align-items: center; gap: 12px;
     font-family: var(--f-display); font-style: italic;
-    font-size: clamp(18px, 2vw, 28px);
-    color: var(--concrete-3);
-    /* le numéro courant se détache, les autres restent en retrait */
-    opacity: calc(0.4 + 0.6 * max(0, 1 - 2 * max(var(--i) - var(--p), var(--p) - var(--i))));
-    transition: color 200ms ease;
+    white-space: nowrap;
+    /* le courant : grand et encré. Les autres : petits et effacés. */
+    font-size: calc((1 - var(--d)) * 18px + 20px);
+    color: var(--ink);
+    opacity: calc(1 - 0.72 * var(--d));
   }
   .pin-dot {
-    width: 7px; height: 7px; border-radius: 50%;
+    width: 8px; height: 8px; border-radius: 50%;
     background: var(--gold, #c9b37e);
-    transform: scale(calc(max(0, 1 - 2 * max(var(--i) - var(--p), var(--p) - var(--i)))));
+    transform: scale(calc(1 - var(--d)));
   }
 
-  /* ---- la pile de principes ---- */
+  /* ---- la pile de principes ----------------------------------------- */
   .pin-panels {
-    position: relative; height: min(70vh, 560px);
+    position: absolute; inset: 0;
     margin: 0; padding: 0; list-style: none;
   }
   .pin-panel {
     position: absolute; inset: 0;
     display: grid;
-    grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.85fr);
     align-items: center;
-    gap: clamp(20px, 3vw, 56px);
-    /* un écran de décalage par cran, donc un seul panneau au centre */
-    transform: translateY(calc((var(--i) - var(--p)) * 62%));
-    /* 0 → 4 px de flou, 1 → 0,5 d'opacité : les valeurs d'orionix */
+    padding-left: max(var(--edge), 32%);
+    /* un cadre entier par cran : un seul panneau visible au repos */
+    transform: translateY(calc((var(--i) - var(--p)) * 100%));
     filter: blur(calc(min(1, max(var(--i) - var(--p), var(--p) - var(--i))) * 4px));
     opacity: calc(1 - 0.5 * min(1, max(var(--i) - var(--p), var(--p) - var(--i))));
     pointer-events: none;
     will-change: transform, filter, opacity;
   }
+  .pin-copy { max-width: 42ch; }
   .pin-title {
     font-family: var(--f-display);
-    font-size: clamp(30px, 4.4vw, 64px);
-    font-weight: 300; line-height: 1.02; letter-spacing: -0.015em;
-    margin: 0 0 18px;
+    font-size: clamp(34px, 5vw, 76px);
+    font-weight: 300; line-height: 1.0; letter-spacing: -0.02em;
+    margin: 0 0 22px;
   }
   .pin-body {
     font-size: clamp(14px, 1.15vw, 17px);
-    color: var(--concrete-1); line-height: 1.6; margin: 0 0 28px; max-width: 46ch;
+    color: var(--concrete-1); line-height: 1.6; margin: 0 0 30px;
   }
   .pin-stat { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
-  .pin-stat-big {
-    font-family: var(--f-display); font-size: clamp(28px, 3vw, 44px); line-height: 1;
-  }
+  .pin-stat-big { font-family: var(--f-display); font-size: clamp(26px, 2.6vw, 40px); line-height: 1; }
   .pin-stat-big small { font-size: 0.45em; margin-left: 2px; color: var(--concrete-2); }
   .pin-stat-lbl {
     font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.14em;
     text-transform: uppercase; color: var(--concrete-2);
   }
+  /* L'image déborde à droite et s'efface sur ses bords : elle accompagne,
+     elle ne dispute pas la vedette au texte. */
   .pin-shot {
-    height: min(46vh, 380px); border-radius: 2px;
+    justify-self: end;
+    width: 46vw; height: min(62vh, 560px);
+    margin-right: -14vw;
     background-size: cover; background-position: center;
-    filter: saturate(0.82) brightness(0.96);
+    filter: saturate(0.78) brightness(0.98);
+    -webkit-mask-image: radial-gradient(ellipse at 42% 50%, #000 42%, transparent 76%);
+    mask-image: radial-gradient(ellipse at 42% 50%, #000 42%, transparent 76%);
   }
 
   @media (max-width: 900px) {
-    .pin-stage { grid-template-columns: 1fr; gap: 18px; align-content: center; }
-    .pin-arc { height: 84px; }
+    .pin-panel { grid-template-columns: 1fr; padding-left: var(--edge); padding-right: var(--edge); }
     .pin-arc-line { display: none; }
-    .pin-arc-num { top: 50% !important; left: calc(8% + var(--i) * 21%) !important; }
-    .pin-panel { grid-template-columns: 1fr; }
     .pin-shot { display: none; }
+    .pin-arc-num { font-size: calc((1 - var(--d)) * 10px + 16px); }
   }
 
-  /* Sans animation : la pile devient une liste lisible, rien n'est épinglé. */
+  /* Sans animation : la pile redevient une liste, rien n'est épinglé. */
   @media (prefers-reduced-motion: reduce) {
     .pin-track { height: auto; }
-    .pin-stage { position: static; height: auto; display: block; padding-top: 24px; }
+    .pin-stage { position: static; height: auto; overflow: visible; padding-top: 16px; }
     .pin-arc { display: none; }
-    .pin-panels { position: static; height: auto; }
+    .pin-panels { position: static; }
     .pin-panel {
       position: static; transform: none; filter: none; opacity: 1;
-      pointer-events: auto; margin-bottom: 56px;
+      pointer-events: auto; margin-bottom: 64px; padding-left: var(--edge);
     }
+    .pin-shot { margin-right: 0; width: 100%; -webkit-mask-image: none; mask-image: none; }
   }
 }

@@ -13,49 +13,74 @@ const SHOTS = [
 ];
 
 // Section épinglée : le cadre reste en place pendant que le défilement fait
-// passer les cinq principes l'un après l'autre. Le principe au centre est net,
-// les autres restent flous en retrait — c'est le flou qui dit « celui-là arrive,
-// celui-là est déjà passé », bien mieux qu'un simple fondu.
+// passer les cinq principes. Un seul est à l'écran à la fois — ses voisins sont
+// hors cadre au repos et ne se montrent, flous, que pendant la transition.
 //
-// Un seul nombre pilote tout : `--p`, la position continue dans la liste (0 à 4).
-// Chaque panneau en déduit son écart `--i - --p` et donc son décalage, son flou
-// et son opacité, en CSS. Le JS n'écrit qu'une variable par image.
+// Deux choses bougent ensemble :
+//  — la pile de panneaux, pilotée en CSS par `--p` (position continue, 0 → 4) ;
+//  — les numéros, qui glissent le long d'un arc de cercle de sorte que le
+//    numéro courant se trouve toujours à mi-hauteur.
+//
+// `--p` est lissé vers sa cible : le défilement d'une molette arrive par
+// à-coups, et sans amortissement le flou « clignote » au lieu de fondre.
 
-/** Points de l'arc des numéros, en pourcentage de la hauteur du cadre. */
-const ARC = KEYS.map((_, i) => {
-  const span = 1.05; // radians couverts par l'arc
-  const a = -span / 2 + (span * i) / (KEYS.length - 1);
-  return { x: 50 - 46 * Math.cos(a), y: 50 + 56 * Math.sin(a) };
-});
+/** Pas angulaire entre deux numéros sur l'arc, en radians. */
+const PAS = 0.52;
+/** Rayon de l'arc, en fraction de la hauteur du cadre. */
+const RAYON = 0.52;
+/** Position horizontale du numéro courant, en fraction de la largeur. */
+const X_COURANT = 0.2;
 
 export function Pillars({ num }: { num: string }) {
   const t = useTranslations("pillars");
   const trackRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
+  const arcRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const track = trackRef.current;
     const stage = stageRef.current;
-    if (!track || !stage) return;
+    const arc = arcRef.current;
+    if (!track || !stage || !arc) return;
 
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      stage.style.setProperty("--p", "0");
+    const nums = [...arc.querySelectorAll<HTMLElement>(".pin-arc-num")];
+    const doux = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    const place = (p: number) => {
+      stage.style.setProperty("--p", p.toFixed(4));
+      const h = arc.clientHeight;
+      const w = arc.clientWidth;
+      if (!h || !w) return;
+      const R = RAYON * h;
+      const cx = X_COURANT * w - R;
+      nums.forEach((el, i) => {
+        const a = (i - p) * PAS;
+        const x = cx + R * Math.cos(a);
+        const y = h / 2 + R * Math.sin(a);
+        // Le numéro courant est net et grand ; les autres s'effacent vite.
+        const d = Math.min(1, Math.abs(i - p));
+        el.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px) translate(-50%, -50%)`;
+        el.style.setProperty("--d", d.toFixed(3));
+      });
+    };
+
+    if (doux) {
+      place(0);
       return;
     }
 
+    let p = 0;
     let raf = 0;
-    let last = -1;
     const frame = () => {
       const r = track.getBoundingClientRect();
-      // Course utile : du moment où le cadre se colle en haut jusqu'à ce que le
-      // bas du rail atteigne le bas de l'écran.
       const course = r.height - window.innerHeight;
       const avance = course > 0 ? Math.min(1, Math.max(0, -r.top / course)) : 0;
-      const p = avance * (KEYS.length - 1);
-      if (Math.abs(p - last) > 0.0005) {
-        stage.style.setProperty("--p", p.toFixed(4));
-        last = p;
-      }
+      const cible = avance * (KEYS.length - 1);
+      // amortissement : le reste du site défile déjà sous Lenis, on garde la
+      // même douceur ici plutôt que de coller au pixel de la molette.
+      p += (cible - p) * 0.12;
+      if (Math.abs(cible - p) < 0.0004) p = cible;
+      place(p);
       raf = requestAnimationFrame(frame);
     };
     raf = requestAnimationFrame(frame);
@@ -73,21 +98,12 @@ export function Pillars({ num }: { num: string }) {
 
       <div className="pin-track" ref={trackRef}>
         <div className="pin-stage" ref={stageRef}>
-          <div className="pin-arc" aria-hidden="true">
-            <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="pin-arc-line">
-              <path
-                d={`M ${ARC[0].x} ${ARC[0].y} Q 50 50 ${ARC[ARC.length - 1].x} ${ARC[ARC.length - 1].y}`}
-                fill="none"
-              />
-            </svg>
-            {ARC.map((pt, i) => (
-              <span
-                key={i}
-                className="pin-arc-num"
-                style={{ left: `${pt.x}%`, top: `${pt.y}%`, ["--i" as string]: i }}
-              >
+          <div className="pin-arc" ref={arcRef} aria-hidden="true">
+            <div className="pin-arc-line" />
+            {KEYS.map((k, i) => (
+              <span key={k} className="pin-arc-num" style={{ ["--i" as string]: i }}>
                 <i className="pin-dot" />
-                {t(`${KEYS[i]}.n`)}
+                {t(`${k}.n`)}
               </span>
             ))}
           </div>
