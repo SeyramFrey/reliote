@@ -3,8 +3,10 @@ import { useEffect, useRef } from "react";
 import { useTranslations } from "next-intl";
 
 // Anneau de partenaires qui gravite autour du titre, d'après la section « uod »
-// de kononenkogroup.com. Relevé sur le site : ellipse de 364 × 326, dix-sept
-// pastilles réparties à angle égal, un tour en ~19 s (mesuré : −47° en 2,5 s).
+// de kononenkogroup.com. Relevé sur le site puis ajusté par moindres carrés sur
+// les 17 positions mesurées : l'ellipse n'est pas droite, elle est INCLINÉE —
+// demi-axes 369 × 323, basculés d'environ 14,5° (erreur résiduelle 0,0013).
+// Un tour en ~19 s (mesuré : −47° en 2,5 s).
 //
 // La profondeur est une illusion tenue par trois choses qui suivent la même
 // sinusoïde : l'échelle (0,70 → 1,00), l'opacité (0,10 → 1,00) et surtout le
@@ -17,6 +19,10 @@ import { useTranslations } from "next-intl";
 const COUNT = 14;
 /** Un tour complet, en secondes. */
 const TOUR = 19;
+/** Inclinaison de l'ellipse, en radians. C'est elle qui évite l'anneau « droit ». */
+const INCLINAISON = (-14.5 * Math.PI) / 180;
+/** Rapport des demi-axes relevé sur la référence (323 / 369). */
+const APLATISSEMENT = 0.875;
 
 export function PartnersOrbit() {
   const t = useTranslations("partners");
@@ -31,14 +37,29 @@ export function PartnersOrbit() {
       const w = ring.clientWidth;
       const h = ring.clientHeight;
       if (!w || !h) return;
-      const rx = 0.36 * w;
-      const ry = 0.5 * h;
+      const ci = Math.cos(INCLINAISON);
+      const si = Math.sin(INCLINAISON);
+      // Le rayon se déduit du cadre : demi-largeur et demi-hauteur de l'ellipse
+      // INCLINÉE, pastilles comprises. Fixé à la louche, l'anneau débordait et
+      // les pastilles du bas mordaient la légende.
+      const rPuck = (pucks[0]?.offsetWidth ?? 0) / 2;
+      const demiLarge = Math.sqrt(ci * ci + (APLATISSEMENT * si) ** 2);
+      const demiHaut = Math.sqrt(si * si + (APLATISSEMENT * ci) ** 2);
+      const rx = Math.max(
+        40,
+        Math.min((w / 2 - rPuck) / demiLarge, (h / 2 - rPuck) / demiHaut),
+      );
+      const ry = rx * APLATISSEMENT;
       pucks.forEach((el, i) => {
         const a = phase + (i / COUNT) * Math.PI * 2;
-        // sin(a) vaut 1 en bas de l'anneau : c'est là que l'on est « près ».
+        // sin(a) vaut 1 au bas de l'anneau AVANT inclinaison : la pastille la
+        // plus proche se trouve donc légèrement décalée du bas de l'écran,
+        // exactement comme sur la référence.
         const pres = (Math.sin(a) + 1) / 2;
-        const x = Math.cos(a) * rx;
-        const y = Math.sin(a) * ry;
+        const u = Math.cos(a) * rx;
+        const v = Math.sin(a) * ry;
+        const x = u * ci - v * si;
+        const y = u * si + v * ci;
         el.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0) scale(${(0.7 + 0.3 * pres).toFixed(3)})`;
         el.style.opacity = (0.1 + 0.9 * Math.pow(pres, 1.15)).toFixed(3);
         // le flou achève la profondeur : ce qui est loin n'est pas net
