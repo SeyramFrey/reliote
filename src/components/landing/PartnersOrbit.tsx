@@ -21,8 +21,10 @@ const COUNT = 14;
 const TOUR = 19;
 /** Inclinaison de l'ellipse, en radians. C'est elle qui évite l'anneau « droit ». */
 const INCLINAISON = (-14.5 * Math.PI) / 180;
-/** Rapport des demi-axes relevé sur la référence (323 / 369). */
-const APLATISSEMENT = 0.875;
+/** Aplatissement de l'ellipse. La référence est presque circulaire (0,875),
+ *  mais un anneau écrasé se lit comme un horizon : on le voit par la tranche,
+ *  et les pastilles balaient la bande du titre au lieu de tourner autour. */
+const APLATISSEMENT = 0.46;
 
 export function PartnersOrbit() {
   const t = useTranslations("partners");

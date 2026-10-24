@@ -2191,7 +2191,7 @@ html.lenis, html.lenis body { height: auto; }
        elles. Chez kononenko le cadre de l'anneau fait ~1024 px, pas la page. */
     max-width: min(1240px, 84vw);
     margin: 0 auto;
-    height: min(96vh, 860px);
+    height: min(82vh, 720px);
     display: grid;
     place-items: center;
     isolation: isolate;
@@ -2207,11 +2207,11 @@ html.lenis, html.lenis body { height: auto; }
        droite — or c'est là que la profondeur vaut zéro et que le z-index
        bascule : le croisement se lisait « droite devant, gauche derrière » au
        lieu de « proche devant, lointain derrière ». */
-    max-width: 9ch;
+    max-width: 11ch;
     text-align: center;
     font-family: var(--f-display);
     font-weight: 300;
-    font-size: clamp(38px, 7.6vw, 120px);
+    font-size: clamp(42px, 9vw, 152px);
     line-height: 0.92;
     letter-spacing: -0.02em;
     pointer-events: none;
