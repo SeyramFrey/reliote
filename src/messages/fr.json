@@ -879,5 +879,10 @@
   "intro": {
     "skip": "Passer l'intro",
     "label": "Animation d'ouverture Reliote"
+  },
+  "partners": {
+    "titlePre": "Ils bâtissent ",
+    "titleItalic": "avec nous.",
+    "note": "Partenaires institutionnels et prescripteurs"
   }
 }

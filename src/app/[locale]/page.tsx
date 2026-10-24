@@ -12,6 +12,7 @@ import { FeaturedCaseView } from "@/components/landing/FeaturedCaseView";
 import { Audiences } from "@/components/landing/Audiences";
 import { Journal } from "@/components/landing/Journal";
 import { CtaBand } from "@/components/landing/CtaBand";
+import { PartnersOrbit } from "@/components/landing/PartnersOrbit";
 import { Footer } from "@/components/landing/Footer";
 import { SmoothScroll } from "@/components/landing/SmoothScroll";
 import { IntroGate } from "@/components/landing/intro/IntroGate";
@@ -81,6 +82,7 @@ export default async function Page() {
           <MapTerritoire num={num.territoire} />
           {featured && <FeaturedCaseView content={featured} num={num.featured} />}
           {media.length > 0 && <Journal items={media} num={num.journal} />}
+          <PartnersOrbit />
           <CtaBand num={num.cta} />
         </main>
         <Footer />

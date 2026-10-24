@@ -879,5 +879,10 @@
   "intro": {
     "skip": "Skip intro",
     "label": "Reliote opening animation"
+  },
+  "partners": {
+    "titlePre": "They build ",
+    "titleItalic": "with us.",
+    "note": "Institutional partners and prescribers"
   }
 }
