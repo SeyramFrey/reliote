@@ -7,9 +7,9 @@ import { siteUrl } from "@/lib/seo/site";
 import { fontVariables } from "../fonts";
 import { AdobeFonts } from "../adobe-fonts";
 import { RecoveryHashHandler } from "@/components/auth/RecoveryHashHandler";
-import { INTRO_SESSION_KEY } from "@/lib/intro/gate";
 import "@/styles/globals.css";
 import "@/styles/landing.css";
+import "@/styles/intro.css";
 
 // Valeurs par défaut de tout le site ; chaque page précise titre, canonical
 // et hreflang. L'image de partage vient de ./opengraph-image.tsx.
@@ -57,17 +57,6 @@ export default async function LocaleLayout({ children, params }: Props) {
       className={fontVariables}
     >
       <body>
-        {/* Lu pendant l'analyse du document, avant toute peinture : sans ça,
-            l'intro apparaît une fraction de seconde au rechargement d'un onglet
-            qui l'a déjà vue. `next/script` ne convient pas — « beforeInteractive »
-            ne bloque pas l'hydratation. */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html:
-              `try{if(sessionStorage.getItem(${JSON.stringify(INTRO_SESSION_KEY)}))` +
-              `document.documentElement.dataset.introSeen='1'}catch(e){}`,
-          }}
-        />
         <AdobeFonts />
         <NextIntlClientProvider locale={locale} messages={messages}>
           <RecoveryHashHandler locale={locale} />

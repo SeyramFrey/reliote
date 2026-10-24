@@ -114,11 +114,11 @@ export function MonogramScene({ progressRef, onReady }: Props) {
       camera.position.z = layout.cameraZ;
       camera.updateProjectionMatrix();
 
-      // Publié pour que le mot ELIOTE, qui est du DOM, suive exactement la
-      // taille apparente du monogramme quel que soit le format d'écran.
+      // Publié sur la racine pour que le mot ELIOTE, qui est du DOM et vit en
+      // dehors de ce composant, suive exactement la taille apparente du
+      // monogramme quel que soit le format d'écran.
       const unit = h / (2 * layout.cameraZ * Math.tan((FOV * Math.PI) / 360));
-      host!.style.setProperty("--intro-unit", String(unit));
-      host!.style.setProperty("--intro-stacked", layout.lockup === "empile" ? "1" : "0");
+      document.documentElement.style.setProperty("--intro-unit", String(unit));
     }
     const ro = new ResizeObserver(resize);
     ro.observe(host);
@@ -179,6 +179,7 @@ export function MonogramScene({ progressRef, onReady }: Props) {
     return () => {
       cancelAnimationFrame(raf);
       ro.disconnect();
+      document.documentElement.style.removeProperty("--intro-unit");
       P.geo.dispose();
       R.geo.dispose();
       matP.dispose();

@@ -57,3 +57,6 @@ supabase/.temp/
 
 # Superpowers brainstorm (mockups jetables)
 .superpowers/
+
+# Build de production lancé à côté du serveur de dév (NEXT_DIST_DIR)
+.next-build/
