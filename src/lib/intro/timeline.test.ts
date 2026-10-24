@@ -21,6 +21,12 @@ describe("minutage de la séquence d'ouverture", () => {
     expect(actAt(99)).toBe("hero");
   });
 
+  // Épinglé sur la mesure du fichier produit par scripts/encode-intro-video.mjs :
+  // sans ça, la constante dérive silencieusement de l'asset.
+  it("VIDEO_DURATION correspond au fichier réellement encodé", () => {
+    expect(VIDEO_DURATION).toBe(2.8);
+  });
+
   it("la vidéo démarre à l'acte 4 et se borne à sa durée", () => {
     expect(videoTimeAt(0)).toBe(0);
     expect(videoTimeAt(4.4)).toBe(0);

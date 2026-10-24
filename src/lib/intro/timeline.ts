@@ -18,9 +18,11 @@ export const INTRO_DURATION = 8.15;
 const CONSTRUCTION_START = 4.4;
 
 /** Durée de la vidéo telle qu'elle est livrée : la source de 6,083 s est
- *  ré-encodée à ×2,2 (tâche 5). Aucun `playbackRate` à la lecture, qui est
- *  coûteux et saccadé sur mobile. */
-export const VIDEO_DURATION = 2.77;
+ *  ré-encodée à ×2,2 par scripts/encode-intro-video.mjs. Aucun `playbackRate`
+ *  à la lecture, qui est coûteux et saccadé sur mobile.
+ *  Valeur **mesurée** sur le fichier produit (ffprobe), pas calculée : le
+ *  quotient donne 2,765 mais le conteneur s'arrête sur la frontière d'image. */
+export const VIDEO_DURATION = 2.8;
 
 export function actAt(t: number): ActKey {
   let current: ActKey = INTRO_ACTS[0].key;
