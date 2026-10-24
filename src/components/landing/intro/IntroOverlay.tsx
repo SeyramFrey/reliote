@@ -6,7 +6,7 @@ import { useTranslations } from "next-intl";
 import { markSeenThisTab } from "@/lib/intro/gate";
 import { INTRO_DURATION } from "@/lib/intro/timeline";
 import { readyVerdict } from "@/lib/intro/readiness";
-import { introFrame, holdTime, HOLD_AT } from "@/lib/intro/frame";
+import { introFrame } from "@/lib/intro/frame";
 import { introLayout } from "@/lib/intro/layout";
 import { IntroWordmark, letterProgress } from "./IntroWordmark";
 import { Logo } from "@/components/shared/Logo";
@@ -81,7 +81,6 @@ export function IntroOverlay({ onFinish }: { onFinish: () => void }) {
     const letters = Array.from(root.querySelectorAll<HTMLElement>("[data-letter]"));
 
     let released = false;
-    let releaseT = 0;
     let releaseAt = 0;
     const startedAt = performance.now();
     let raf = 0;
@@ -94,21 +93,19 @@ export function IntroOverlay({ onFinish }: { onFinish: () => void }) {
         elapsed,
       });
 
-      // Le temps monte jusqu'à HOLD_AT puis se fige tant que le cœur n'est pas
-      // prêt ; les crochets continuent de tourner grâce à `holdAngleRef`. Il ne
-      // revient jamais en arrière — une boucle sur [0, 2 s) faisait repartir la
-      // spirale d'un coup au rayon de départ, et clignoter le bouton « passer ».
       let time: number;
       if (!released) {
-        time = holdTime(elapsed);
-        holdAngleRef.current = Math.max(0, elapsed - HOLD_AT) * HOLD_SPIN;
+        // La séquence ne commence qu'une fois la scène prête : sinon les
+        // crochets apparaissaient au milieu de leur spirale, déjà à mi-chemin,
+        // ce qui se lit comme un saut. Pendant l'attente ils tournent sur place.
+        time = 0;
+        holdAngleRef.current = elapsed * HOLD_SPIN;
         if (verdict.leaveLoop) {
           released = true;
-          releaseT = time;
           releaseAt = now;
         }
       } else {
-        time = releaseT + (now - releaseAt) / 1000;
+        time = (now - releaseAt) / 1000;
       }
 
       // Décision prise une fois pour toutes au seuil de l'acte 4 : si le
@@ -130,7 +127,7 @@ export function IntroOverlay({ onFinish }: { onFinish: () => void }) {
         el.style.transform = `translateY(${(1 - p) * 0.12}em)`;
       }
 
-      const f = introFrame({ time, includeVideoAct });
+      const f = introFrame({ time, elapsed, includeVideoAct });
 
       // Sur connexion lente, le chunk 3D met plusieurs secondes : sans ça le
       // visiteur regarde un écran vert vide avec un bouton « passer ».

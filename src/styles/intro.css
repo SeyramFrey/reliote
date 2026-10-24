@@ -45,11 +45,11 @@
     display: flex;
     align-items: center;
     white-space: nowrap;
-    font-family: var(--font-display), Georgia, serif;
+    font-family: var(--font-display, Georgia), Georgia, serif;
     font-weight: 300;
     line-height: 0.8;
     letter-spacing: 0.01em;
-    color: var(--color-paper);
+    color: var(--color-paper, #f3f1ec);
     pointer-events: none;
     font-size: calc(68 * var(--intro-unit, 0.5) * 1px);
     /* bord droit du monogramme + une respiration */
@@ -106,7 +106,7 @@
   }
   .intro-skip:hover,
   .intro-skip:focus-visible {
-    color: var(--color-paper);
+    color: var(--color-paper, #f3f1ec);
     border-color: rgba(243, 241, 236, 0.6);
   }
 

@@ -11,23 +11,16 @@ const VIDEO_START = 4.4;
 const HERO_START = 6.6;
 export const SKIP_AT = 1.2;
 
-/** Pendant l'attente des assets, le temps monte jusqu'ici puis se fige : les
- *  crochets continuent de tourner sur place (angle ajouté par la scène) au lieu
- *  de revenir en arrière à chaque tour de boucle. Posé juste après l'apparition
- *  du bouton « passer », pour qu'il ne clignote pas. */
-export const HOLD_AT = 1.25;
-
-/** Temps de la séquence pendant la phase d'attente. Monotone, borné. */
-export function holdTime(elapsed: number): number {
-  return Math.min(HOLD_AT, Math.max(0, elapsed));
-}
-
 const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
 const easeInOut2 = (x: number) => (x < 0.5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2);
 
 export type FrameInput = {
-  /** Temps courant dans la séquence, en secondes. */
+  /** Temps courant dans la séquence, en secondes. Reste à 0 tant que la scène
+   *  n'est pas prête : la spirale doit partir de son début, pas de son milieu. */
   time: number;
+  /** Temps écoulé depuis le montage du calque, attente comprise. C'est lui qui
+   *  pilote la porte de sortie : elle doit s'offrir pendant l'attente aussi. */
+  elapsed?: number;
   /** Faux quand la vidéo n'a pas pu être chargée : l'acte 4 est alors vide. */
   includeVideoAct: boolean;
 };
@@ -43,7 +36,13 @@ export type FrameState = {
   playVideo: boolean;
 };
 
-export function introFrame({ time, includeVideoAct }: FrameInput): FrameState {
+/** Le calque se pose en fondu : il arrive par-dessus une landing déjà peinte,
+ *  et apparaître d'un coup se lit comme un à-coup. */
+const ENTREE = 0.35;
+
+export function introFrame({ time, elapsed, includeVideoAct }: FrameInput): FrameState {
+  const depuisLeDebut = elapsed ?? time;
+  const entree = clamp01(depuisLeDebut / ENTREE);
   // Le mot et la grille sortent quand le plan entre, sinon ELIOTE reste posé
   // par-dessus la construction.
   const fade = 1 - clamp01((time - (VIDEO_START + 0.1)) / 0.62);
@@ -56,9 +55,9 @@ export function introFrame({ time, includeVideoAct }: FrameInput): FrameState {
     wordOpacity: fade,
     gridOpacity: 0.5 * fade,
     videoOpacity,
-    overlayOpacity: 1 - clamp01((time - HERO_START) / 0.7),
+    overlayOpacity: entree * (1 - clamp01((time - HERO_START) / 0.7)),
     zoom: easeInOut2(clamp01((time - HERO_START) / (INTRO_DURATION - HERO_START))),
-    skipShown: time >= SKIP_AT && time < HERO_START,
+    skipShown: depuisLeDebut >= SKIP_AT && time < HERO_START,
     playVideo: includeVideoAct && time >= VIDEO_START,
   };
 }
