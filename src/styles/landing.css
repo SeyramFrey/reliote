@@ -2202,12 +2202,17 @@ html.lenis, html.lenis body { height: auto; }
     position: relative;
     z-index: 2;
     margin: 0;
-    max-width: 16ch;
+    /* Le titre doit REMPLIR l'anneau, en plusieurs lignes. Sur une seule ligne,
+       les seules pastilles qui le croisent sont celles des extrémités gauche et
+       droite — or c'est là que la profondeur vaut zéro et que le z-index
+       bascule : le croisement se lisait « droite devant, gauche derrière » au
+       lieu de « proche devant, lointain derrière ». */
+    max-width: 9ch;
     text-align: center;
     font-family: var(--f-display);
     font-weight: 300;
-    font-size: clamp(34px, 6.4vw, 104px);
-    line-height: 0.98;
+    font-size: clamp(38px, 7.6vw, 120px);
+    line-height: 0.92;
     letter-spacing: -0.02em;
     pointer-events: none;
   }
