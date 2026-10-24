@@ -59,7 +59,10 @@ export function buildRGradient(stops: readonly string[]): THREE.CanvasTexture {
   canvas.width = 4;
   canvas.height = 256;
 
-  const ctx = canvas.getContext("2d")!;
+  // Null sous pression mémoire : on remonte une erreur lisible, que la barrière
+  // d'erreur du calque attrape, plutôt qu'un TypeError à la ligne suivante.
+  const ctx = canvas.getContext("2d");
+  if (!ctx) throw new Error("intro : contexte 2D indisponible pour le dégradé du R");
   const grad = ctx.createLinearGradient(0, 0, 0, 256);
   stops.forEach((c, i) => grad.addColorStop(i / (stops.length - 1), c));
   ctx.fillStyle = grad;

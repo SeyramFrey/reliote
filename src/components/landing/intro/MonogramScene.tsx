@@ -34,11 +34,14 @@ type Props = {
   /** Temps courant dans la séquence, en secondes. Lu par la boucle de rendu :
    *  un prop numérique re-rendrait React soixante fois par seconde. */
   progressRef: React.RefObject<number>;
+  /** Angle supplémentaire accumulé pendant l'attente des assets : il fait
+   *  tourner les crochets sur place sans faire avancer la séquence. */
+  holdAngleRef: React.RefObject<number>;
   /** Appelé une fois la géométrie construite et l'environnement compilé. */
   onReady: () => void;
 };
 
-export function MonogramScene({ progressRef, onReady }: Props) {
+export function MonogramScene({ progressRef, holdAngleRef, onReady }: Props) {
   const hostRef = useRef<HTMLDivElement>(null);
   // `onReady` est gardé dans une ref pour que la scène ne se reconstruise pas
   // si l'appelant en change l'identité entre deux rendus.
@@ -127,7 +130,7 @@ export function MonogramScene({ progressRef, onReady }: Props) {
     function frame(t: number) {
       // Spirale : décalage par-dessus la position verrouillée, qui se referme.
       const e = easeInOut2(clamp(t / APPROACH, 0, 1));
-      const a = A0 + (A1 - A0) * e;
+      const a = A0 + (A1 - A0) * e + (holdAngleRef.current ?? 0);
       const r = ORBIT_R * (1 - e);
       const k = r / ORBIT_R;
       meshP.position.set(lockP.x + Math.cos(a) * r, lockP.y + Math.sin(a) * r * 0.45, 0);
@@ -166,14 +169,27 @@ export function MonogramScene({ progressRef, onReady }: Props) {
       renderer.render(scene, camera);
     }
 
+    // Une erreur levée dans un rAF n'atteint aucune barrière React : on arrête
+    // la boucle nous-mêmes plutôt que de la laisser jeter à chaque image.
     let raf = 0;
     const loop = () => {
-      frame(progressRef.current ?? 0);
+      try {
+        frame(progressRef.current ?? 0);
+      } catch (error) {
+        console.warn("Scène d'ouverture arrêtée après une erreur :", error);
+        return;
+      }
       raf = requestAnimationFrame(loop);
     };
     frame(0);
     renderer.render(scene, camera);
-    readyRef.current();
+
+    // La spec met les fontes dans le signal « prêt » : sans ça, sur connexion
+    // lente, ELIOTE s'écrit en Georgia — les six lettres dans la mauvaise
+    // fonte, au seul moment typographique de la séquence.
+    void Promise.resolve(document.fonts?.ready)
+      .catch(() => undefined)
+      .then(() => readyRef.current());
     loop();
 
     return () => {
@@ -190,7 +206,7 @@ export function MonogramScene({ progressRef, onReady }: Props) {
       renderer.dispose();
       canvas.remove();
     };
-  }, [progressRef]);
+  }, [progressRef, holdAngleRef]);
 
   return <div ref={hostRef} className="intro-scene" aria-hidden="true" />;
 }

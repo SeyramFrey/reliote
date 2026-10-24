@@ -42,9 +42,10 @@ ff(["-i", source, "-vf", `setpts=PTS/${SPEED},scale=960:-2`, "-an",
     "-c:v", "libx264", "-crf", "26", "-preset", "slow",
     "-pix_fmt", "yuv420p", "-movflags", "+faststart", mobile]);
 
-// Dernière image : le plan achevé, c'est elle qui doit s'afficher si la vidéo
-// ne se lance pas.
-ff(["-sseof", "-0.1", "-i", source, "-vf", "scale=1920:-2",
+// Première image : le poster reste affiché jusqu'au démarrage de la lecture.
+// Prendre la dernière ferait clignoter le plan achevé au tout début de l'acte 4,
+// là où la spec veut un raccord invisible avec sa première image, presque vide.
+ff(["-i", source, "-vf", "scale=1920:-2",
     "-frames:v", "1", "-q:v", "4", "-update", "1", poster]);
 
 const probe = (file) =>

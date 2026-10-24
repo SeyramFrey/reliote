@@ -18,11 +18,13 @@ export type IntroGateInput = {
 export function shouldPlayIntro(i: IntroGateInput): boolean {
   // Accessibilité et capacité d'abord : rien ne les force, pas même ?intro=1.
   if (i.reducedMotion || !i.webglOk) return false;
+  // L'interrupteur d'arrêt passe avant tout le reste.
   if (i.queryIntro === "0") return false;
-  if (!i.enabled) return false;
-  // ?intro=1 rejoue dans un onglet qui a déjà vu la séquence — c'est ce qui
-  // permet de la retester sans ouvrir un onglet neuf.
+  // ?intro=1 passe AVANT `enabled` : l'intro est livrée éteinte, et c'est le
+  // seul moyen de la montrer ou de la vérifier sans redéployer. Il rejoue aussi
+  // dans un onglet qui l'a déjà vue.
   if (i.queryIntro === "1") return true;
+  if (!i.enabled) return false;
   return !i.seenThisTab;
 }
 

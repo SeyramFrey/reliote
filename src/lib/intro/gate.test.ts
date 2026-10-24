@@ -41,6 +41,20 @@ describe("shouldPlayIntro", () => {
     expect(shouldPlayIntro({ ...base, enabled: false })).toBe(false);
   });
 
+  // L'intro est livrée éteinte : si ?intro=1 ne la rallumait pas, elle serait
+  // injoignable en production et invérifiable ailleurs qu'en local.
+  it("?intro=1 rallume l'intro livrée éteinte", () => {
+    expect(shouldPlayIntro({ ...base, enabled: false, queryIntro: "1" })).toBe(true);
+    expect(shouldPlayIntro({ ...base, enabled: false, queryIntro: "1", seenThisTab: true })).toBe(
+      true,
+    );
+  });
+
+  it("?intro=0 l'emporte sur ?intro=1 absent et sur tout le reste", () => {
+    expect(shouldPlayIntro({ ...base, enabled: true, queryIntro: "0" })).toBe(false);
+    expect(shouldPlayIntro({ ...base, enabled: false, queryIntro: "0" })).toBe(false);
+  });
+
   it("reduced-motion et absence de WebGL coupent", () => {
     expect(shouldPlayIntro({ ...base, reducedMotion: true })).toBe(false);
     expect(shouldPlayIntro({ ...base, webglOk: false })).toBe(false);

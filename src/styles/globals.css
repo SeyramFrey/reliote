@@ -40,6 +40,10 @@
 @layer base {
   * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; }
+  /* La gouttière reste réservée en permanence : sans ça, tout verrou de
+     défilement (la séquence d'ouverture) fait disparaître puis revenir la barre,
+     et la page entière se décale de sa largeur au moment où on la relâche. */
+  html { scrollbar-gutter: stable; }
   body {
     font-family: var(--font-sans);
     background: var(--color-paper);

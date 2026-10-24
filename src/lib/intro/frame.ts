@@ -9,7 +9,18 @@ import { INTRO_DURATION } from "./timeline";
 
 const VIDEO_START = 4.4;
 const HERO_START = 6.6;
-const SKIP_AT = 1.2;
+export const SKIP_AT = 1.2;
+
+/** Pendant l'attente des assets, le temps monte jusqu'ici puis se fige : les
+ *  crochets continuent de tourner sur place (angle ajouté par la scène) au lieu
+ *  de revenir en arrière à chaque tour de boucle. Posé juste après l'apparition
+ *  du bouton « passer », pour qu'il ne clignote pas. */
+export const HOLD_AT = 1.25;
+
+/** Temps de la séquence pendant la phase d'attente. Monotone, borné. */
+export function holdTime(elapsed: number): number {
+  return Math.min(HOLD_AT, Math.max(0, elapsed));
+}
 
 const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
 const easeInOut2 = (x: number) => (x < 0.5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2);

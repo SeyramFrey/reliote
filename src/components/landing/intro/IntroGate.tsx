@@ -3,6 +3,7 @@
 import { useState, useSyncExternalStore } from "react";
 import { shouldPlayIntro, hasSeenThisTab } from "@/lib/intro/gate";
 import { IntroOverlay } from "./IntroOverlay";
+import { IntroBoundary } from "./IntroBoundary";
 
 /** Un contexte WebGL suffit-il à faire tourner la scène ? C'est le test
  *  minimal : il écarte les navigateurs sans WebGL, pas les GPU trop lents.
@@ -43,5 +44,9 @@ export function IntroGate() {
   const [finished, setFinished] = useState(false);
 
   if (!eligible || finished) return null;
-  return <IntroOverlay onFinish={() => setFinished(true)} />;
+  return (
+    <IntroBoundary>
+      <IntroOverlay onFinish={() => setFinished(true)} />
+    </IntroBoundary>
+  );
 }

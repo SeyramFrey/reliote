@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { introFrame } from "./frame";
+import { introFrame, holdTime, HOLD_AT, SKIP_AT } from "./frame";
 
 const at = (time: number, includeVideoAct = true) => introFrame({ time, includeVideoAct });
 
@@ -49,6 +49,27 @@ describe("introFrame", () => {
     expect(at(6.6).zoom).toBe(0);
     expect(at(7.4).zoom).toBeGreaterThan(0);
     expect(at(7.4).zoom).toBeLessThan(1);
+  });
+
+  // L'attente bouclait sur [0, 2 s) : à 1,99 s les crochets étaient presque
+  // verrouillés, puis repartaient d'un coup au rayon de départ. Et le bouton
+  // « passer » clignotait à chaque tour — pour le visiteur sur connexion lente,
+  // justement celui qui veut sortir.
+  it("le temps d'attente ne revient jamais en arrière", () => {
+    let last = -1;
+    for (let e = 0; e <= 6; e += 0.05) {
+      const t = holdTime(e);
+      expect(t).toBeGreaterThanOrEqual(last);
+      expect(t).toBeLessThanOrEqual(HOLD_AT);
+      last = t;
+    }
+  });
+
+  it("le bouton « passer » reste visible une fois apparu, même en attente longue", () => {
+    expect(HOLD_AT).toBeGreaterThanOrEqual(SKIP_AT);
+    for (let e = SKIP_AT; e <= 5; e += 0.05) {
+      expect(introFrame({ time: holdTime(e), includeVideoAct: true }).skipShown).toBe(true);
+    }
   });
 
   it("aucune valeur ne sort de [0,1], même hors séquence", () => {
