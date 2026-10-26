@@ -41,7 +41,7 @@ export default async function MediaForm({ params }: { params: Promise<{ id: stri
   return (
     <>
       <Link href={`/${locale}/admin/medias`} className="eyebrow hover:text-ink">
-        ← Médias
+        ← Journal
       </Link>
       <h1 className="font-light text-4xl mt-4">{isNew ? "Nouveau média" : "Éditer le média"}</h1>
 

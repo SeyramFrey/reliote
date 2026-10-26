@@ -25,7 +25,7 @@ export default async function AdminMedias() {
     <>
       <div className="flex flex-wrap items-baseline justify-between gap-3">
         <div>
-          <p className="eyebrow">Admin · Médias</p>
+          <p className="eyebrow">Admin · Journal</p>
           <h1 className="font-light text-4xl mt-4">{rows.length} médias</h1>
         </div>
         <Link href={`/${locale}/admin/medias/new`} className="px-4 py-2 bg-ink text-paper text-sm">

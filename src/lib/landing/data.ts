@@ -81,3 +81,28 @@ export const getPublishedTestimonials = cache(async (): Promise<Testimonial[]> =
     .order("created_at", { ascending: false })) as { data: Testimonial[] | null };
   return data ?? [];
 });
+
+export type PartnerLogo = { id: string; name: string; logo_url: string; url: string | null };
+
+/** Pastilles vides par défaut, tant que le réglage n'existe pas (avant 0020). */
+export const DEFAULT_PARTNER_PLACEHOLDERS = 14;
+
+export const getPartnersRing = cache(
+  async (): Promise<{ logos: PartnerLogo[]; placeholders: number }> => {
+    const s = createServiceClient();
+    const [{ data: logos }, { data: setting }] = (await Promise.all([
+      s
+        .from("partners")
+        .select("id, name, logo_url, url")
+        .eq("published", true)
+        .order("sort_order", { ascending: true })
+        .order("created_at", { ascending: true }),
+      s.from("site_settings").select("value").eq("key", "partners_placeholders").maybeSingle(),
+    ])) as [{ data: PartnerLogo[] | null }, { data: { value: unknown } | null }];
+    const n = Number(setting?.value);
+    return {
+      logos: logos ?? [],
+      placeholders: Number.isFinite(n) ? Math.max(0, Math.round(n)) : DEFAULT_PARTNER_PLACEHOLDERS,
+    };
+  },
+);

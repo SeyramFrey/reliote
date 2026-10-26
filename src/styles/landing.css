@@ -2157,6 +2157,18 @@ html.lenis, html.lenis body { height: auto; }
     background: rgba(243, 241, 236, 0.38);
   }
 
+  /* Pastille de logo : disque clair opaque, pour que les logos sombres restent
+     lisibles sur le fond eau. Le logo est contenu, jamais rogné. */
+  .orb-puck.is-logo {
+    background: var(--paper);
+    border-color: rgba(243, 241, 236, 0.6);
+  }
+  .orb-puck.is-logo > img {
+    width: 56%;
+    height: 56%;
+    object-fit: contain;
+  }
+
   .orb-note {
     margin: clamp(40px, 7vh, 76px) auto 0;
     max-width: 52ch;
