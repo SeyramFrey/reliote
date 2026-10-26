@@ -614,86 +614,6 @@ html.lenis, html.lenis body { height: auto; }
     color: rgba(243,241,236,0.55);
   }
 
-  /* Audiences split */
-  .aud-split {
-    padding: 0 var(--edge);
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: var(--gutter);
-  }
-  .aud-card {
-    border: 1px solid var(--hairline);
-    padding: 36px 36px 32px;
-    background: var(--paper);
-    display: flex;
-    flex-direction: column;
-    min-height: 420px;
-    transition: background 320ms ease, border-color 320ms ease;
-  }
-  .aud-card:hover { background: #fff; border-color: var(--ink); }
-  .aud-card.dark { background: var(--green); color: var(--paper); border-color: var(--green); }
-  .aud-card.dark:hover { background: var(--green-deep); }
-  .aud-head {
-    display: flex;
-    justify-content: space-between;
-    align-items: start;
-    font-family: var(--f-mono);
-    font-size: 11px;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: var(--concrete-2);
-    margin-bottom: 56px;
-  }
-  .aud-card.dark .aud-head { color: rgba(243,241,236,0.6); }
-  .aud-title {
-    font-family: var(--f-display);
-    font-weight: 300;
-    font-size: 36px;
-    letter-spacing: -0.012em;
-    line-height: 1.04;
-    margin: 0 0 18px;
-  }
-  .aud-title em { font-family: var(--f-display); font-style: italic; font-weight: inherit; }
-  .aud-body { font-size: 14px; line-height: 1.6; color: var(--concrete-1); max-width: 42ch; }
-  .aud-card.dark .aud-body { color: rgba(243,241,236,0.78); }
-  .aud-list {
-    margin-top: 28px;
-    list-style: none;
-    padding: 0;
-    display: grid;
-    gap: 1px;
-    background: var(--hairline);
-    border-top: 1px solid var(--hairline);
-    border-bottom: 1px solid var(--hairline);
-  }
-  .aud-card.dark .aud-list { background: rgba(243,241,236,0.1); border-color: rgba(243,241,236,0.1); }
-  .aud-list li {
-    background: var(--paper);
-    padding: 14px 2px;
-    font-size: 13.5px;
-    display: flex;
-    align-items: center;
-    gap: 14px;
-  }
-  .aud-card:hover .aud-list li { background: #fff; }
-  .aud-card.dark .aud-list li { background: var(--green); color: rgba(243,241,236,0.94); }
-  .aud-card.dark:hover .aud-list li { background: var(--green-deep); }
-  .aud-list .num {
-    font-family: var(--f-mono);
-    font-size: 10.5px;
-    letter-spacing: 0.14em;
-    color: var(--concrete-2);
-    width: 28px;
-  }
-  .aud-card.dark .aud-list .num { color: rgba(243,241,236,0.5); }
-  .aud-foot {
-    margin-top: auto;
-    padding-top: 28px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
   /* Journal */
   .journal-grid {
     padding: 0 var(--edge);
@@ -1149,7 +1069,7 @@ html.lenis, html.lenis body { height: auto; }
     .pillar-row, .process-grid { grid-template-columns: 1fr 1fr; }
     .pillar, .process-step { border-bottom: 1px solid var(--hairline); }
     .archi-grid { grid-template-columns: 1fr 1fr; }
-    .feat-frame, .aud-split, .journal-grid { grid-template-columns: 1fr; }
+    .feat-frame, .journal-grid { grid-template-columns: 1fr; }
     .modal { grid-template-columns: 1fr; }
     .modal-aside { display: none; }
     .footer-grid { grid-template-columns: 1fr 1fr; }
@@ -2250,5 +2170,230 @@ html.lenis, html.lenis body { height: auto; }
 
   @media (prefers-reduced-motion: reduce) {
     .orb-puck { filter: none !important; }
+  }
+}
+
+/* ------------------------------------------------------------------ *
+ * Deux côtés du même cadre (.duo-*) — d'après le menu des galeries de
+ * hollywoodexhibit2026.com. Courbes, durées et décalages relevés dans
+ * leur code (Framer Motion) ; l'état vient de components/landing/
+ * AudienceDuo.tsx, le CSS fait tout le mouvement.
+ * ------------------------------------------------------------------ */
+@layer components {
+  .duo-sect {
+    --duo-ease: cubic-bezier(0.77, 0, 0.18, 1);         /* leur easeInOut.quart */
+    --duo-ease-text: cubic-bezier(0.65, 0.05, 0.36, 1); /* leur easeInOut.cubic */
+    --duo-gap: clamp(24px, 5.5vw, 80px);
+    --duo-say: clamp(40px, 4.6vw, 84px);
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background: var(--ink);
+    color: var(--paper);
+    overflow: hidden;
+    transition: background-color 600ms var(--duo-ease), color 600ms var(--duo-ease);
+  }
+  /* Le fond suit la carte survolée, comme chez eux : sombre à gauche, clair à
+     droite. Le texte prend une teinte sourde du même fond. */
+  .duo-sect[data-active="0"] { background: var(--ink-2); color: var(--concrete-3); }
+  .duo-sect[data-active="1"] { background: var(--paper-2); color: var(--concrete-2); }
+
+  .duo-sect .sect-num,
+  .duo-sect .sect-kicker { color: rgba(243, 241, 236, 0.55); }
+  .duo-sect .sect-head {
+    transition: opacity 600ms var(--duo-ease), filter 600ms var(--duo-ease);
+  }
+  .duo-sect:not([data-active="none"]) .sect-head { opacity: 0; filter: blur(6px); }
+
+  .duo-stage {
+    display: grid;
+    place-items: center;
+    padding: 0 var(--edge);
+  }
+  /* Cartes au 3:4 comme la référence, mais ~1,3–1,5× plus grandes : la grille
+     prend 58 % de la largeur au lieu de 44 %. La hauteur reste plafonnée à
+     60 % de l'écran : à × 1,1, la carte survolée et le titre ancré au coin
+     doivent tenir entre la barre de navigation et le bas de l'écran. */
+  .duo-grid {
+    position: relative;
+    isolation: isolate;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--duo-gap);
+    width: min(58vw, calc(2 * 0.75 * min(60svh, 620px) + var(--duo-gap)));
+  }
+
+  .duo-card {
+    position: relative;
+    aspect-ratio: 3 / 4;
+    transition: transform 800ms var(--duo-ease), opacity 800ms var(--duo-ease);
+  }
+  /* Les deux cartes glissent l'une vers l'autre, quelle que soit la survolée :
+     la gauche toujours vers la droite, la droite toujours vers la gauche. */
+  .duo-card[data-side="left"]  { --duo-shift: 20%; }
+  .duo-card[data-side="right"] { --duo-shift: -20%; }
+  .duo-card[data-pose="front"] { transform: translateX(var(--duo-shift)) scale(1.1); }
+  .duo-card[data-pose="back"]  { transform: translateX(var(--duo-shift)) scale(0.8); opacity: 0.2; }
+
+  .duo-link {
+    position: absolute;
+    inset: 0;
+    display: block;
+    overflow: hidden;
+    background: var(--water);
+    color: var(--paper);
+  }
+  .duo-link:focus-visible { outline: 1px solid var(--accent-gold); outline-offset: 6px; }
+  .duo-img { object-fit: cover; }
+  /* Les visuels sont au 2:3, un peu plus hauts que la carte : on rogne du
+     côté opposé au titre, pour écarter le sujet du texte (titre en haut à
+     gauche, en bas à droite). */
+  .duo-card[data-side="left"] .duo-img  { object-position: 50% 0%; }
+  .duo-card[data-side="right"] .duo-img { object-position: 50% 100%; }
+  .duo-link::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to bottom,
+      rgba(12, 22, 20, 0.72) 0%,
+      rgba(12, 22, 20, 0.28) 30%,
+      rgba(12, 22, 20, 0) 44%,
+      rgba(12, 22, 20, 0) 52%,
+      rgba(12, 22, 20, 0.78) 100%
+    );
+  }
+  /* Une couverture de magazine : intitulé en tête, titre et appel en pied. */
+  .duo-cover {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    padding: clamp(18px, 1.8vw, 30px);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .duo-cover-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    white-space: nowrap;
+    font-family: var(--f-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(243, 241, 236, 0.82);
+  }
+  .duo-cover-title {
+    margin: 0;
+    max-width: 16ch;
+    font-family: var(--f-display);
+    font-weight: 300;
+    font-size: clamp(26px, 2.4vw, 40px);
+    line-height: 1.04;
+    letter-spacing: -0.012em;
+    text-wrap: balance;
+  }
+  .duo-cover-title em { font-style: italic; }
+  .duo-cover-top .duo-cover-title { margin-top: 22px; }
+  .duo-cover-bottom .duo-cover-title { margin-bottom: 22px; }
+  .duo-card[data-side="left"] .duo-cover-bottom { align-self: flex-end; }
+  .duo-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    font-family: var(--f-mono);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+
+  /* Titre de survol, centré sur le coin extérieur de la grille. */
+  .duo-say {
+    position: absolute;
+    z-index: 10;
+    pointer-events: none;
+    white-space: nowrap;
+  }
+  .duo-say[data-side="left"]  { bottom: 0; left: 0; transform: translate(-50%, 50%); --from: -30%; }
+  .duo-say[data-side="right"] { top: 0; right: 0; transform: translate(50%, -50%); --from: 30%; }
+
+  /* Entrée : lignes décalées de 0,18 s (+ 0,05 s), depuis ±30 % et le flou.
+     Sortie : fondu dans l'ordre inverse (0,12 s), SANS bouger — la position ne
+     revient à ±30 % qu'une fois la ligne invisible. */
+  .duo-say-line {
+    display: block;
+    opacity: 0;
+    filter: blur(6px);
+    transform: translateX(var(--from));
+    transition:
+      opacity 800ms var(--duo-ease-text) var(--out),
+      filter 800ms var(--duo-ease-text) var(--out),
+      transform 0s linear calc(var(--out) + 800ms);
+  }
+  .duo-say-line:nth-child(1) { --in: 50ms;  --out: 120ms; }
+  .duo-say-line:nth-child(2) { --in: 230ms; --out: 0ms; }
+  .duo-say[data-on="true"] .duo-say-line {
+    opacity: 1;
+    filter: blur(0);
+    transform: none;
+    transition:
+      opacity 800ms var(--duo-ease-text) var(--in),
+      filter 800ms var(--duo-ease-text) var(--in),
+      transform 800ms var(--duo-ease-text) var(--in);
+  }
+
+  .duo-say-word {
+    display: block;
+    font-family: var(--f-display);
+    font-weight: 300;
+    font-size: var(--duo-say);
+    line-height: 1;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+  }
+  .duo-say[data-side="left"] .duo-say-pre  { margin-left: -20%; }
+  .duo-say[data-side="right"] .duo-say-pre { margin-top: 5%; }
+  .duo-say-row { display: flex; }
+
+  /* Le mot manuscrit se trace de gauche à droite après l'entrée de sa ligne :
+     chez eux, un SVG dessiné trait par trait en ~0,9 s (ease-in-out). Ici la
+     Ramillas italique, découverte par un masque qui avance au même rythme. */
+  .duo-say-script {
+    margin: 0.08em 0.3em 0 30%;
+    font-family: var(--f-display);
+    font-style: italic;
+    font-weight: 300;
+    font-size: calc(var(--duo-say) * 0.36);
+    line-height: 1;
+    text-transform: none;
+    clip-path: inset(-30% 100% -30% -20%);
+    transition: clip-path 0s linear 1.6s;
+  }
+  .duo-say[data-side="right"] .duo-say-script { margin-left: 40%; }
+  .duo-say[data-on="true"] .duo-say-script {
+    clip-path: inset(-30% -20% -30% -20%);
+    transition: clip-path 900ms ease-in-out var(--draw);
+  }
+  .duo-say[data-side="left"]  { --draw: 100ms; }
+  .duo-say[data-side="right"] { --draw: 500ms; }
+
+  /* Tactile ou écran étroit : pas de survol, les cartes s'empilent. */
+  @media (max-width: 1023px), (hover: none) {
+    .duo-sect { min-height: 0; }
+    .duo-grid {
+      grid-template-columns: 1fr;
+      width: min(100%, 520px);
+      gap: var(--gutter);
+    }
+    .duo-say { display: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .duo-sect, .duo-sect .sect-head, .duo-card, .duo-say-line, .duo-say-script {
+      transition-duration: 0.01ms !important;
+      transition-delay: 0s !important;
+    }
   }
 }
