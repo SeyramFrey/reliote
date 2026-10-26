@@ -474,7 +474,8 @@
           "Contrats, jalons et paiements encadrés",
           "Médiation Reliote sur toute la mission"
         ],
-        "foot": "Monde ⇄ Afrique"
+        "foot": "Monde ⇄ Afrique",
+        "say": { "pre": "Bienvenue", "script": "côté", "word": "projet" }
       },
       "architect": {
         "titlePre": "Des projets ",
@@ -486,7 +487,8 @@
           "Honoraires protégés, paiements séquencés",
           "Visibilité auprès d'un marché premium"
         ],
-        "foot": "Afrique · 2026"
+        "foot": "Afrique · 2026",
+        "say": { "pre": "Bienvenue", "script": "côté", "word": "atelier" }
       }
     },
     "journal": {
@@ -879,5 +881,10 @@
   "intro": {
     "skip": "Passer l'intro",
     "label": "Animation d'ouverture Reliote"
+  },
+  "partners": {
+    "titlePre": "Ils bâtissent ",
+    "titleItalic": "avec nous.",
+    "note": "Partenaires institutionnels et prescripteurs"
   }
 }

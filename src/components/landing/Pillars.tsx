@@ -1,10 +1,10 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useRef } from "react";
 import { useTranslations } from "next-intl";
 import { SectionHead } from "./SectionHead";
 
 const KEYS = ["p1", "p2", "p3", "p4", "p5"] as const;
-const BGS = [
+const SHOTS = [
   "/assets/img-courtyard-pool.jpg",
   "/assets/img-museum-mist.jpg",
   "/assets/img-stairs-water.jpg",
@@ -12,10 +12,81 @@ const BGS = [
   "/assets/img-courtyard-pool.jpg",
 ];
 
-// Immersive expanding pillars (.pillars-x / .pillar-x) — hover/focus to expand.
+// Section épinglée : le cadre reste en place pendant que le défilement fait
+// passer les cinq principes. Un seul est à l'écran à la fois — ses voisins sont
+// hors cadre au repos et ne se montrent, flous, que pendant la transition.
+//
+// Deux choses bougent ensemble :
+//  — la pile de panneaux, pilotée en CSS par `--p` (position continue, 0 → 4) ;
+//  — les numéros, qui glissent le long d'un arc de cercle de sorte que le
+//    numéro courant se trouve toujours à mi-hauteur.
+//
+// `--p` est lissé vers sa cible : le défilement d'une molette arrive par
+// à-coups, et sans amortissement le flou « clignote » au lieu de fondre.
+
+/** Pas angulaire entre deux numéros sur l'arc, en radians. */
+const PAS = 0.52;
+/** Rayon de l'arc, en fraction de la hauteur du cadre. */
+const RAYON = 0.52;
+/** Position horizontale du numéro courant, en fraction de la largeur. */
+const X_COURANT = 0.2;
+
 export function Pillars({ num }: { num: string }) {
   const t = useTranslations("pillars");
-  const [active, setActive] = useState(0);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const stageRef = useRef<HTMLDivElement>(null);
+  const arcRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const track = trackRef.current;
+    const stage = stageRef.current;
+    const arc = arcRef.current;
+    if (!track || !stage || !arc) return;
+
+    const nums = [...arc.querySelectorAll<HTMLElement>(".pin-arc-num")];
+    const doux = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    const place = (p: number) => {
+      stage.style.setProperty("--p", p.toFixed(4));
+      const h = arc.clientHeight;
+      const w = arc.clientWidth;
+      if (!h || !w) return;
+      const R = RAYON * h;
+      const cx = X_COURANT * w - R;
+      nums.forEach((el, i) => {
+        const a = (i - p) * PAS;
+        const x = cx + R * Math.cos(a);
+        const y = h / 2 + R * Math.sin(a);
+        // Le numéro courant est net et grand ; les autres s'effacent vite.
+        const d = Math.min(1, Math.abs(i - p));
+        el.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px) translate(-50%, -50%)`;
+        el.style.setProperty("--d", d.toFixed(3));
+      });
+    };
+
+    if (doux) {
+      place(0);
+      return;
+    }
+
+    let p = 0;
+    let raf = 0;
+    const frame = () => {
+      const r = track.getBoundingClientRect();
+      const course = r.height - window.innerHeight;
+      const avance = course > 0 ? Math.min(1, Math.max(0, -r.top / course)) : 0;
+      const cible = avance * (KEYS.length - 1);
+      // amortissement : le reste du site défile déjà sous Lenis, on garde la
+      // même douceur ici plutôt que de coller au pixel de la molette.
+      p += (cible - p) * 0.12;
+      if (Math.abs(cible - p) < 0.0004) p = cible;
+      place(p);
+      raf = requestAnimationFrame(frame);
+    };
+    raf = requestAnimationFrame(frame);
+    return () => cancelAnimationFrame(raf);
+  }, []);
+
   return (
     <section className="sect" id="approche">
       <SectionHead
@@ -24,43 +95,41 @@ export function Pillars({ num }: { num: string }) {
         titleItalic={t("titleItalic")}
         kicker={t("kicker")}
       />
-      <div className="pillars">
-        <div className="pillars-x" role="tablist">
-          {KEYS.map((k, i) => {
-            const isActive = active === i;
-            return (
-              <article
-                key={k}
-                className={`pillar-x ${isActive ? "is-active" : ""}`}
-                onMouseEnter={() => setActive(i)}
-                onFocus={() => setActive(i)}
-                onClick={() => setActive(i)}
-                tabIndex={0}
-                role="tab"
-                aria-selected={isActive}
-              >
-                <div className="px-tick" />
-                <div
-                  className="px-bg"
-                  style={{ backgroundImage: `url(${BGS[i]})` }}
-                />
-                <div className="px-grain" />
-                <div className="px-num">
-                  <span>{t(`${k}.n`)}</span>
-                  <span className="glyph" />
-                </div>
-                <h3 className="px-title">{t(`${k}.t`)}</h3>
-                <p className="px-body">{t(`${k}.b`)}</p>
-                <div className="px-stat">
-                  <div className="px-stat-big">
-                    {t(`${k}.statNum`)}
-                    <small>{t(`${k}.statDenom`)}</small>
+
+      <div className="pin-track" ref={trackRef}>
+        <div className="pin-stage" ref={stageRef}>
+          <div className="pin-arc" ref={arcRef} aria-hidden="true">
+            <div className="pin-arc-line" />
+            {KEYS.map((k, i) => (
+              <span key={k} className="pin-arc-num" style={{ ["--i" as string]: i }}>
+                <i className="pin-dot" />
+                {t(`${k}.n`)}
+              </span>
+            ))}
+          </div>
+
+          <ol className="pin-panels">
+            {KEYS.map((k, i) => (
+              <li key={k} className="pin-panel" style={{ ["--i" as string]: i }}>
+                <div className="pin-copy">
+                  <h3 className="pin-title">{t(`${k}.t`)}</h3>
+                  <p className="pin-body">{t(`${k}.b`)}</p>
+                  <div className="pin-stat">
+                    <span className="pin-stat-big">
+                      {t(`${k}.statNum`)}
+                      <small>{t(`${k}.statDenom`)}</small>
+                    </span>
+                    <span className="pin-stat-lbl">{t(`${k}.statLabel`)}</span>
                   </div>
-                  <div className="px-stat-lbl">{t(`${k}.statLabel`)}</div>
                 </div>
-              </article>
-            );
-          })}
+                <div
+                  className="pin-shot"
+                  style={{ backgroundImage: `url(${SHOTS[i]})` }}
+                  aria-hidden="true"
+                />
+              </li>
+            ))}
+          </ol>
         </div>
       </div>
     </section>

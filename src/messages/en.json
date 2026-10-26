@@ -474,7 +474,8 @@
           "Framed contracts, milestones, payments",
           "Reliote mediation throughout"
         ],
-        "foot": "World ⇄ Africa"
+        "foot": "World ⇄ Africa",
+        "say": { "pre": "Welcome", "script": "to the", "word": "project" }
       },
       "architect": {
         "titlePre": "Sound projects, in a ",
@@ -486,7 +487,8 @@
           "Protected fees, sequenced payments",
           "Visibility into a premium market"
         ],
-        "foot": "Africa · 2026"
+        "foot": "Africa · 2026",
+        "say": { "pre": "Welcome", "script": "to the", "word": "studio" }
       }
     },
     "journal": {
@@ -879,5 +881,10 @@
   "intro": {
     "skip": "Skip intro",
     "label": "Reliote opening animation"
+  },
+  "partners": {
+    "titlePre": "They build ",
+    "titleItalic": "with us.",
+    "note": "Institutional partners and prescribers"
   }
 }
