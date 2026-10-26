@@ -14,12 +14,27 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 export default async function RegisterPage({
   searchParams,
 }: {
-  searchParams: Promise<{ role?: string; error?: string }>;
+  searchParams: Promise<{ role?: string; error?: string; intent?: string }>;
 }) {
   const locale = await getLocale();
   const t = await getTranslations("auth");
-  const { role: roleParam, error } = await searchParams;
+  const { role: roleParam, error, intent: intentParam } = await searchParams;
   const role = roleParam === "architect" ? "architect" : "client";
+  // « Je n'ai pas de projet pour le moment » : compte porteur seul, qui mène
+  // au tableau de bord au lieu du formulaire de projet.
+  const accountOnly = role === "client" && intentParam === "account";
+  const title =
+    role === "architect"
+      ? t("registerArchitectTitle")
+      : accountOnly
+        ? t("registerAccountTitle")
+        : t("registerClientTitle");
+  const sub =
+    role === "architect"
+      ? t("registerArchitectSub")
+      : accountOnly
+        ? t("registerAccountSub")
+        : t("registerClientSub");
   const legalSlugs = await getPublishedLegalSlugs();
 
   return (
@@ -39,12 +54,8 @@ export default async function RegisterPage({
           <p className="mono text-[10.5px] tracking-[0.18em] uppercase opacity-65 mb-4">
             {t("registerEyebrow")}
           </p>
-          <h2 className="font-light text-4xl leading-tight max-w-[16ch]">
-            {role === "architect" ? t("registerArchitectTitle") : t("registerClientTitle")}
-          </h2>
-          <p className="text-sm text-paper/75 mt-5 max-w-[36ch] leading-relaxed">
-            {role === "architect" ? t("registerArchitectSub") : t("registerClientSub")}
-          </p>
+          <h2 className="font-light text-4xl leading-tight max-w-[16ch]">{title}</h2>
+          <p className="text-sm text-paper/75 mt-5 max-w-[36ch] leading-relaxed">{sub}</p>
         </div>
         <div className="mono text-[10.5px] tracking-[0.16em] uppercase opacity-55">
           Afrique ⇄ Monde
@@ -54,9 +65,10 @@ export default async function RegisterPage({
       <main className="px-[var(--edge)] py-20 grid place-items-center">
         <div className="w-full max-w-[480px]">
           <p className="eyebrow">{t("registerEyebrow")}</p>
-          <h1 className="font-light text-[clamp(36px,4vw,56px)] leading-[1.04] mt-4">
-            {role === "architect" ? t("registerArchitectTitle") : t("registerClientTitle")}
-          </h1>
+          <h1 className="font-light text-[clamp(36px,4vw,56px)] leading-[1.04] mt-4">{title}</h1>
+          {accountOnly && (
+            <p className="text-concrete-1 mt-4 max-w-[48ch] md:hidden">{sub}</p>
+          )}
           {displayAuthError(error) && (
             <p role="alert" className="text-sm text-red-700 mt-6">
               {t(`errors.${displayAuthError(error)}`)}
@@ -65,6 +77,7 @@ export default async function RegisterPage({
           <form action={signUp} className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-5">
             <input type="hidden" name="locale" value={locale} />
             <input type="hidden" name="role" value={role} />
+            {accountOnly && <input type="hidden" name="intent" value="account" />}
             <label className="block">
               <span className="eyebrow">{t("firstName")}</span>
               <input
@@ -99,6 +112,11 @@ export default async function RegisterPage({
                 required
                 className="w-full mt-1 bg-transparent border-b border-[var(--hairline)] py-2 outline-none focus:border-green text-[16px]"
               />
+            </label>
+            {/* Consentement explicite : case décochée par défaut. */}
+            <label className="md:col-span-2 flex items-start gap-3 text-sm text-concrete-1 cursor-pointer">
+              <input type="checkbox" name="newsletter" value="1" className="mt-1 accent-[var(--color-green)]" />
+              <span>{t("newsletterOptIn")}</span>
             </label>
             <button className="md:col-span-2 mt-4 inline-flex items-center justify-center gap-2 px-5 py-3 bg-green text-paper text-sm hover:bg-green-deep transition-colors">
               {t("createAccount")}

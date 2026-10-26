@@ -216,7 +216,10 @@
       "samePassword": "Choose a password different from your previous one.",
       "weak": "Password too weak: make it longer or more varied.",
       "linkUsed": "This link was already used or opened on another device. If you have just confirmed your address, simply sign in."
-    }
+    },
+    "registerAccountTitle": "Create your project owner account",
+    "registerAccountSub": "No project yet? Create your account now: you'll start your project whenever you're ready, from your space.",
+    "newsletterOptIn": "I'd like to receive the Reliote newsletter (architecture in Africa, method, platform news). One-click unsubscribe."
   },
   "wizardClient": {
     "eyebrow": "Start a project",
@@ -270,13 +273,18 @@
       "confirmEyebrow": "Project saved",
       "confirmTitle": "One last step.",
       "confirmBody": "Confirm your email address using the link sent to {email}, then sign in to follow your project.",
-      "network": "Sending failed (connection lost?). What you typed is kept: please try again."
+      "network": "Sending failed (connection lost?). What you typed is kept: please try again.",
+      "newsletterOptIn": "I'd like to receive the Reliote newsletter. One-click unsubscribe."
     },
     "errors": {
       "validation": "Some details are incomplete: check the previous steps.",
       "insert": "Your project could not be saved. Please try again.",
       "weak": "Password too weak: make it longer or more varied.",
       "generic": "Something went wrong. Please try again."
+    },
+    "noProject": {
+      "hint": "No project in mind yet? Just create your account: you'll start one later, from your space.",
+      "cta": "I don't have a project yet — create an account"
     }
   },
   "wizardArchitect": {
@@ -286,7 +294,7 @@
     "submit": "Submit my application",
     "titles": {
       "1": "Identity",
-      "2": "Studio and location",
+      "2": "Status and location",
       "3": "Practice and specialties",
       "4": "Experience",
       "5": "Portfolio and availability",
@@ -316,16 +324,27 @@
       "fee_from": "Fee currency",
       "fee_amount": "Minimum amount",
       "fee": "Design fees",
-      "terms": "I confirm the accuracy of this information and accept the Reliote charter."
+      "terms": "I confirm the accuracy of this information and accept the Reliote charter.",
+      "legal_status": "You are registering as",
+      "company_name": "Company name",
+      "legal_form": "Legal form",
+      "registration_number": "Registration no. (RCCM, SIRET…)",
+      "legal_representative": "Legal representative",
+      "ordre_number_company": "Firm's registration no. with the Order"
     },
     "placeholders": {
       "city": "e.g. Cocody, Abidjan",
       "structure": "e.g. Atelier Faïdhèrbe",
       "ordre_number": "e.g. 2014/418/132",
-      "description": "Describe your approach, key references, design positions…"
+      "description": "Describe your approach, key references, design positions…",
+      "company_name": "E.g. Atelier Faïdhèrbe SARL",
+      "legal_form": "Choose…",
+      "registration_number": "E.g. CI-ABJ-2019-B-12345",
+      "legal_representative": "Full name of the manager or director"
     },
     "hints": {
-      "ordre_number": "CNOA format: Year / Dossier N° / Individual N°"
+      "ordre_number": "CNOA format: Year / Dossier N° / Individual N°",
+      "ordre_number_company": "The practice's number on the Order's register, not an individual architect's"
     },
     "currency": {
       "eur": "Euro · EUR",
@@ -350,6 +369,17 @@
       "title": "Thank you. Your application is being read.",
       "body": "Our committee reviews every application in depth. You will receive a considered reply within ten business days.",
       "cta": "Back to home"
+    },
+    "legalFormOther": "Other",
+    "legalStatus": {
+      "individual": {
+        "label": "Independent architect",
+        "hint": "Natural person, in your own name."
+      },
+      "company": {
+        "label": "Practice or architecture firm",
+        "hint": "Legal entity: LLC, SA, SAS, partnership…"
+      }
     }
   },
   "admin": {
@@ -724,7 +754,9 @@
       "noProposal": "This meeting can no longer be confirmed: the proposal was withdrawn. Reliote will be in touch.",
       "notAllowed": "This action is no longer possible.",
       "generic": "That didn’t work. Please try again."
-    }
+    },
+    "emptyEyebrow": "Your space is ready",
+    "emptyBody": "Describe your project whenever you like: we'll then suggest verified architects within two business days."
   },
   "dashboardArchitect": {
     "eyebrow": "Architect space",
@@ -815,6 +847,9 @@
       },
       "admin": {
         "title": "Console"
+      },
+      "newsletter": {
+        "title": "Newsletter"
       }
     }
   },
@@ -922,5 +957,35 @@
     "titlePre": "They build ",
     "titleItalic": "with us.",
     "note": "Institutional partners and prescribers"
+  },
+  "newsletter": {
+    "eyebrow": "Reliote newsletter",
+    "footerPitch": "Architecture in Africa, method and news from Reliote. A letter, every now and then.",
+    "emailLabel": "Your e-mail address",
+    "emailPlaceholder": "your@address.com",
+    "footerSubmit": "Subscribe",
+    "footerPending": "Almost there: confirm your subscription with the link we've just sent you.",
+    "footerAlready": "You're already subscribed. Thank you!",
+    "invalidEmail": "This e-mail address doesn't look valid.",
+    "footerLegal": "Your address is only used to send the newsletter. One-click unsubscribe in every letter.",
+    "confirmTitle": "Confirm your subscription",
+    "confirmBody": "One click and you'll receive the Reliote newsletter.",
+    "confirmButton": "Confirm my subscription",
+    "confirmedTitle": "Confirmed.",
+    "confirmedBody": "You'll receive the next Reliote letter. You can unsubscribe at any time, in one click.",
+    "unsubscribeTitle": "Unsubscribe",
+    "unsubscribeBody": "You'll no longer receive the Reliote newsletter. Account e-mails (projects, meetings) are not affected.",
+    "unsubscribeButton": "Unsubscribe me",
+    "unsubscribedTitle": "Done.",
+    "unsubscribedBody": "You won't receive the newsletter anymore. You can subscribe again whenever you like from the site footer.",
+    "linkInvalidTitle": "This link is no longer valid.",
+    "linkInvalidBody": "It may have been used already, or a more recent request replaced it.",
+    "backHome": "Back to home",
+    "dashboardOn": "You're subscribed to the Reliote newsletter.",
+    "dashboardPending": "Subscription pending: confirm it with the link sent by e-mail, or subscribe here directly.",
+    "dashboardOff": "Get the Reliote newsletter: architecture in Africa, method and platform news.",
+    "dashboardSubscribe": "Subscribe",
+    "dashboardUnsubscribe": "Unsubscribe",
+    "genericError": "Subscription failed. Please try again in a moment."
   }
 }

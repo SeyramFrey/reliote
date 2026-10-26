@@ -216,7 +216,10 @@
       "samePassword": "Choisissez un mot de passe différent de l’ancien.",
       "weak": "Mot de passe trop faible : allongez-le ou variez les caractères.",
       "linkUsed": "Ce lien a déjà servi ou a été ouvert sur un autre appareil. Si vous venez de confirmer votre adresse, connectez-vous simplement."
-    }
+    },
+    "registerAccountTitle": "Créer votre compte porteur de projet",
+    "registerAccountSub": "Pas encore de projet ? Créez votre compte maintenant : vous démarrerez votre projet quand vous serez prêt, depuis votre espace.",
+    "newsletterOptIn": "Je souhaite recevoir la newsletter Reliote (architecture en Afrique, méthode, nouvelles de la plateforme). Désinscription en un clic."
   },
   "wizardClient": {
     "eyebrow": "Initier un projet",
@@ -270,13 +273,18 @@
       "confirmEyebrow": "Projet enregistré",
       "confirmTitle": "Plus qu’une étape.",
       "confirmBody": "Confirmez votre adresse e-mail grâce au lien envoyé à {email}, puis connectez-vous pour suivre votre projet.",
-      "network": "L’envoi n’a pas abouti (connexion interrompue ?). Votre saisie est conservée : réessayez."
+      "network": "L’envoi n’a pas abouti (connexion interrompue ?). Votre saisie est conservée : réessayez.",
+      "newsletterOptIn": "Je souhaite recevoir la newsletter Reliote. Désinscription en un clic."
     },
     "errors": {
       "validation": "Certaines informations sont incomplètes : vérifiez les étapes précédentes.",
       "insert": "Votre projet n’a pas pu être enregistré. Réessayez.",
       "weak": "Mot de passe trop faible : allongez-le ou variez les caractères.",
       "generic": "Une erreur est survenue. Réessayez."
+    },
+    "noProject": {
+      "hint": "Pas encore de projet en tête ? Créez simplement votre compte : vous le démarrerez plus tard, depuis votre espace.",
+      "cta": "Je n'ai pas de projet pour le moment — créer un compte"
     }
   },
   "wizardArchitect": {
@@ -286,7 +294,7 @@
     "submit": "Soumettre ma candidature",
     "titles": {
       "1": "Identité",
-      "2": "Atelier et localisation",
+      "2": "Statut et localisation",
       "3": "Pratique et spécialités",
       "4": "Expérience",
       "5": "Portfolio et disponibilité",
@@ -316,16 +324,27 @@
       "fee_from": "Devise des honoraires",
       "fee_amount": "Montant à partir de",
       "fee": "Honoraires",
-      "terms": "Je certifie l'exactitude des informations et accepte la charte Reliote."
+      "terms": "Je certifie l'exactitude des informations et accepte la charte Reliote.",
+      "legal_status": "Vous vous inscrivez en tant que",
+      "company_name": "Raison sociale",
+      "legal_form": "Forme juridique",
+      "registration_number": "N° d'immatriculation (RCCM, SIRET…)",
+      "legal_representative": "Représentant légal",
+      "ordre_number_company": "N° d'inscription de la société à l'Ordre"
     },
     "placeholders": {
       "city": "Ex. Cocody, Abidjan",
       "structure": "Ex. Atelier Faïdhèrbe",
       "ordre_number": "Ex. 2014/418/132",
-      "description": "Décrivez votre démarche, vos références majeures, vos partis pris…"
+      "description": "Décrivez votre démarche, vos références majeures, vos partis pris…",
+      "company_name": "Ex. Atelier Faïdhèrbe SARL",
+      "legal_form": "Choisir…",
+      "registration_number": "Ex. CI-ABJ-2019-B-12345",
+      "legal_representative": "Prénom et nom du gérant ou du dirigeant"
     },
     "hints": {
-      "ordre_number": "Format CNOA : Année / N° dossier / N° individuel"
+      "ordre_number": "Format CNOA : Année / N° dossier / N° individuel",
+      "ordre_number_company": "Le numéro de l'agence au tableau de l'Ordre, pas celui d'un architecte"
     },
     "currency": {
       "eur": "Euro · EUR",
@@ -350,6 +369,17 @@
       "title": "Merci. Votre candidature est en lecture.",
       "body": "Notre comité étudie chaque dossier en profondeur. Vous recevrez une réponse motivée sous dix jours ouvrés.",
       "cta": "Retour à l'accueil"
+    },
+    "legalFormOther": "Autre",
+    "legalStatus": {
+      "individual": {
+        "label": "Architecte indépendant",
+        "hint": "Personne physique, en votre nom propre."
+      },
+      "company": {
+        "label": "Agence ou société d'architecture",
+        "hint": "Personne morale : SARL, SA, SAS, SCP…"
+      }
     }
   },
   "admin": {
@@ -724,7 +754,9 @@
       "noProposal": "Ce rendez-vous ne peut plus être confirmé : la proposition a été retirée. Reliote revient vers vous.",
       "notAllowed": "Cette action n’est plus possible.",
       "generic": "L’action n’a pas abouti. Réessayez."
-    }
+    },
+    "emptyEyebrow": "Votre espace est prêt",
+    "emptyBody": "Décrivez votre projet quand vous le souhaitez : nous vous proposons ensuite des architectes vérifiés, sous 48 heures ouvrées."
   },
   "dashboardArchitect": {
     "eyebrow": "Espace architecte",
@@ -815,6 +847,9 @@
       },
       "admin": {
         "title": "Console"
+      },
+      "newsletter": {
+        "title": "Newsletter"
       }
     }
   },
@@ -922,5 +957,35 @@
     "titlePre": "Ils bâtissent ",
     "titleItalic": "avec nous.",
     "note": "Partenaires institutionnels et prescripteurs"
+  },
+  "newsletter": {
+    "eyebrow": "Newsletter Reliote",
+    "footerPitch": "Architecture en Afrique, méthode et nouvelles de Reliote. Une lettre, de temps en temps.",
+    "emailLabel": "Votre adresse e-mail",
+    "emailPlaceholder": "votre@adresse.com",
+    "footerSubmit": "S'inscrire",
+    "footerPending": "Presque fini : confirmez votre inscription grâce au lien que nous venons de vous envoyer.",
+    "footerAlready": "Vous êtes déjà inscrit. Merci !",
+    "invalidEmail": "Cette adresse e-mail ne semble pas valide.",
+    "footerLegal": "Votre adresse ne sert qu'à l'envoi de la newsletter. Désinscription en un clic dans chaque lettre.",
+    "confirmTitle": "Confirmer votre inscription",
+    "confirmBody": "Un clic et vous recevrez la newsletter Reliote.",
+    "confirmButton": "Confirmer mon inscription",
+    "confirmedTitle": "C'est confirmé.",
+    "confirmedBody": "Vous recevrez la prochaine lettre Reliote. Vous pourrez vous désinscrire à tout moment, en un clic.",
+    "unsubscribeTitle": "Se désinscrire",
+    "unsubscribeBody": "Vous ne recevrez plus la newsletter Reliote. Vos éventuels e-mails de compte (projets, rendez-vous) ne sont pas concernés.",
+    "unsubscribeButton": "Me désinscrire",
+    "unsubscribedTitle": "C'est fait.",
+    "unsubscribedBody": "Vous ne recevrez plus la newsletter. Vous pourrez vous réinscrire quand vous voudrez depuis le pied de page du site.",
+    "linkInvalidTitle": "Ce lien n'est plus valide.",
+    "linkInvalidBody": "Il a peut-être déjà servi, ou une demande plus récente l'a remplacé.",
+    "backHome": "Retour à l'accueil",
+    "dashboardOn": "Vous êtes inscrit à la newsletter Reliote.",
+    "dashboardPending": "Inscription en attente : confirmez-la grâce au lien reçu par e-mail, ou inscrivez-vous ici directement.",
+    "dashboardOff": "Recevez la newsletter Reliote : architecture en Afrique, méthode et nouvelles de la plateforme.",
+    "dashboardSubscribe": "M'inscrire",
+    "dashboardUnsubscribe": "Me désinscrire",
+    "genericError": "L'inscription n'a pas abouti. Réessayez dans un instant."
   }
 }

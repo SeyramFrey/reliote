@@ -2,7 +2,11 @@
 import { useState } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { architectSchema, type ArchitectInput } from "@/lib/validation/architect.schema";
+import {
+  architectSchema,
+  missingCompanyFields,
+  type ArchitectInput,
+} from "@/lib/validation/architect.schema";
 import { useTranslations } from "next-intl";
 import { WizardShell } from "./WizardShell";
 import Step1 from "./steps/Architect1";
@@ -16,7 +20,16 @@ import { submitArchitect } from "@/app/[locale]/architectes/rejoindre/actions";
 
 const STEP_FIELDS: (keyof ArchitectInput)[][] = [
   ["first_name", "last_name", "email", "phone", "photo_url"],
-  ["country", "city", "structure"],
+  [
+    "legal_status",
+    "company_name",
+    "legal_form",
+    "registration_number",
+    "legal_representative",
+    "country",
+    "city",
+    "structure",
+  ],
   ["specialties", "languages", "project_types"],
   ["years_experience", "ordre_number", "diploma", "description", "portfolio_url"],
   ["availability", "fee_currency", "fee_amount"],
@@ -54,12 +67,20 @@ export function ArchitectWizard({
       languages: ["FR"],
       project_types: [],
       availability: "available",
+      legal_status: "individual",
     } as Partial<ArchitectInput> as ArchitectInput,
   });
 
   async function next() {
     const valid = await form.trigger(STEP_FIELDS[step - 1] as (keyof ArchitectInput)[]);
     if (!valid) return;
+    // Les règles qui croisent plusieurs champs (zod superRefine) ne tournent
+    // qu'une fois tout le formulaire valide : on vérifie la société dès l'étape 2.
+    if (step === 2) {
+      const missing = missingCompanyFields(form.getValues());
+      missing.forEach(({ field, message }) => form.setError(field, { message }));
+      if (missing.length) return;
+    }
     if (step < 6) return setStep(step + 1);
     setSubmitting(true);
     const res = await submitArchitect(form.getValues());

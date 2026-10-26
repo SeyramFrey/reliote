@@ -62,6 +62,10 @@ export default function Project4() {
         <input type="password" {...register("password")} autoComplete="new-password" className={input} />
         {err("password")}
       </label>
+      <label className="md:col-span-2 flex items-start gap-3 text-sm text-concrete-1 cursor-pointer">
+        <input type="checkbox" {...register("newsletter")} className="mt-1 accent-[var(--color-green)]" />
+        <span>{t("account.newsletterOptIn")}</span>
+      </label>
       <p className="md:col-span-2 text-sm">
         {t("account.hasAccount")}{" "}
         <a

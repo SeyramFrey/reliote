@@ -15,7 +15,8 @@ type PageKey =
   | "verify"
   | "confirmation"
   | "dashboard"
-  | "admin";
+  | "admin"
+  | "newsletter";
 
 // Métadonnées d'une page : titre (gabarit « … — Reliote » du layout),
 // description, Open Graph. Une page publique reçoit canonical + hreflang ;

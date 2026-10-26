@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { architectSchema } from "./architect.schema";
+import { architectSchema, missingCompanyFields } from "./architect.schema";
 
 const valid = {
   first_name: "Aïssata",
@@ -127,5 +127,35 @@ describe("architectSchema — fees as sent by the form", () => {
     const r = architectSchema.safeParse({ ...base, country: "" });
     expect(r.success).toBe(false);
     expect(r.error?.issues.find((i) => i.path[0] === "country")?.message).toBe("Pays requis");
+  });
+});
+
+describe("architectSchema — personne morale", () => {
+  const company = {
+    legal_status: "company",
+    company_name: "Atelier Lagune SARL",
+    legal_form: "SARL",
+    registration_number: "CI-ABJ-2019-B-12345",
+    legal_representative: "Awa Koné",
+  };
+
+  it("treats a missing legal status as an independent architect", () => {
+    const r = architectSchema.safeParse(valid);
+    expect(r.success && r.data.legal_status).toBe("individual");
+  });
+
+  it("accepts an agency with its four company fields", () => {
+    expect(architectSchema.safeParse({ ...valid, ...company }).success).toBe(true);
+  });
+
+  it("requires every company field for an agency", () => {
+    const r = architectSchema.safeParse({ ...valid, ...company, registration_number: " ", legal_representative: "" });
+    expect(r.success).toBe(false);
+    const paths = r.success ? [] : r.error.issues.map((i) => i.path.join("."));
+    expect(paths).toEqual(expect.arrayContaining(["registration_number", "legal_representative"]));
+  });
+
+  it("ignores company fields for an independent architect", () => {
+    expect(missingCompanyFields({ legal_status: "individual" })).toEqual([]);
   });
 });

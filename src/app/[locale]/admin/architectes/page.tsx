@@ -11,6 +11,7 @@ type Row = {
   first_name: string;
   last_name: string;
   structure: string | null;
+  legal_status: "individual" | "company";
   ordre_number: string | null;
   city: string;
   country: string;
@@ -35,7 +36,7 @@ export default async function AdminArchitects({
   const s = createServiceClient();
   let q = s
     .from("architect_profiles")
-    .select("id, first_name, last_name, structure, ordre_number, city, country, status, created_at, rating, years_experience")
+    .select("id, first_name, last_name, structure, legal_status, ordre_number, city, country, status, created_at, rating, years_experience")
     .order("created_at", { ascending: false });
   if (filter !== "all") q = q.eq("status", filter);
   const { data } = (await q) as { data: Row[] | null };
@@ -81,7 +82,12 @@ export default async function AdminArchitects({
                     {a.first_name} {a.last_name}
                   </Link>
                 </td>
-                <td className="text-concrete-1">{a.structure ?? "—"}</td>
+                <td className="text-concrete-1">
+                  {a.structure ?? "—"}
+                  {a.legal_status === "company" && (
+                    <span className="ml-2 mono uppercase text-[10px] tracking-[0.16em] text-gold-deep">Agence</span>
+                  )}
+                </td>
                 <td className="mono text-[12px]">{a.ordre_number ?? "—"}</td>
                 <td>
                   {a.city} · {a.country}

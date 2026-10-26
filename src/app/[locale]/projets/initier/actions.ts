@@ -12,6 +12,7 @@ import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 import { safeLocale } from "@/lib/auth/safeRedirect";
 import { signUpOutcome } from "@/lib/auth/signUpOutcome";
+import { subscribe } from "@/lib/newsletter/subscriptions";
 import { appOrigin } from "@/lib/auth/origin";
 import { sendEmail, adminEmail } from "@/lib/email/client";
 import { projectReceivedEmail, newProjectAdminEmail } from "@/lib/email/templates";
@@ -88,6 +89,10 @@ export async function submitProject(
     needsConfirmation = outcome.kind === "needs_confirmation";
     email = data.email;
     clientName = `${data.first_name?.trim()} ${data.last_name?.trim()}`.trim();
+    // Newsletter cochée à la création du compte : double opt-in.
+    if (data.newsletter) {
+      await subscribe({ email, locale, source: "project", origin, userId });
+    }
   }
 
   const insertRow = {

@@ -19,6 +19,41 @@ export const PROJECT_TYPES = [
 
 export const FEE_CURRENCIES = ["EUR", "XOF"] as const;
 
+// Personne physique (architecte indépendant) ou morale (agence, société).
+export const LEGAL_STATUSES = ["individual", "company"] as const;
+
+// Formes juridiques courantes en zone OHADA et en France ; « Autre » reste libre.
+export const LEGAL_FORMS = ["SARL", "SARLU", "SA", "SAS", "SASU", "EURL", "SCP", "GIE", "Autre"] as const;
+
+export const COMPANY_FIELDS = [
+  "company_name",
+  "legal_form",
+  "registration_number",
+  "legal_representative",
+] as const;
+
+const COMPANY_FIELD_MESSAGES: Record<(typeof COMPANY_FIELDS)[number], string> = {
+  company_name: "Raison sociale requise",
+  legal_form: "Forme juridique requise",
+  registration_number: "Numéro d'immatriculation requis",
+  legal_representative: "Représentant légal requis",
+};
+
+/** Champs société manquants pour une personne morale (vide pour une personne physique). */
+export function missingCompanyFields(d: {
+  legal_status?: string;
+  company_name?: string;
+  legal_form?: string;
+  registration_number?: string;
+  legal_representative?: string;
+}): { field: (typeof COMPANY_FIELDS)[number]; message: string }[] {
+  if (d.legal_status !== "company") return [];
+  return COMPANY_FIELDS.filter((f) => !d[f]?.trim()).map((field) => ({
+    field,
+    message: COMPANY_FIELD_MESSAGES[field],
+  }));
+}
+
 // Common CNOA diplomas observed in the official registry; "Autre" lets architects
 // type a free-text value if their qualification isn't in the canonical list.
 export const DIPLOMAS = [
@@ -59,6 +94,11 @@ export const architectSchema = z
     ordre_number: z.string().min(1, "Numéro d'ordre requis"),
     diploma: z.string().optional(),
     structure: z.string().optional().or(z.literal("")),
+    legal_status: z.enum(LEGAL_STATUSES).default("individual"),
+    company_name: z.string().optional(),
+    legal_form: z.string().optional(),
+    registration_number: z.string().optional(),
+    legal_representative: z.string().optional(),
     specialties: z.array(z.enum(SPECIALTIES)).min(1, "Au moins 1 spécialité"),
     languages: z.array(z.string()).min(1, "Au moins 1 langue"),
     project_types: z.array(z.enum(PROJECT_TYPES)).min(1, "Au moins 1 type"),
@@ -78,6 +118,12 @@ export const architectSchema = z
     (d) => d.country !== "Côte d'Ivoire" || ORDRE_NUMBER_RE.test(d.ordre_number),
     { path: ["ordre_number"], message: "N° d'agrément CNOA requis (format AAAA/NNN/NNN)" }
   )
+  // Personne morale : les quatre champs société sont obligatoires.
+  .superRefine((d, ctx) => {
+    for (const { field, message } of missingCompanyFields(d)) {
+      ctx.addIssue({ code: "custom", path: [field], message });
+    }
+  })
   // Fee currency + amount must be set together (both or neither — neither is fine since
   // the field is overall optional, but a half-filled fee is invalid).
   .refine((d) => d.fee_amount === undefined || d.fee_currency !== undefined, {

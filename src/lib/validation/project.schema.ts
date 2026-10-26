@@ -26,6 +26,8 @@ const accountFields = z.object({
   last_name: z.string().trim().min(1, "lastNameRequired"),
   email: z.string().email("emailInvalid"),
   password: z.string().min(8, "passwordMin"),
+  // Case décochée par défaut : inscription à la newsletter (double opt-in).
+  newsletter: z.boolean().optional(),
 });
 
 export type ProjectMode = "guest" | "member";
