@@ -12,9 +12,12 @@ const MAX_BYTES = 5 * 1024 * 1024;
 export function AdminImageInput({
   name,
   defaultValue = "",
+  fit = "cover",
 }: {
   name: string;
   defaultValue?: string;
+  /** "contain" pour un logo : l'aperçu le montre entier, sans le rogner. */
+  fit?: "cover" | "contain";
 }) {
   const [url, setUrl] = useState(defaultValue);
   const [busy, setBusy] = useState(false);
@@ -86,7 +89,9 @@ export function AdminImageInput({
         <img
           src={url}
           alt=""
-          className="mt-2 h-20 w-32 object-cover border border-[var(--hairline)]"
+          className={`mt-2 h-20 w-32 border border-[var(--hairline)] ${
+            fit === "contain" ? "object-contain bg-paper p-2" : "object-cover"
+          }`}
         />
       ) : null}
       {err ? <p className="text-red-700 text-[12px] mt-1">{err}</p> : null}

@@ -14,9 +14,25 @@ import { useTranslations } from "next-intl";
 // moitié lointaine derrière. C'est ce croisement qui fait le volume ; sans lui
 // l'anneau reste un dessin plat.
 //
-// Les pastilles sont vides pour l'instant : les vrais logos viendront.
+// Les logos publiés depuis l'admin (Partenaires) prennent place dans l'anneau,
+// répartis à intervalles réguliers parmi les pastilles vides, dont le nombre se
+// règle aussi dans l'admin.
 
-const COUNT = 14;
+export type OrbitLogo = { id: string; name: string; logo_url: string; url: string | null };
+
+type Slot = { key: string; logo: OrbitLogo | null };
+
+/** Répartit les logos à intervalles réguliers parmi les pastilles vides, pour
+ *  qu'ils ne se suivent pas tous sur le même arc de l'anneau. */
+export function orbitSlots(logos: OrbitLogo[], placeholders: number): Slot[] {
+  const total = logos.length + placeholders;
+  const at = new Map(logos.map((l, k) => [Math.floor((k * total) / logos.length), l]));
+  let empty = 0;
+  return Array.from({ length: total }, (_, i) => {
+    const logo = at.get(i) ?? null;
+    return { key: logo ? logo.id : `empty-${empty++}`, logo };
+  });
+}
 /** Un tour complet, en secondes. */
 const TOUR = 19;
 /** Inclinaison de l'ellipse, en radians. C'est elle qui évite l'anneau « droit ». */
@@ -26,7 +42,13 @@ const INCLINAISON = (-14.5 * Math.PI) / 180;
  *  et les pastilles balaient la bande du titre au lieu de tourner autour. */
 const APLATISSEMENT = 0.46;
 
-export function PartnersOrbit() {
+export function PartnersOrbit({
+  logos,
+  placeholders,
+}: {
+  logos: OrbitLogo[];
+  placeholders: number;
+}) {
   const t = useTranslations("partners");
   const ringRef = useRef<HTMLDivElement>(null);
 
@@ -53,7 +75,7 @@ export function PartnersOrbit() {
       );
       const ry = rx * APLATISSEMENT;
       pucks.forEach((el, i) => {
-        const a = phase + (i / COUNT) * Math.PI * 2;
+        const a = phase + (i / pucks.length) * Math.PI * 2;
         // sin(a) vaut 1 au bas de l'anneau AVANT inclinaison : la pastille la
         // plus proche se trouve donc légèrement décalée du bas de l'écran,
         // exactement comme sur la référence.
@@ -92,22 +114,41 @@ export function PartnersOrbit() {
       cancelAnimationFrame(raf);
       io.disconnect();
     };
-  }, []);
+  }, [logos, placeholders]);
+
+  const slots = orbitSlots(logos, placeholders);
 
   return (
     <section className="sect orb-sect" aria-labelledby="orb-title">
       <div className="orb-ring" ref={ringRef}>
-        {Array.from({ length: COUNT }, (_, i) => (
-          <span key={i} className="orb-puck" aria-hidden="true">
-            <i />
-          </span>
-        ))}
+        {slots.map(({ key, logo }) =>
+          logo ? (
+            <span key={key} className="orb-puck is-logo" aria-hidden="true">
+              {/* Logos externes (Storage) ou locaux : <img> évite la config de domaines de next/image. */}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={logo.logo_url} alt="" loading="lazy" decoding="async" />
+            </span>
+          ) : (
+            <span key={key} className="orb-puck" aria-hidden="true">
+              <i />
+            </span>
+          ),
+        )}
         <h2 className="orb-title" id="orb-title">
           {t("titlePre")}
           <em>{t("titleItalic")}</em>
         </h2>
       </div>
       <p className="orb-note">{t("note")}</p>
+      {/* Les pastilles sont décoratives (aria-hidden) : les partenaires sont
+          annoncés ici aux lecteurs d'écran. */}
+      {logos.length > 0 && (
+        <ul className="sr-only">
+          {logos.map((l) => (
+            <li key={l.id}>{l.url ? <a href={l.url}>{l.name}</a> : l.name}</li>
+          ))}
+        </ul>
+      )}
     </section>
   );
 }

@@ -17,7 +17,12 @@ import { PartnersOrbit } from "@/components/landing/PartnersOrbit";
 import { Footer } from "@/components/landing/Footer";
 import { SmoothScroll } from "@/components/landing/SmoothScroll";
 import { IntroGate } from "@/components/landing/intro/IntroGate";
-import { getFeaturedRow, getPublishedMedia, getPublishedTestimonials } from "@/lib/landing/data";
+import {
+  getFeaturedRow,
+  getPartnersRing,
+  getPublishedMedia,
+  getPublishedTestimonials,
+} from "@/lib/landing/data";
 import { toFeaturedContent } from "@/lib/landing/featured";
 import { numberSections, type LandingSection } from "@/lib/landing/sections";
 import { safeLocale } from "@/lib/auth/safeRedirect";
@@ -47,10 +52,11 @@ export async function generateMetadata({
 
 export default async function Page() {
   const locale = safeLocale(await getLocale());
-  const [featuredRow, media, testimonials] = await Promise.all([
+  const [featuredRow, media, testimonials, partners] = await Promise.all([
     getFeaturedRow(),
     getPublishedMedia(),
     getPublishedTestimonials(),
+    getPartnersRing(),
   ]);
   const featured = toFeaturedContent(featuredRow, locale);
 
@@ -89,7 +95,7 @@ export default async function Page() {
           <MapTerritoire num={num.territoire} />
           {featured && <FeaturedCaseView content={featured} num={num.featured} />}
           <Journal items={media} num={num.journal} />
-          <PartnersOrbit />
+          <PartnersOrbit logos={partners.logos} placeholders={partners.placeholders} />
           <Avis items={testimonials} num={num.avis} />
           <CtaBand num={num.cta} />
         </main>

@@ -13,9 +13,10 @@ export function AdminShell({ children, unread = 0 }: { children: React.ReactNode
     { href: `/${locale}/admin/projets`, label: "Projets" },
     { href: `/${locale}/admin/rdv`, label: "RDV" },
     { href: `/${locale}/admin/matches`, label: "Matches" },
-    { href: `/${locale}/admin/medias`, label: "Médias" },
+    { href: `/${locale}/admin/medias`, label: "Journal" },
     { href: `/${locale}/admin/featured`, label: "Mis en lumière" },
     { href: `/${locale}/admin/avis`, label: "Avis" },
+    { href: `/${locale}/admin/partenaires`, label: "Partenaires" },
     { href: `/${locale}/admin/legal`, label: "Pages légales" },
   ];
   return (
