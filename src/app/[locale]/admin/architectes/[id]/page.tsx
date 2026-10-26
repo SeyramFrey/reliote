@@ -11,6 +11,11 @@ type Architect = {
   first_name: string;
   last_name: string;
   structure: string | null;
+  legal_status: "individual" | "company";
+  company_name: string | null;
+  legal_form: string | null;
+  registration_number: string | null;
+  legal_representative: string | null;
   email: string;
   phone: string | null;
   country: string;
@@ -44,7 +49,7 @@ export default async function AdminArchitectDetail({ params }: { params: Promise
   const { data: a } = (await createServiceClient()
     .from("architect_profiles")
     .select(
-      "id, first_name, last_name, structure, email, phone, country, city, ordre_number, diploma, years_experience, specialties, project_types, languages, fee_currency, fee_amount, portfolio_url, photo_url, description, availability, status, anon_handle, charter_version, charter_signed_at, created_at",
+      "id, first_name, last_name, structure, legal_status, company_name, legal_form, registration_number, legal_representative, email, phone, country, city, ordre_number, diploma, years_experience, specialties, project_types, languages, fee_currency, fee_amount, portfolio_url, photo_url, description, availability, status, anon_handle, charter_version, charter_signed_at, created_at",
     )
     .eq("id", id)
     .single()) as { data: Architect | null };
@@ -87,9 +92,26 @@ export default async function AdminArchitectDetail({ params }: { params: Promise
           )}
         </div>
         <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-4 text-sm">
-          <Field label="N° d'ordre" value={a.ordre_number} mono />
+          <Field
+            label="Statut juridique"
+            value={a.legal_status === "company" ? "Personne morale (agence)" : "Personne physique"}
+          />
+          <Field
+            label={a.legal_status === "company" ? "N° d'ordre de la société" : "N° d'ordre"}
+            value={a.ordre_number}
+            mono
+          />
+          {a.legal_status === "company" ? (
+            <>
+              <Field label="Raison sociale" value={a.company_name ?? "—"} />
+              <Field label="Forme juridique" value={a.legal_form ?? "—"} />
+              <Field label="Immatriculation" value={a.registration_number ?? "—"} mono />
+              <Field label="Représentant légal" value={a.legal_representative ?? "—"} />
+            </>
+          ) : (
+            <Field label="Structure" value={a.structure ?? "—"} />
+          )}
           <Field label="Diplôme" value={a.diploma ?? "—"} />
-          <Field label="Structure" value={a.structure ?? "—"} />
           <Field label="Ville · Pays" value={`${a.city} · ${a.country}`} />
           <Field label="E-mail" value={a.email} />
           <Field label="Téléphone" value={a.phone ?? "—"} />

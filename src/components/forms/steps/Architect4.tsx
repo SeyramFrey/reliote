@@ -6,10 +6,13 @@ import { DiplomaField } from "../fields/DiplomaField";
 export default function Architect4() {
   const {
     register,
+    watch,
     formState: { errors },
   } = useFormContext();
   const t = useTranslations("wizardArchitect");
   const ordreRequired = true;
+  // Agence : c'est le numéro d'inscription de la société au tableau de l'Ordre.
+  const company = watch("legal_status") === "company";
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -32,7 +35,7 @@ export default function Architect4() {
       </label>
       <label className="block">
         <span className="eyebrow">
-          {t("fields.ordre_number")}{" "}
+          {company ? t("fields.ordre_number_company") : t("fields.ordre_number")}{" "}
           {ordreRequired && <span className="text-gold-deep">*</span>}
         </span>
         <input
@@ -46,7 +49,7 @@ export default function Architect4() {
           </span>
         )}
         <span className="mono text-[10.5px] tracking-[0.16em] uppercase text-concrete-2 mt-2 block">
-          {t("hints.ordre_number")}
+          {company ? t("hints.ordre_number_company") : t("hints.ordre_number")}
         </span>
       </label>
       <div className="md:col-span-2">

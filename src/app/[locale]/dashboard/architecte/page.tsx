@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { NewsletterToggle } from "@/components/shared/NewsletterToggle";
 import { createServiceClient } from "@/lib/supabase/service";
 import { getLocale, getTranslations } from "next-intl/server";
 import Link from "next/link";
@@ -259,6 +260,8 @@ export default async function ArchitectDashboard() {
           })}
         </div>
       )}
+
+      <NewsletterToggle email={user.email} />
     </section>
   );
 }

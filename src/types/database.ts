@@ -16,6 +16,11 @@ export type Database = {
           charter_signed_at: string | null
           charter_version: string | null
           city: string
+          company_name: string | null
+          legal_form: string | null
+          legal_representative: string | null
+          legal_status: string
+          registration_number: string | null
           country: string
           created_at: string
           description: string
@@ -47,6 +52,11 @@ export type Database = {
           charter_signed_at?: string | null
           charter_version?: string | null
           city: string
+          company_name?: string | null
+          legal_form?: string | null
+          legal_representative?: string | null
+          legal_status?: string
+          registration_number?: string | null
           country?: string
           created_at?: string
           description: string
@@ -77,6 +87,11 @@ export type Database = {
           charter_signed_at?: string | null
           charter_version?: string | null
           city?: string
+          company_name?: string | null
+          legal_form?: string | null
+          legal_representative?: string | null
+          legal_status?: string
+          registration_number?: string | null
           country?: string
           created_at?: string
           description?: string
@@ -760,6 +775,89 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      newsletter_issues: {
+        Row: {
+          body_en: string
+          body_fr: string
+          created_at: string
+          id: string
+          recipients_count: number
+          sent_at: string | null
+          status: string
+          subject_en: string
+          subject_fr: string
+          updated_at: string
+        }
+        ComputedFields: never
+        Insert: {
+          body_en?: string
+          body_fr?: string
+          created_at?: string
+          id?: string
+          recipients_count?: number
+          sent_at?: string | null
+          status?: string
+          subject_en: string
+          subject_fr: string
+          updated_at?: string
+        }
+        Update: {
+          body_en?: string
+          body_fr?: string
+          created_at?: string
+          id?: string
+          recipients_count?: number
+          sent_at?: string | null
+          status?: string
+          subject_en?: string
+          subject_fr?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      newsletter_subscribers: {
+        Row: {
+          confirm_token: string
+          confirmed_at: string | null
+          created_at: string
+          email: string
+          id: string
+          locale: string
+          source: string
+          status: string
+          unsubscribe_token: string
+          unsubscribed_at: string | null
+          user_id: string | null
+        }
+        ComputedFields: never
+        Insert: {
+          confirm_token?: string
+          confirmed_at?: string | null
+          created_at?: string
+          email: string
+          id?: string
+          locale?: string
+          source?: string
+          status?: string
+          unsubscribe_token?: string
+          unsubscribed_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          confirm_token?: string
+          confirmed_at?: string | null
+          created_at?: string
+          email?: string
+          id?: string
+          locale?: string
+          source?: string
+          status?: string
+          unsubscribe_token?: string
+          unsubscribed_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
       }
       profiles: {
         Row: {

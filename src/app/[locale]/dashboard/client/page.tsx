@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { NewsletterToggle } from "@/components/shared/NewsletterToggle";
 import { createServiceClient } from "@/lib/supabase/service";
 import { getLocale, getTranslations } from "next-intl/server";
 import Link from "next/link";
@@ -343,13 +344,16 @@ export default async function ClientDashboard({
 
       {/* ── Projets ─────────────────────────────────────────────────── */}
       {projects.length === 0 ? (
-        <p className="text-concrete-1 mt-12 max-w-[60ch]">
-          {t("empty")}{" "}
-          <Link href={`/${locale}/projets/initier`} className="underline">
-            {t("start")}
+        // Compte créé sans projet (ou avant le premier) : l'invitation à en
+        // démarrer un, quand le porteur sera prêt.
+        <div className="mt-12 border border-[var(--hairline)] p-8 md:p-10 max-w-[720px]">
+          <p className="eyebrow">{t("emptyEyebrow")}</p>
+          <p className="font-light text-[clamp(24px,2.6vw,34px)] leading-[1.15] mt-3">{t("empty")}</p>
+          <p className="text-sm text-concrete-1 mt-3 max-w-[52ch]">{t("emptyBody")}</p>
+          <Link href={`/${locale}/projets/initier`} className="btn btn-primary mt-6">
+            {t("start")} <span className="btn-arrow" />
           </Link>
-          .
-        </p>
+        </div>
       ) : (
         <div className="mt-14 overflow-x-auto">
           <table className="w-full text-sm min-w-[560px]">
@@ -378,6 +382,8 @@ export default async function ClientDashboard({
           </table>
         </div>
       )}
+
+      <NewsletterToggle email={user.email} />
     </section>
   );
 }

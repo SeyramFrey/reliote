@@ -383,3 +383,32 @@ export function newMessageAdminEmail(d: { threadLabel: string; adminUrl: string 
     html: shell({ eyebrow: "Admin · Messages", title: "Un nouveau message vous attend.", body }),
   };
 }
+
+// ── Newsletter : confirmation d'inscription (double opt-in) ─────────────────
+export function newsletterConfirmEmail(loc0: string, d: { confirmUrl: string }) {
+  const loc = L(loc0);
+  const subject = pick(loc, "Confirmez votre inscription — Reliote", "Confirm your subscription — Reliote");
+  const eyebrow = pick(loc, "Newsletter", "Newsletter");
+  const title = pick(loc, "Une dernière étape.", "One last step.");
+  const body =
+    p(pick(loc, "Vous avez demandé à recevoir la newsletter Reliote : architecture en Afrique, méthode, projets et nouvelles de la plateforme.", "You asked to receive the Reliote newsletter: architecture in Africa, method, projects and platform news.")) +
+    pAfter(pick(loc, "Confirmez votre adresse pour l'activer.", "Confirm your address to activate it.")) +
+    cta(d.confirmUrl, pick(loc, "Confirmer mon inscription", "Confirm my subscription"));
+  const note = pick(loc, "Si vous n'êtes pas à l'origine de cette demande, ignorez ce message : vous ne recevrez rien.", "If you didn't ask for this, just ignore this message: you won't receive anything.");
+  return { subject, html: shell({ eyebrow, title, body, note }) };
+}
+
+// ── Newsletter : une lettre (corps HTML déjà assaini) ───────────────────────
+export function newsletterIssueEmail(
+  loc0: string,
+  d: { subject: string; bodyHtml: string; unsubscribeUrl: string },
+) {
+  const loc = L(loc0);
+  const note =
+    pick(loc, "Vous recevez cette lettre car vous êtes inscrit à la newsletter Reliote.", "You receive this letter because you subscribed to the Reliote newsletter.") +
+    ` <a href="${esc(d.unsubscribeUrl)}" style="color:#806b3b;">${pick(loc, "Se désinscrire", "Unsubscribe")}</a>`;
+  return {
+    subject: d.subject,
+    html: shell({ eyebrow: pick(loc, "Newsletter", "Newsletter"), title: esc(d.subject), body: d.bodyHtml, note }),
+  };
+}

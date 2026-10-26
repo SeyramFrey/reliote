@@ -13,7 +13,8 @@ export function AdminShell({ children, unread = 0 }: { children: React.ReactNode
     { href: `/${locale}/admin/projets`, label: "Projets" },
     { href: `/${locale}/admin/rdv`, label: "RDV" },
     { href: `/${locale}/admin/matches`, label: "Matches" },
-    { href: `/${locale}/admin/medias`, label: "Médias" },
+    { href: `/${locale}/admin/medias`, label: "Journal (médias)" },
+    { href: `/${locale}/admin/newsletter`, label: "Newsletter" },
     { href: `/${locale}/admin/featured`, label: "Mis en lumière" },
     { href: `/${locale}/admin/avis`, label: "Avis" },
     { href: `/${locale}/admin/legal`, label: "Pages légales" },
@@ -27,7 +28,7 @@ export function AdminShell({ children, unread = 0 }: { children: React.ReactNode
               key={t.href}
               href={t.href}
               className={`block py-2 text-sm border-l-2 pl-3 transition-colors ${
-                pathname === t.href || (t.href.endsWith("/messages") && pathname.startsWith(t.href))
+                pathname === t.href || (!t.href.endsWith("/admin") && pathname.startsWith(`${t.href}/`))
                   ? "border-green text-ink"
                   : "border-transparent text-concrete-1 hover:text-ink"
               }`}

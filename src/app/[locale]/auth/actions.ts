@@ -8,6 +8,7 @@ import { dashboardPathFor } from "@/lib/auth/roles";
 import { appOrigin } from "@/lib/auth/origin";
 import { authErrorCodeFrom } from "@/lib/auth/authError";
 import { recoveryTokenFrom } from "@/lib/auth/recoveryToken";
+import { subscribe } from "@/lib/newsletter/subscriptions";
 
 export async function signIn(formData: FormData) {
   const supabase = await createClient();
@@ -38,17 +39,30 @@ export async function signUp(formData: FormData) {
   const first_name = String(formData.get("first_name") || "").trim();
   const last_name = String(formData.get("last_name") || "").trim();
   const locale = safeLocale(formData.get("locale"));
+  // Compte porteur sans projet : on l'accueille sur son tableau de bord.
+  const accountOnly = role === "client" && String(formData.get("intent")) === "account";
   // Après confirmation de l'e-mail, on reprend là où l'inscription menait.
-  const resume = role === "architect" ? `/${locale}/architectes/rejoindre` : `/${locale}/projets/initier`;
+  const resume =
+    role === "architect"
+      ? `/${locale}/architectes/rejoindre`
+      : accountOnly
+        ? `/${locale}/dashboard/client`
+        : `/${locale}/projets/initier`;
+  const origin = await appOrigin();
   const res = await supabase.auth.signUp({
     email,
     password,
     options: {
       data: { role, first_name, last_name, locale },
-      emailRedirectTo: `${await appOrigin()}/${locale}/auth/callback?next=${encodeURIComponent(resume)}`,
+      emailRedirectTo: `${origin}/${locale}/auth/callback?next=${encodeURIComponent(resume)}`,
     },
   });
   const outcome = signUpOutcome(res);
+  // Newsletter cochée : inscription en attente de confirmation (double opt-in),
+  // seulement si le compte a bien été créé.
+  if (formData.get("newsletter") && (outcome.kind === "signed_in" || outcome.kind === "needs_confirmation")) {
+    await subscribe({ email, locale, source: "register", origin, userId: outcome.userId });
+  }
   switch (outcome.kind) {
     case "signed_in":
       redirect(resume);
@@ -57,7 +71,9 @@ export async function signUp(formData: FormData) {
     case "already_registered":
       redirect(`/${locale}/auth/login?error=exists`);
     case "error":
-      redirect(`/${locale}/auth/register?role=${role}&error=${encodeURIComponent(outcome.message)}`);
+      redirect(
+        `/${locale}/auth/register?role=${role}${accountOnly ? "&intent=account" : ""}&error=${encodeURIComponent(outcome.message)}`,
+      );
   }
 }
 

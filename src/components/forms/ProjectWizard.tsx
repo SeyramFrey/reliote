@@ -25,7 +25,7 @@ function stepFields(mode: ProjectWizardAccount["mode"]): (keyof ProjectInput)[][
     ["project_type"],
     ["project_description", "required_specialties", "notes"],
     ["project_country", "project_location", "budget_range", "timeline"],
-    mode === "guest" ? ["first_name", "last_name", "email", "phone", "password"] : ["phone"],
+    mode === "guest" ? ["first_name", "last_name", "email", "phone", "password", "newsletter"] : ["phone"],
     [],
   ];
 }
@@ -82,6 +82,7 @@ export function ProjectWizard({
       last_name: "",
       email: "",
       password: "",
+      newsletter: false,
     } as Partial<ProjectInput> as ProjectInput,
   });
 

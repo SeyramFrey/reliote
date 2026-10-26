@@ -3,6 +3,7 @@ import Link from "next/link";
 import { BrandMark } from "@/components/shared/BrandMark";
 import type { LegalSlug } from "@/lib/legal/page";
 import { getPublishedLegalSlugs } from "@/lib/legal/published";
+import { NewsletterForm } from "./NewsletterForm";
 
 type FooterLink = { key: string; href: string };
 
@@ -82,6 +83,7 @@ export async function Footer() {
           </div>
         )}
       </div>
+      <NewsletterForm />
       <div className="footer-base">
         <span>© Reliote · 2026 — {f("rights")}</span>
       </div>
