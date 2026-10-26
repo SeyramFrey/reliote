@@ -9,6 +9,7 @@ import { AdobeFonts } from "../adobe-fonts";
 import { RecoveryHashHandler } from "@/components/auth/RecoveryHashHandler";
 import "@/styles/globals.css";
 import "@/styles/landing.css";
+import "@/styles/intro.css";
 
 // Valeurs par défaut de tout le site ; chaque page précise titre, canonical
 // et hreflang. L'image de partage vient de ./opengraph-image.tsx.

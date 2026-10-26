@@ -1,0 +1,168 @@
+/* Séquence d'ouverture de la landing.
+   Le calque est posé PAR-DESSUS la page réelle, qui est rendue et peinte
+   normalement en dessous : c'est ce qui évite de repousser le LCP à la fin de
+   l'animation. */
+
+@layer components {
+  .intro-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    background: #0c2a17;
+    overflow: hidden;
+    /* Même vert et même grille que la première image de la vidéo : le passage
+       de la 3D au plan d'architecte doit être un fondu invisible. */
+  }
+
+  .intro-grid {
+    position: absolute;
+    inset: 0;
+    opacity: 0.5;
+    background-image:
+      linear-gradient(rgba(243, 241, 236, 0.055) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(243, 241, 236, 0.055) 1px, transparent 1px);
+    background-size: 7.2% 12.5%;
+  }
+
+  .intro-scene {
+    position: absolute;
+    inset: 0;
+  }
+  .intro-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  /* --- le mot ELIOTE ---------------------------------------------------- */
+  /* `--intro-unit` est publié par la scène : pixels par unité de scène. Le mot
+     se cale dessus, donc sur la taille apparente réelle du monogramme. */
+
+  .intro-word {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+    font-family: var(--font-display, Georgia), Georgia, serif;
+    font-weight: 300;
+    line-height: 0.8;
+    letter-spacing: 0.01em;
+    color: var(--color-paper, #f3f1ec);
+    pointer-events: none;
+    font-size: calc(68 * var(--intro-unit, 0.5) * 1px);
+    /* bord droit du monogramme + une respiration */
+    left: calc(35vw + 64 * var(--intro-unit, 0.5) * 1px);
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .intro-overlay.is-stacked .intro-word {
+    left: 50%;
+    top: calc(39vh + 66 * var(--intro-unit, 0.5) * 1px);
+    transform: translateX(-50%);
+  }
+
+  .intro-letter {
+    display: inline-block;
+    /* révélé par le bas, comme une lettre qu'on monte en place */
+    clip-path: inset(0 0 100% 0);
+    transform: translateY(0.12em);
+    will-change: clip-path, transform;
+  }
+
+  /* --- le plan d'architecte --------------------------------------------- */
+  .intro-video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  /* --- la porte de sortie ------------------------------------------------ */
+  .intro-skip {
+    position: absolute;
+    right: 3.2vw;
+    bottom: 5vh;
+    z-index: 5;
+    font-family: var(--font-sans);
+    font-size: 13px;
+    letter-spacing: 0.06em;
+    color: rgba(243, 241, 236, 0.62);
+    background: transparent;
+    border: 1px solid rgba(243, 241, 236, 0.26);
+    border-radius: 999px;
+    padding: 10px 20px;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.45s ease, color 0.2s ease, border-color 0.2s ease;
+  }
+  .intro-skip.is-shown {
+    opacity: 1;
+  }
+  .intro-skip:hover,
+  .intro-skip:focus-visible {
+    color: var(--color-paper, #f3f1ec);
+    border-color: rgba(243, 241, 236, 0.6);
+  }
+
+  /* --- le raccord avec la hero ------------------------------------------ */
+  /* La page réelle n'est pas dupliquée : elle est rendue à sa place et mise à
+     l'échelle. `--intro-zoom` va de 0 (petit carré au fond) à 1 (en place). */
+
+  #page-zoom {
+    transform-origin: 50% 50%;
+  }
+  html[data-intro="playing"] #page-zoom {
+    transform: scale(calc(0.24 + 0.76 * var(--intro-zoom, 0)));
+    will-change: transform;
+  }
+  html[data-intro="playing"] {
+    overflow: hidden;
+  }
+  /* Le carré réduit laisse voir le fond : il doit être le vert de la séquence,
+     pas le blanc du site, sinon le raccord se voit. */
+  html[data-intro="playing"] body {
+    background: #0c2a17;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .intro-overlay {
+      display: none;
+    }
+    html[data-intro="playing"] #page-zoom {
+      transform: none;
+    }
+  }
+}
+
+@layer components {
+  /* Tient la place du monogramme 3D tant que son module n'est pas chargé :
+     sur connexion lente c'était plusieurs secondes d'écran vert vide. Le logo
+     plat est déjà dans le bundle principal, il ne coûte rien de plus. */
+  .intro-wait {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    transition: opacity 0.5s ease;
+    pointer-events: none;
+  }
+  .intro-wait-logo {
+    width: clamp(70px, 9vw, 130px);
+    height: auto;
+    opacity: 0.55;
+    animation: intro-wait-pulse 2.4s ease-in-out infinite;
+  }
+  @keyframes intro-wait-pulse {
+    0%, 100% { opacity: 0.35; transform: scale(0.97); }
+    50%      { opacity: 0.7;  transform: scale(1.03); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .intro-wait-logo { animation: none; }
+  }
+}

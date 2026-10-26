@@ -22,6 +22,7 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  distDir: process.env.NEXT_DIST_DIR || ".next",
   // 404 des URL hors /fr et /en : le layout racine est sous [locale], il n'y a
   // donc pas de layout commun pour composer une 404 classique.
   experimental: {

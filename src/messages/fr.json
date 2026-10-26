@@ -875,5 +875,9 @@
     "forwardName": "Nom du fichier transmis",
     "forwardScrubbed": "Les propriétés du fichier (auteur, logiciel, localisation des photos) seront effacées de la copie transmise.",
     "forwardNotScrubbable": "Ce format (DWG, DXF, HEIC) ne peut pas être nettoyé automatiquement : ouvrez-le pour vérifier le cartouche et les propriétés du fichier."
+  },
+  "intro": {
+    "skip": "Passer l'intro",
+    "label": "Animation d'ouverture Reliote"
   }
 }

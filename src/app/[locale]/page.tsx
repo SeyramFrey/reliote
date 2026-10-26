@@ -14,6 +14,7 @@ import { Journal } from "@/components/landing/Journal";
 import { CtaBand } from "@/components/landing/CtaBand";
 import { Footer } from "@/components/landing/Footer";
 import { SmoothScroll } from "@/components/landing/SmoothScroll";
+import { IntroGate } from "@/components/landing/intro/IntroGate";
 import { getFeaturedRow, getPublishedMedia } from "@/lib/landing/data";
 import { toFeaturedContent } from "@/lib/landing/featured";
 import { numberSections, type LandingSection } from "@/lib/landing/sections";
@@ -63,22 +64,27 @@ export default async function Page() {
 
   return (
     <>
-      <Nav dark showJournal={media.length > 0} />
-      <SmoothScroll />
-      <main>
-        <Hero />
-        <StatsBar />
-        <TrustRail />
-        <Pillars num={num.pillars} />
-        <Audiences num={num.audiences} />
-        <MethodProof num={num.method} />
-        <Process num={num.process} />
-        <MapTerritoire num={num.territoire} />
-        {featured && <FeaturedCaseView content={featured} num={num.featured} />}
-        {media.length > 0 && <Journal items={media} num={num.journal} />}
-        <CtaBand num={num.cta} />
-      </main>
-      <Footer />
+      <IntroGate />
+      {/* La hero n'est pas dupliquée : le carré qui grandit à la fin de la
+          séquence, c'est cette page même, mise à l'échelle. */}
+      <div id="page-zoom">
+        <Nav dark showJournal={media.length > 0} />
+        <SmoothScroll />
+        <main>
+          <Hero />
+          <StatsBar />
+          <TrustRail />
+          <Pillars num={num.pillars} />
+          <Audiences num={num.audiences} />
+          <MethodProof num={num.method} />
+          <Process num={num.process} />
+          <MapTerritoire num={num.territoire} />
+          {featured && <FeaturedCaseView content={featured} num={num.featured} />}
+          {media.length > 0 && <Journal items={media} num={num.journal} />}
+          <CtaBand num={num.cta} />
+        </main>
+        <Footer />
+      </div>
     </>
   );
 }
