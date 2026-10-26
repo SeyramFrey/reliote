@@ -14,6 +14,12 @@ const ramillas = localFont({
   ],
   variable: "--font-display",
   display: "swap",
+  // Pas de <link rel="preload"> : les quatre fichiers (≈220 Ko) partaient dès
+  // le <head> et prenaient la bande passante et les connexions des feuilles
+  // CSS bloquantes — le premier rendu attendait la dernière d'entre elles.
+  // Le titre se peint d'abord dans la police de repli aux métriques ajustées,
+  // puis bascule sur Ramillas (swap).
+  preload: false,
 });
 
 export const fontVariables = ramillas.variable;

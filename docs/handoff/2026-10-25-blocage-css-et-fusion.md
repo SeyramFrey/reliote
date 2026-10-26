@@ -14,9 +14,9 @@ par-dessus la page réelle, qui est peinte normalement dessous.
 Cadrage : `docs/superpowers/specs/2026-10-24-sequence-ouverture-design.md`.
 Plan : `docs/superpowers/plans/2026-10-24-sequence-ouverture.md`.
 
-**Elle est livrée ÉTEINTE** — `IntroGate.tsx` exige `NEXT_PUBLIC_INTRO === "1"`.
-`?intro=1` la force quel que soit l'environnement. Une fois par onglet
-(`sessionStorage`).
+**Elle est ALLUMÉE par défaut depuis le 2026-10-26** — `IntroGate.tsx` :
+`NEXT_PUBLIC_INTRO !== "0"`. `?intro=1` la force, `?intro=0` et
+`NEXT_PUBLIC_INTRO=0` la coupent. Une fois par onglet (`sessionStorage`).
 
 **Piliers** (`Pillars.tsx`) — section épinglée, un principe à l'écran, les
 voisins à `blur(4px)` / opacité 0,5. Arc de numéros à gauche, le courant à
@@ -30,9 +30,40 @@ section `.uod` de kononenkogroup.com.
 
 ---
 
-## 1. La tâche : le blocage CSS et fontes
+## 1. Le blocage CSS et fontes — RÉGLÉ le 2026-10-26
 
-### Le chiffre qui bloque
+### Résultat
+
+Mesuré comme décrit plus bas, 3 runs par configuration (LCP, ms) :
+
+| | avant | Typekit seul | Typekit + Ramillas |
+|---|---|---|---|
+| sans l'intro | 2 631 / 2 389 / 2 158 | 1 984 / 2 021 / 2 046 | 1 503 / 1 883 / 1 728 |
+| avec l'intro (`?intro=1`) | 2 628 / 2 398 | 2 470 | 1 723 / 1 711 / 1 809 |
+| intro par défaut (`/fr`, onglet neuf) | — | — | 1 683 / 1 803 / 1 855 |
+
+CLS 0,00 partout. Deux changements :
+
+1. **Typekit** (`adobe-fonts.tsx`) — la feuille n'est plus un
+   `<link rel="stylesheet">` bloquant : préchargée dans le `<head>`, puis
+   insérée par un petit script (une feuille insérée par script ne bloque pas le
+   rendu). Son `@import` vers p.typekit.net sort aussi du chemin critique. Le
+   kit reste en `font-display:auto` côté Adobe : réglable dans les paramètres
+   du projet web Adobe Fonts (passer en `swap`), sans toucher au code.
+2. **Ramillas** (`fonts.ts`) — `preload: false`. Les 4 fichiers préchargés
+   (≈220 Ko) prenaient 4 des 6 connexions HTTP/1.1 et la bande passante : un
+   CSS bloquant de 0 Ko n'était envoyé qu'à ~1 460 ms. **Contrepartie** : en
+   mobile bridé, Ramillas n'arrive que vers 4,5 s ; d'ici là le titre est dans
+   la police de repli aux métriques ajustées (pas de décalage, CLS 0). Sur
+   Vercel (HTTP/2, priorités respectées), l'écart sera plus court qu'en local.
+
+**Piège de mesure** : un run lancé juste après `navigate_page` vers
+`?intro=1`, pendant que la scène WebGL tourne encore, gonfle le Layout de
+~190 à ~590 ms (+400 ms de LCP). Laisser l'intro finir (≥ 10 s) avant de
+tracer. Pour mesurer l'intro par défaut, vider `sessionStorage` avant chaque
+rechargement, sinon elle ne rejoue pas.
+
+### Le chiffre qui bloquait
 
 Mesuré le 2026-10-24 sur un build de production, `/fr`, mobile bridé
 (**4× CPU, Slow 4G, 412×915**) :
