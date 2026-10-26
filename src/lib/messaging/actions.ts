@@ -39,6 +39,8 @@ import {
 } from "./data";
 import { notifyNewMessage } from "./notify";
 import { ScrubRefused, scrubFile } from "./scrub";
+import { bytesMatchExtension } from "@/lib/storage/magicBytes";
+import { rateLimit } from "@/lib/security/rateLimit";
 import type { ActionResult, ThreadView, Viewer } from "./types";
 
 // Toutes les écritures de la messagerie. Chaque action revérifie le lecteur,
@@ -48,6 +50,15 @@ import type { ActionResult, ThreadView, Viewer } from "./types";
 const MAX_BODY = 5000;
 const fail = (error: string) => ({ error });
 const svc = () => createServiceClient();
+
+// Premiers octets d'un objet du bucket, sans télécharger les 25 Mo.
+async function objectHead(path: string): Promise<Uint8Array | null> {
+  const { data } = await svc().storage.from(MESSAGE_BUCKET).createSignedUrl(path, 60);
+  if (!data?.signedUrl) return null;
+  const res = await fetch(data.signedUrl, { headers: { Range: "bytes=0-31" } });
+  if (!res.ok) return null;
+  return new Uint8Array(await res.arrayBuffer()).slice(0, 32);
+}
 
 const writableCtx = (ctx: ThreadContext) =>
   threadWritable({ kind: ctx.thread.kind, architectId: ctx.thread.architect_id }, ctx.engagements);
@@ -83,6 +94,7 @@ export async function prepareUploads(
   if (!writableCtx(vt.ctx)) return fail("readOnly");
   if (files.length === 0) return { ok: true, uploads: [] };
   if (files.length > MAX_FILES) return fail("tooMany");
+  if (!(await rateLimit(`msg:upload:${vt.viewer.userId}`, 40, 3600))) return fail("rateLimited");
 
   const uploads: { path: string; token: string; name: string }[] = [];
   for (const f of files) {
@@ -111,6 +123,7 @@ export async function sendMessage(input: {
   if (body.length > MAX_BODY) return fail("tooLong");
   if (atts.length > MAX_FILES) return fail("tooMany");
   if (!body && atts.length === 0) return fail("empty");
+  if (!(await rateLimit(`msg:send:${viewer.userId}`, 60, 600))) return fail("rateLimited");
 
   // Les fichiers ont été envoyés par le navigateur : on ne croit que ce que
   // le stockage contient, dans le dossier de CE fil.
@@ -127,6 +140,12 @@ export async function sendMessage(input: {
     if (!obj) return fail("fileMissing");
     const size = Number((obj.metadata as { size?: number } | null)?.size ?? 0);
     if (!(size > 0) || size > MAX_FILE_BYTES) return fail("fileSize");
+    // L'extension ne prouve rien : les octets doivent être ceux du format annoncé.
+    const head = await objectHead(a.path);
+    if (!head || !bytesMatchExtension(ext, head)) {
+      await s.storage.from(MESSAGE_BUCKET).remove([a.path]);
+      return fail("fileType");
+    }
     rows.push({ storage_path: a.path, file_name: c.name, mime_type: mimeForExtension(ext), size_bytes: size });
   }
 

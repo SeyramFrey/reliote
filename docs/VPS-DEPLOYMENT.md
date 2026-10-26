@@ -165,17 +165,20 @@ docker compose ps
 Puis **appliquer les migrations Reliote** :
 
 ```bash
-./apply-migrations.sh
+RELIOTE_ENV=production ./apply-migrations.sh
 ```
 
-Ce script applique `0001`→`0006` + le seed, et notifie PostgREST pour recharger
-le schéma. Idempotent : on peut le relancer.
+Ce script applique toutes les migrations pas encore passées et notifie
+PostgREST pour recharger le schéma. Idempotent : on peut le relancer.
+**`RELIOTE_ENV=production` est obligatoire sur le VPS** : sans lui, le script
+rejoue `seed.sql`, qui insère 8 architectes et 3 projets fictifs (statut
+« vérifié », visibles sur la landing).
 
 **Vérifier que tout tourne :**
 ```bash
 docker compose ps                  # tous "Up (healthy)"
-curl http://localhost:54321/rest/v1/architect_profiles?select=first_name,last_name -H "apikey: <ANON_KEY>"
-# → doit retourner les 8 architectes seed
+curl http://localhost:54321/rest/v1/legal_pages?select=slug -H "apikey: <ANON_KEY>"
+# → répond 200 (liste vide tant qu'aucune page n'est publiée)
 ```
 
 (⚡ NerveOps) — Le module "Application Deployment" gère le `git pull` →
@@ -377,8 +380,23 @@ ouvrant ses propres règles iptables. Vérifier :
 nc -zv <vps-ip> 54322   # → connection refused
 ```
 
-Si exposé, dans `docker-compose.yml` retirer les `ports:` qui mappent à
-`0.0.0.0` et lier en localhost : `"127.0.0.1:54322:5432"`.
+Le `docker-compose.yml` lie déjà Postgres, Kong et Studio à `127.0.0.1`
+(variable `BIND_ADDR`, Studio en dur) : Caddy, sur l'hôte, les joint en local.
+Ne jamais passer `BIND_ADDR=0.0.0.0` sur le VPS.
+
+### 4.5 GoTrue — variables de prod
+
+Dans `supabase/.env` (modèle commenté en fin de `supabase/.env.example`) :
+
+```
+API_EXTERNAL_URL=https://api.reliote.com
+GOTRUE_URI_ALLOW_LIST=https://reliote.com/**,https://www.reliote.com/**
+GOTRUE_MAILER_AUTOCONFIRM=false
+REALTIME_DB_ENC_KEY=<16 caractères : openssl rand -hex 8>
+```
+
+La liste blanche ne doit jamais valoir `*` : un lien de réinitialisation
+pourrait sinon renvoyer le jeton de session vers n'importe quel site.
 
 (⚡ NerveOps) — Le module "Security audit" (score /100) flag automatiquement
 les ports exposés à tort.
@@ -590,8 +608,8 @@ directement** :
 - [ ] VPS provisionné, hardening fait (§1.1)
 - [ ] Docker installé (§1.2)
 - [ ] Repo cloné dans `/opt/reliote/`
-- [ ] `supabase/.env` rempli avec **nouveaux** secrets (§2.1)
-- [ ] Stack démarré, migrations appliquées, seed vérifié (§2.2)
+- [ ] `supabase/.env` rempli avec **nouveaux** secrets (§2.1) et variables GoTrue de prod (§4.5)
+- [ ] Stack démarré, migrations appliquées avec `RELIOTE_ENV=production` — aucun profil fictif (§2.2)
 - [ ] Caddy/HTTPS opérationnel pour `api.` et `studio.` (§3)
 - [ ] Studio derrière basic auth (§4.2)
 - [ ] Ports Docker non exposés en public (§4.4)

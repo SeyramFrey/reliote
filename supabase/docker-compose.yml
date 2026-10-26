@@ -4,7 +4,9 @@ services:
     container_name: reliote-db
     restart: unless-stopped
     ports:
-      - "${POSTGRES_PORT:-54322}:5432"
+      # Lié à 127.0.0.1 : Docker contourne UFW, un port publié sur 0.0.0.0
+      # serait joignable depuis Internet. BIND_ADDR ne s'ouvre qu'en connaissance de cause.
+      - "${BIND_ADDR:-127.0.0.1}:${POSTGRES_PORT:-54322}:5432"
     environment:
       POSTGRES_HOST: /var/run/postgresql
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -15,6 +17,7 @@ services:
       - reliote-db-data:/var/lib/postgresql/data
       - ./init/98-realtime.sql:/docker-entrypoint-initdb.d/98-realtime.sql:ro
       - ./init/99-reliote-perms.sql:/docker-entrypoint-initdb.d/99-reliote-perms.sql:ro
+      - ./init/99z-role-passwords.sh:/docker-entrypoint-initdb.d/99z-role-passwords.sh:ro
       # Reliote schema + seed mounted but NOT auto-applied — applied via apply-migrations.sh
       # after GoTrue has run its own auth-schema migrations.
       - ./migrations:/reliote/migrations:ro
@@ -34,13 +37,15 @@ services:
       db:
         condition: service_healthy
     environment:
-      API_EXTERNAL_URL: http://localhost:54321
+      API_EXTERNAL_URL: ${API_EXTERNAL_URL:-http://localhost:54321}
       GOTRUE_API_HOST: 0.0.0.0
       GOTRUE_API_PORT: 9999
       GOTRUE_DB_DRIVER: postgres
       GOTRUE_DB_DATABASE_URL: postgres://supabase_auth_admin:${POSTGRES_PASSWORD}@db:5432/postgres
       GOTRUE_SITE_URL: ${SITE_URL:-http://localhost:3000}
-      GOTRUE_URI_ALLOW_LIST: "*"
+      # Liste blanche des redirections après e-mail (confirmation, reset). Jamais
+      # « * » : n'importe quel site pourrait recevoir le jeton de session.
+      GOTRUE_URI_ALLOW_LIST: ${GOTRUE_URI_ALLOW_LIST:-http://localhost:3000/**,http://localhost:3001/**}
       GOTRUE_DISABLE_SIGNUP: "false"
       GOTRUE_JWT_ADMIN_ROLES: service_role
       GOTRUE_JWT_AUD: authenticated
@@ -48,8 +53,20 @@ services:
       GOTRUE_JWT_EXP: ${JWT_EXPIRY:-3600}
       GOTRUE_JWT_SECRET: ${JWT_SECRET}
       GOTRUE_EXTERNAL_EMAIL_ENABLED: "true"
-      GOTRUE_MAILER_AUTOCONFIRM: "true"
-      GOTRUE_SMTP_ADMIN_EMAIL: admin@reliote.test
+      GOTRUE_PASSWORD_MIN_LENGTH: ${GOTRUE_PASSWORD_MIN_LENGTH:-8}
+      # Dev : comptes confirmés sans e-mail. Prod : "false" + SMTP ci-dessous (docs/VPS-DEPLOYMENT.md §3.5).
+      GOTRUE_MAILER_AUTOCONFIRM: ${GOTRUE_MAILER_AUTOCONFIRM:-true}
+      GOTRUE_SMTP_HOST: ${GOTRUE_SMTP_HOST:-}
+      GOTRUE_SMTP_PORT: ${GOTRUE_SMTP_PORT:-465}
+      GOTRUE_SMTP_USER: ${GOTRUE_SMTP_USER:-}
+      GOTRUE_SMTP_PASS: ${GOTRUE_SMTP_PASS:-}
+      GOTRUE_SMTP_ADMIN_EMAIL: ${GOTRUE_SMTP_ADMIN_EMAIL:-admin@reliote.test}
+      GOTRUE_SMTP_SENDER_NAME: ${GOTRUE_SMTP_SENDER_NAME:-Reliote}
+      # Freins anti-abus (par heure) : e-mails envoyés, OTP/liens magiques.
+      GOTRUE_RATE_LIMIT_EMAIL_SENT: ${GOTRUE_RATE_LIMIT_EMAIL_SENT:-30}
+      GOTRUE_RATE_LIMIT_VERIFY: ${GOTRUE_RATE_LIMIT_VERIFY:-30}
+      GOTRUE_RATE_LIMIT_TOKEN_REFRESH: ${GOTRUE_RATE_LIMIT_TOKEN_REFRESH:-150}
+      GOTRUE_SECURITY_REFRESH_TOKEN_ROTATION_ENABLED: "true"
 
   rest:
     image: postgrest/postgrest:v12.2.0
@@ -75,7 +92,7 @@ services:
       - auth
       - rest
     ports:
-      - "${KONG_HTTP_PORT:-54321}:8000"
+      - "${BIND_ADDR:-127.0.0.1}:${KONG_HTTP_PORT:-54321}:8000"
     environment:
       KONG_DATABASE: "off"
       KONG_DECLARATIVE_CONFIG: /var/lib/kong/kong.yml
@@ -95,7 +112,9 @@ services:
     depends_on:
       - kong
     ports:
-      - "${STUDIO_PORT:-54323}:3000"
+      # Studio n'a pas d'authentification : jamais publié hors de 127.0.0.1
+      # (en prod, derrière la basic auth de Caddy — docs/VPS-DEPLOYMENT.md §3.1).
+      - "127.0.0.1:${STUDIO_PORT:-54323}:3000"
     environment:
       STUDIO_PG_META_URL: http://meta:8080
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -168,7 +187,7 @@ services:
       DB_PASSWORD: ${POSTGRES_PASSWORD}
       DB_NAME: postgres
       DB_AFTER_CONNECT_QUERY: "SET search_path TO _realtime"
-      DB_ENC_KEY: supabaserealtime
+      DB_ENC_KEY: ${REALTIME_DB_ENC_KEY:-supabaserealtime}
       API_JWT_SECRET: ${JWT_SECRET}
       SECRET_KEY_BASE: ${REALTIME_SECRET_KEY_BASE}
       ERL_AFLAGS: -proto_dist inet_tcp

@@ -8,24 +8,24 @@ const AFRICAN_COUNTRY_NAMES = AFRICAN_COUNTRIES.map((c) => c.name);
 // Le projet lui-même. L'e-mail et le nom du porteur viennent de son compte.
 const projectFields = z.object({
   project_type: z.enum(PROJECT_TYPES),
-  project_description: z.string().min(100, "descriptionMin"),
-  required_specialties: z.array(z.enum(SPECIALTIES)).min(1, "specialtiesMin"),
-  notes: z.string().optional(),
+  project_description: z.string().min(100, "descriptionMin").max(5000),
+  required_specialties: z.array(z.enum(SPECIALTIES)).min(1, "specialtiesMin").max(SPECIALTIES.length),
+  notes: z.string().max(2000).optional(),
   project_country: z
     .string()
     .refine((v) => AFRICAN_COUNTRY_NAMES.includes(v), "countryRequired"),
-  project_location: z.string().min(2, "locationMin"),
-  budget_range: z.string().optional(),
-  timeline: z.string().optional(),
-  phone: z.string().optional(),
+  project_location: z.string().min(2, "locationMin").max(160),
+  budget_range: z.string().max(80).optional(),
+  timeline: z.string().max(80).optional(),
+  phone: z.string().max(32).optional(),
 });
 
 // Invité : le compte porteur est créé avec le projet.
 const accountFields = z.object({
-  first_name: z.string().trim().min(1, "firstNameRequired"),
-  last_name: z.string().trim().min(1, "lastNameRequired"),
-  email: z.string().email("emailInvalid"),
-  password: z.string().min(8, "passwordMin"),
+  first_name: z.string().trim().min(1, "firstNameRequired").max(80),
+  last_name: z.string().trim().min(1, "lastNameRequired").max(80),
+  email: z.string().email("emailInvalid").max(254),
+  password: z.string().min(8, "passwordMin").max(72),
   // Case décochée par défaut : inscription à la newsletter (double opt-in).
   newsletter: z.boolean().optional(),
 });

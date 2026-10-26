@@ -4,6 +4,7 @@ import { requireAdmin } from "@/lib/auth/requireAdmin";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
+import { safeUrl } from "@/lib/security/safeUrl";
 
 /** Borne haute des pastilles vides : au-delà, l'anneau sature et se lit mal. */
 const MAX_PLACEHOLDERS = 24;
@@ -20,13 +21,12 @@ function revalidatePartners(): void {
 }
 
 const str = (fd: FormData, k: string) => String(fd.get(k) ?? "").trim();
-const strOrNull = (fd: FormData, k: string) => str(fd, k) || null;
 
 function parse(fd: FormData) {
   return {
     name: str(fd, "name"),
-    logo_url: str(fd, "logo_url"),
-    url: strOrNull(fd, "url"),
+    logo_url: safeUrl(str(fd, "logo_url")) ?? "",
+    url: safeUrl(str(fd, "url")),
     published: fd.get("published") != null,
     sort_order: Number(fd.get("sort_order") ?? 0) || 0,
   };
@@ -34,7 +34,7 @@ function parse(fd: FormData) {
 
 function check(row: ReturnType<typeof parse>): void {
   if (!row.name) throw new Error("Nom requis");
-  if (!row.logo_url) throw new Error("Logo requis");
+  if (!row.logo_url) throw new Error("Logo requis (URL https ou image téléversée)");
 }
 
 export async function createPartner(fd: FormData): Promise<void> {

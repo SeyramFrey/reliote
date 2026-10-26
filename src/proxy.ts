@@ -1,9 +1,10 @@
 import createIntlMiddleware from "next-intl/middleware";
-import { NextResponse, type NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { locales, defaultLocale } from "@/lib/i18n/config";
 import { updateSession } from "@/lib/supabase/middleware";
 import { safeLocale } from "@/lib/auth/safeRedirect";
 import { dashboardPathFor } from "@/lib/auth/roles";
+import { cspEnv, pageCsp } from "@/lib/security/csp";
 
 const intlMiddleware = createIntlMiddleware({
   locales: [...locales],
@@ -24,13 +25,23 @@ const PROTECTED: { pattern: RegExp; role: "admin" | "architect" | "client" | nul
 ];
 
 export async function proxy(request: NextRequest) {
+  // 0) CSP à nonce : un nonce neuf par requête, posé dans l'en-tête de
+  //    REQUÊTE (Next y lit le nonce pour l'apposer à ses scripts ; next-intl
+  //    recopie les en-têtes de la requête qu'on lui passe) et dans la réponse.
+  const nonce = btoa(crypto.randomUUID());
+  const csp = pageCsp(nonce, cspEnv());
+  const requestHeaders = new Headers(request.headers);
+  requestHeaders.set("x-nonce", nonce);
+  requestHeaders.set("content-security-policy", csp);
+
   // 1) Locale routing. The returned response carries next-intl's URL rewrite
   //    into the [locale] segment AND the `x-next-intl-locale` request-header
   //    override that `getRequestConfig` reads. We must return THIS response
   //    so those internal headers reach the RSC layer — anything else (e.g. a
   //    fresh `NextResponse.next({ request })`) drops them and falls back to
   //    `defaultLocale`.
-  const response = intlMiddleware(request);
+  const response = intlMiddleware(new NextRequest(request, { headers: requestHeaders }));
+  response.headers.set("Content-Security-Policy", csp);
 
   // 2) Locale redirect (e.g. `/` → `/fr`) — return as-is.
   if (response.headers.get("location")) {

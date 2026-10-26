@@ -10,6 +10,8 @@ export async function appOrigin(): Promise<string> {
     siteUrl: process.env.SITE_URL,
     vercelEnv: process.env.VERCEL_ENV,
     vercelProdUrl: process.env.VERCEL_PROJECT_PRODUCTION_URL,
+    vercelUrl: process.env.VERCEL_URL,
+    production: process.env.NODE_ENV === "production",
     host: h.get("x-forwarded-host") ?? h.get("host"),
     proto: h.get("x-forwarded-proto"),
   });

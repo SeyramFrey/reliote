@@ -7,6 +7,7 @@ import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 import { safeLocale } from "@/lib/auth/safeRedirect";
 import { appOrigin } from "@/lib/auth/origin";
+import { verifyArchitectPhoto } from "@/lib/storage/architectPhoto";
 import { sendEmail, adminEmail } from "@/lib/email/client";
 import { architectApplicationReceivedEmail, newArchitectAdminEmail } from "@/lib/email/templates";
 
@@ -20,8 +21,19 @@ export async function submitArchitect(input: ArchitectInput) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return { error: "Not authenticated" };
 
-  // Disallow duplicate profile rows for the same user (one architect profile per user account)
+  // L'insert passe en clé service (RLS contournée) : on refait ici le contrôle
+  // de rôle de la policy « architects owner insert ».
   const service = createServiceClient();
+  const { data: profile } = (await service
+    .from("profiles")
+    .select("role")
+    .eq("id", user.id)
+    .maybeSingle()) as { data: { role: string } | null };
+  if (profile?.role !== "architect") {
+    return { error: "Ce compte n'est pas un compte architecte. Créez un compte architecte pour déposer un dossier." };
+  }
+
+  // Disallow duplicate profile rows for the same user (one architect profile per user account)
   const { data: existing } = await service
     .from("architect_profiles")
     .select("id")
@@ -52,6 +64,12 @@ export async function submitArchitect(input: ArchitectInput) {
     fee_amount,
     ...rest
   } = parsed.data;
+
+  // La photo a été envoyée directement au Storage par le navigateur : on
+  // vérifie qu'elle est dans SON dossier et que ce sont de vrais octets d'image.
+  if (photo_url && !(await verifyArchitectPhoto(service, photo_url, user.id))) {
+    return { error: "Photo invalide : choisissez un fichier JPEG, PNG ou WebP." };
+  }
 
   const row = {
     ...rest,
@@ -100,7 +118,9 @@ export async function submitArchitect(input: ArchitectInput) {
     adminUrl: `${await appOrigin()}/fr/admin/architectes/${inserted.id}`,
   });
   await Promise.all([
-    sendEmail({ to: parsed.data.email, subject: ack.subject, html: ack.html }),
+    // Accusé à l'adresse du compte (vérifiée), pas à celle saisie dans le
+    // formulaire : sinon le formulaire servirait à écrire à un tiers.
+    user.email ? sendEmail({ to: user.email, subject: ack.subject, html: ack.html }) : Promise.resolve(),
     admin ? sendEmail({ to: admin, subject: alert.subject, html: alert.html }) : Promise.resolve(),
   ]);
 

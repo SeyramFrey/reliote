@@ -10,6 +10,7 @@ import {
   unsubscribeByToken,
   unsubscribeEmail,
 } from "@/lib/newsletter/subscriptions";
+import { clientIp, rateLimitAll } from "@/lib/security/rateLimit";
 
 export type FooterSubscribeState = {
   status: "idle" | "pending" | "subscribed" | "invalid" | "error";
@@ -24,13 +25,20 @@ export async function subscribeFromFooter(
   formData: FormData,
 ): Promise<FooterSubscribeState> {
   if (String(formData.get("website") ?? "")) return { status: "pending" };
+  // Au-delà de la limite, même réponse qu'un succès : rien à apprendre, rien à envoyer.
+  const email = String(formData.get("email") ?? "").trim().toLowerCase();
+  if (!(await rateLimitAll([[`newsletter:ip:${await clientIp()}`, 10, 3600], [`newsletter:email:${email}`, 3, 3600]]))) {
+    return { status: "pending" };
+  }
   const status = await subscribe({
     email: formData.get("email"),
     locale: safeLocale(formData.get("locale")),
     source: "footer",
     origin: await appOrigin(),
   });
-  return { status, email: String(formData.get("email") ?? "") };
+  // « Déjà abonné » se lit comme « vérifiez vos e-mails » : le formulaire
+  // public ne doit pas dire qui est inscrit.
+  return { status: status === "subscribed" ? "pending" : status, email: String(formData.get("email") ?? "") };
 }
 
 // Confirmation et désinscription passent par un bouton (POST) : un scanner

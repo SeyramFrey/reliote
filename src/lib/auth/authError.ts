@@ -11,6 +11,7 @@ export const AUTH_ERROR_CODES = [
   "short",
   "samePassword",
   "weak",
+  "rateLimited",
   "generic",
 ] as const;
 

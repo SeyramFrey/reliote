@@ -1,6 +1,7 @@
 import { getLocale, getTranslations } from "next-intl/server";
 import type { MediaItem } from "@/lib/landing/data";
 import { SectionHead } from "./SectionHead";
+import { safeUrl } from "@/lib/security/safeUrl";
 
 // Journal alimenté par la table media_items (contenu géré depuis l'admin).
 // Sans média publié, la section reste visible avec les trois sujets en
@@ -55,10 +56,11 @@ export async function Journal({ items, num }: { items: MediaItem[]; num: string 
                   )}
                 </article>
               );
-              return m.url ? (
+              const href = safeUrl(m.url);
+              return href ? (
                 <a
                   key={m.id}
-                  href={m.url}
+                  href={href}
                   target="_blank"
                   rel="noopener noreferrer"
                   style={{ textDecoration: "none", color: "inherit" }}

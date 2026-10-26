@@ -3,10 +3,13 @@ import { useEffect, useRef, useState } from "react";
 import { useFormContext } from "react-hook-form";
 import { useTranslations } from "next-intl";
 import { createClient } from "@/lib/supabase/client";
+import { ARCHITECT_PHOTO_BUCKET } from "@/lib/storage/architectPhotoPath";
+import { useArchitectPhotoSrc } from "./useArchitectPhotoSrc";
 
 // Drag-and-drop photo uploader → Supabase Storage `architect-photos` bucket.
 // Path convention: {user_id}/{uuid}.{ext} (the RLS policy in 0006 keys off the leading folder).
-// On success, sets the `photo_url` form field to the bucket's public URL.
+// On success, sets the `photo_url` form field to the object path — the bucket is
+// private, previews and reveals go through short-lived signed URLs.
 
 const ACCEPTED = ["image/jpeg", "image/png", "image/webp"];
 const MAX_BYTES = 5 * 1024 * 1024;
@@ -18,7 +21,7 @@ export function PhotoUploadField({ userId }: { userId: string }) {
   const [uploading, setUploading] = useState(false);
   const [err, setErr] = useState<string | null>(null);
   const [dragOver, setDragOver] = useState(false);
-  const photoUrl = (watch("photo_url") as string | undefined) || "";
+  const photoUrl = useArchitectPhotoSrc(watch("photo_url") as string | undefined);
 
   // Cleanup the object URL when the component unmounts (in case the user navigated away
   // before the upload settled).
@@ -37,18 +40,17 @@ export function PhotoUploadField({ userId }: { userId: string }) {
     setUploading(true);
     try {
       const supabase = createClient();
-      const ext = file.name.split(".").pop()?.toLowerCase() || "jpg";
+      const ext = file.type === "image/png" ? "png" : file.type === "image/webp" ? "webp" : "jpg";
       const path = `${userId}/${crypto.randomUUID()}.${ext}`;
       const { error } = await supabase.storage
-        .from("architect-photos")
+        .from(ARCHITECT_PHOTO_BUCKET)
         .upload(path, file, {
           cacheControl: "31536000",
           upsert: false,
           contentType: file.type,
         });
       if (error) throw error;
-      const { data } = supabase.storage.from("architect-photos").getPublicUrl(path);
-      setValue("photo_url", data.publicUrl, { shouldDirty: true, shouldValidate: true });
+      setValue("photo_url", path, { shouldDirty: true, shouldValidate: true });
     } catch (e) {
       setErr(e instanceof Error ? e.message : t("photoErrors.unknown"));
     } finally {

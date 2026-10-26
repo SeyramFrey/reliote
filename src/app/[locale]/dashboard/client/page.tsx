@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { NewsletterToggle } from "@/components/shared/NewsletterToggle";
 import { createServiceClient } from "@/lib/supabase/service";
+import { architectPhotoSrc } from "@/lib/storage/architectPhoto";
 import { getLocale, getTranslations } from "next-intl/server";
 import Link from "next/link";
 import { MessagesLink } from "@/components/messaging/MessagesLink";
@@ -137,7 +138,13 @@ export default async function ClientDashboard({
         data: { engagement_id: string; client_relay: string }[] | null;
       }>,
     ]);
-    (revealed ?? []).forEach((a) => revealedById.set(a.id, a));
+    // Bucket privé : la photo n'est servie qu'en URL signée, et seulement pour
+    // les profils que la RLS vient de révéler à ce porteur.
+    const service = createServiceClient();
+    const withPhotos = await Promise.all(
+      (revealed ?? []).map(async (a) => ({ ...a, photo_url: await architectPhotoSrc(service, a.photo_url) })),
+    );
+    withPhotos.forEach((a) => revealedById.set(a.id, a));
     (relays ?? []).forEach((r) => relayByEngagement.set(r.engagement_id, r.client_relay));
   }
 

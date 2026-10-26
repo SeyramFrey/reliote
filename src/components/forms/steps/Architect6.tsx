@@ -1,6 +1,7 @@
 "use client";
 import { useFormContext, useWatch } from "react-hook-form";
 import { useTranslations } from "next-intl";
+import { useArchitectPhotoSrc } from "../fields/useArchitectPhotoSrc";
 
 type CharterArticle = { t: string; b: string };
 
@@ -20,6 +21,7 @@ export default function Architect6() {
   } = useFormContext();
   const t = useTranslations("wizardArchitect");
   const v = useWatch();
+  const photoSrc = useArchitectPhotoSrc(v.photo_url as string | undefined);
   const fullName = [v.first_name, v.last_name].filter(Boolean).join(" ") || "—";
 
   const rows: [string, string][] = [
@@ -53,11 +55,11 @@ export default function Architect6() {
 
   return (
     <div className="space-y-8">
-      {v.photo_url && (
+      {photoSrc && (
         <div className="flex items-center gap-5 border border-[var(--hairline-soft)] p-4">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src={v.photo_url}
+            src={photoSrc}
             alt=""
             className="w-20 h-24 object-cover"
             style={{ aspectRatio: "4 / 5" }}

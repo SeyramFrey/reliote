@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { getMessages, getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
+import { headers } from "next/headers";
 import { defaultLocale, locales } from "@/lib/i18n/config";
 import { siteUrl } from "@/lib/seo/site";
 import { fontVariables } from "../fonts";
@@ -57,7 +58,7 @@ export default async function LocaleLayout({ children, params }: Props) {
       className={fontVariables}
     >
       <body>
-        <AdobeFonts />
+        <AdobeFonts nonce={(await headers()).get("x-nonce") ?? undefined} />
         <NextIntlClientProvider locale={locale} messages={messages}>
           <RecoveryHashHandler locale={locale} />
           {children}

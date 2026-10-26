@@ -1,4 +1,5 @@
 import { createServiceClient } from "@/lib/supabase/service";
+import { architectPhotoSrc } from "@/lib/storage/architectPhoto";
 import { getLocale } from "next-intl/server";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -46,7 +47,8 @@ const dateFr = (iso: string | null) => (iso ? new Date(iso).toLocaleDateString("
 export default async function AdminArchitectDetail({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const locale = await getLocale();
-  const { data: a } = (await createServiceClient()
+  const service = createServiceClient();
+  const { data: a } = (await service
     .from("architect_profiles")
     .select(
       "id, first_name, last_name, structure, legal_status, company_name, legal_form, registration_number, legal_representative, email, phone, country, city, ordre_number, diploma, years_experience, specialties, project_types, languages, fee_currency, fee_amount, portfolio_url, photo_url, description, availability, status, anon_handle, charter_version, charter_signed_at, created_at",
@@ -54,6 +56,7 @@ export default async function AdminArchitectDetail({ params }: { params: Promise
     .eq("id", id)
     .single()) as { data: Architect | null };
   if (!a) notFound();
+  const photoSrc = await architectPhotoSrc(service, a.photo_url);
 
   const fee =
     a.fee_amount && a.fee_currency
@@ -82,9 +85,9 @@ export default async function AdminArchitectDetail({ params }: { params: Promise
 
       <section className="mt-8 grid grid-cols-1 md:grid-cols-[200px_1fr] gap-8">
         <div>
-          {a.photo_url ? (
+          {photoSrc ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={a.photo_url} alt={`${a.first_name} ${a.last_name}`} className="w-full aspect-[4/5] object-cover" />
+            <img src={photoSrc} alt={`${a.first_name} ${a.last_name}`} className="w-full aspect-[4/5] object-cover" />
           ) : (
             <div className="w-full aspect-[4/5] grid place-items-center border border-[var(--hairline)] text-concrete-2 text-sm">
               Pas de photo

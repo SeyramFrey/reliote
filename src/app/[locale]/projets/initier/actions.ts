@@ -14,6 +14,7 @@ import { safeLocale } from "@/lib/auth/safeRedirect";
 import { signUpOutcome } from "@/lib/auth/signUpOutcome";
 import { subscribe } from "@/lib/newsletter/subscriptions";
 import { appOrigin } from "@/lib/auth/origin";
+import { clientIp, rateLimitAll } from "@/lib/security/rateLimit";
 import { sendEmail, adminEmail } from "@/lib/email/client";
 import { projectReceivedEmail, newProjectAdminEmail } from "@/lib/email/templates";
 
@@ -29,7 +30,7 @@ type InsertedProject = {
 // Codes d'erreur traduits par le formulaire (wizardClient.errors.*), plus
 // « exists » et « wrongRole » qui ont un affichage dédié.
 export type SubmitProjectResult =
-  | { error: "exists" | "wrongRole" | "validation" | "insert" | "weak" | "generic" }
+  | { error: "exists" | "wrongRole" | "validation" | "insert" | "weak" | "rateLimited" | "generic" }
   | { needsConfirmation: true; email: string };
 
 // Dépôt d'un projet. Le porteur a toujours un compte : soit il est connecté,
@@ -51,6 +52,12 @@ export async function submitProject(
   const {
     data: { user },
   } = await supabase.auth.getUser();
+
+  // Chaque dépôt crée un compte, un projet, deux e-mails et un matching : on
+  // freine les rafales par IP, et par compte pour un porteur connecté.
+  const limits: [string, number, number][] = [[`project:ip:${await clientIp()}`, 5, 3600]];
+  if (user) limits.push([`project:user:${user.id}`, 10, 86400]);
+  if (!(await rateLimitAll(limits))) return { error: "rateLimited" };
 
   let userId: string;
   let clientName: string;

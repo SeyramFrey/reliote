@@ -19,7 +19,7 @@ do $$ begin
     then create role supabase_storage_admin noinherit login password 'reliote_dev_pwd' createrole; end if;
 end $$;
 
--- Reset passwords every boot to guarantee they match docker-compose env
+-- Valeur de dev : 99z-role-passwords.sh les réaligne ensuite sur POSTGRES_PASSWORD.
 alter role authenticator          with login password 'reliote_dev_pwd';
 alter role supabase_auth_admin    with login password 'reliote_dev_pwd';
 alter role supabase_storage_admin with login password 'reliote_dev_pwd';

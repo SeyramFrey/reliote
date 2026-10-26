@@ -56,11 +56,20 @@ for path in migrations/[0-9]*.sql; do
                 on conflict (version) do nothing;" > /dev/null
 done
 
-echo "Applying  seed..."
-psql_c -f /reliote/seed.sql
+# Le seed insère 8 architectes et 3 projets fictifs (vérifiés, visibles sur la
+# landing). En production il réinjecterait ces faux profils à chaque déploiement :
+# RELIOTE_ENV=production le saute, ainsi que l'admin local.
+if [ "${RELIOTE_ENV:-}" = "production" ]; then
+  echo "Skipping  seed and local admin (RELIOTE_ENV=production)"
+else
+  echo "Applying  seed..."
+  psql_c -f /reliote/seed.sql
+fi
 
 # Admin local : jamais de mot de passe dans le dépôt. Sans la variable, pas d'admin.
-if [ -n "${RELIOTE_DEV_ADMIN_PASSWORD:-}" ]; then
+if [ "${RELIOTE_ENV:-}" = "production" ]; then
+  :
+elif [ -n "${RELIOTE_DEV_ADMIN_PASSWORD:-}" ]; then
   echo "Applying  local admin (${RELIOTE_DEV_ADMIN_EMAIL:-admin@reliote.test})..."
   psql_c -q -v admin_email="${RELIOTE_DEV_ADMIN_EMAIL:-admin@reliote.test}" \
             -v admin_password="$RELIOTE_DEV_ADMIN_PASSWORD" \

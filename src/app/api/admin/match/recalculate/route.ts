@@ -6,7 +6,17 @@ import { advanceProject, ACTIVE_ENGAGEMENT_STATUSES } from "@/lib/workflow/proje
 
 type Profile = { role: string };
 
+function crossOrigin(req: NextRequest): boolean {
+  const origin = req.headers.get("origin");
+  return !!origin && origin !== req.nextUrl.origin && origin !== process.env.SITE_URL?.replace(/\/+$/, "");
+}
+
 export async function POST(req: NextRequest) {
+  // Route appelée en fetch par le bouton admin : on refuse une requête venue
+  // d'un autre site (CSRF), que SameSite=Lax ne couvre pas pour tous les cas.
+  if (req.headers.get("sec-fetch-site") === "cross-site" || crossOrigin(req)) {
+    return NextResponse.json({ error: "forbidden" }, { status: 403 });
+  }
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "unauthorized" }, { status: 401 });

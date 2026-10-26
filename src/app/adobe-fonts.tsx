@@ -11,13 +11,17 @@ const KIT_URL = "https://use.typekit.net/aya2svh.css";
 // Degular.
 const LOAD_KIT = `(function(){var l=document.createElement("link");l.rel="stylesheet";l.href=${JSON.stringify(KIT_URL)};document.head.appendChild(l)})()`;
 
-export function AdobeFonts() {
+// Le script inline doit porter le nonce de la CSP (src/lib/security/csp.ts).
+// Sans nonce (page d'erreur globale, rendue côté client), on se rabat sur une
+// feuille bloquante : rendu un peu plus lent, mais rien d'inline à exécuter.
+export function AdobeFonts({ nonce }: { nonce?: string }) {
+  if (!nonce) return <link rel="stylesheet" href={KIT_URL} />;
   return (
     <>
       <link rel="preconnect" href="https://use.typekit.net" crossOrigin="anonymous" />
       <link rel="preconnect" href="https://p.typekit.net" crossOrigin="anonymous" />
       <link rel="preload" href={KIT_URL} as="style" />
-      <script dangerouslySetInnerHTML={{ __html: LOAD_KIT }} />
+      <script nonce={nonce} dangerouslySetInnerHTML={{ __html: LOAD_KIT }} />
       <noscript>
         <link rel="stylesheet" href={KIT_URL} />
       </noscript>

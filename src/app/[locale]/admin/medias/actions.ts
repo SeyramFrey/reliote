@@ -1,5 +1,6 @@
 "use server";
 import { createServiceClient } from "@/lib/supabase/service";
+import { safeUrl } from "@/lib/security/safeUrl";
 import { requireAdmin } from "@/lib/auth/requireAdmin";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
@@ -25,10 +26,10 @@ function parse(fd: FormData) {
     title_en: str(fd, "title_en"),
     excerpt_fr: strOrNull(fd, "excerpt_fr"),
     excerpt_en: strOrNull(fd, "excerpt_en"),
-    image_url: strOrNull(fd, "image_url"),
+    image_url: safeUrl(str(fd, "image_url")),
     read_time: strOrNull(fd, "read_time"),
     date: strOrNull(fd, "date"),
-    url: strOrNull(fd, "url"),
+    url: safeUrl(str(fd, "url")),
     published: fd.get("published") != null,
     sort_order: Number(fd.get("sort_order") ?? 0) || 0,
   };

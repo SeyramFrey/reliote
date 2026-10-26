@@ -213,6 +213,7 @@
       "mismatch": "The two passwords do not match.",
       "short": "At least 8 characters.",
       "generic": "Something went wrong. Please try again.",
+      "rateLimited": "Too many attempts. Please wait a few minutes before trying again.",
       "samePassword": "Choose a password different from your previous one.",
       "weak": "Password too weak: make it longer or more varied.",
       "linkUsed": "This link was already used or opened on another device. If you have just confirmed your address, simply sign in."
@@ -280,6 +281,7 @@
       "validation": "Some details are incomplete: check the previous steps.",
       "insert": "Your project could not be saved. Please try again.",
       "weak": "Password too weak: make it longer or more varied.",
+      "rateLimited": "Too many submissions in a short time. Please wait a while before trying again.",
       "generic": "Something went wrong. Please try again."
     },
     "noProject": {
@@ -934,6 +936,7 @@
       "tooLong": "Message too long (5,000 characters max).",
       "tooMany": "5 files max per message.",
       "fileType": "File type not accepted.",
+      "rateLimited": "Too many messages in a short time. Please wait a few minutes.",
       "fileSize": "25 MB max per file.",
       "fileMissing": "A file was not received. Please try again.",
       "checkRequired": "Tick the check before forwarding.",

@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useRef } from "react";
 import { useTranslations } from "next-intl";
+import { safeUrl } from "@/lib/security/safeUrl";
 
 // Anneau de partenaires qui gravite autour du titre, d'après la section « uod »
 // de kononenkogroup.com. Relevé sur le site puis ajusté par moindres carrés sur
@@ -145,7 +146,7 @@ export function PartnersOrbit({
       {logos.length > 0 && (
         <ul className="sr-only">
           {logos.map((l) => (
-            <li key={l.id}>{l.url ? <a href={l.url}>{l.name}</a> : l.name}</li>
+            <li key={l.id}>{safeUrl(l.url) ? <a href={safeUrl(l.url)!}>{l.name}</a> : l.name}</li>
           ))}
         </ul>
       )}

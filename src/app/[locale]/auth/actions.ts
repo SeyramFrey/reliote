@@ -9,6 +9,9 @@ import { appOrigin } from "@/lib/auth/origin";
 import { authErrorCodeFrom } from "@/lib/auth/authError";
 import { recoveryTokenFrom } from "@/lib/auth/recoveryToken";
 import { subscribe } from "@/lib/newsletter/subscriptions";
+import { clientIp, rateLimitAll } from "@/lib/security/rateLimit";
+
+const lower = (email: string) => email.trim().toLowerCase();
 
 export async function signIn(formData: FormData) {
   const supabase = await createClient();
@@ -16,6 +19,12 @@ export async function signIn(formData: FormData) {
   const password = String(formData.get("password"));
   const locale = safeLocale(formData.get("locale"));
   const nextRaw = formData.get("next") as string | null;
+  // Anti force brute : par IP et par compte visé.
+  const ip = await clientIp();
+  if (!(await rateLimitAll([[`login:ip:${ip}`, 30, 900], [`login:email:${lower(email)}`, 10, 900]]))) {
+    const keepNext = nextRaw ? `&next=${encodeURIComponent(nextRaw)}` : "";
+    redirect(`/${locale}/auth/login?error=rateLimited${keepNext}`);
+  }
   const { error, data } = await supabase.auth.signInWithPassword({ email, password });
   if (error) {
     const code = error.code === "email_not_confirmed" ? "unconfirmed" : "invalid";
@@ -48,6 +57,9 @@ export async function signUp(formData: FormData) {
       : accountOnly
         ? `/${locale}/dashboard/client`
         : `/${locale}/projets/initier`;
+  if (!(await rateLimitAll([[`signup:ip:${await clientIp()}`, 10, 3600]]))) {
+    redirect(`/${locale}/auth/register?role=${role}${accountOnly ? "&intent=account" : ""}&error=rateLimited`);
+  }
   const origin = await appOrigin();
   const res = await supabase.auth.signUp({
     email,
@@ -91,6 +103,11 @@ export async function signOut(locale: string) {
 export async function forgot(formData: FormData) {
   const email = String(formData.get("email"));
   const locale = safeLocale(formData.get("locale"));
+  // Au-delà, on répond comme si l'e-mail était parti : ni bombardement d'une
+  // boîte tierce, ni indice sur l'existence du compte.
+  if (!(await rateLimitAll([[`forgot:ip:${await clientIp()}`, 10, 3600], [`forgot:email:${lower(email)}`, 3, 3600]]))) {
+    redirect(`/${locale}/auth/login?sent=1`);
+  }
   const supabase = createSupabaseClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -145,7 +162,10 @@ export async function updatePassword(formData: FormData) {
 export async function resendConfirmation(formData: FormData) {
   const locale = safeLocale(formData.get("locale"));
   const email = String(formData.get("email") ?? "");
-  if (email) {
+  const allowed =
+    !!email &&
+    (await rateLimitAll([[`resend:ip:${await clientIp()}`, 10, 3600], [`resend:email:${lower(email)}`, 3, 3600]]));
+  if (allowed) {
     const supabase = await createClient();
     await supabase.auth.resend({
       type: "signup",

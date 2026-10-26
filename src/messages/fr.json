@@ -213,6 +213,7 @@
       "mismatch": "Les deux mots de passe ne correspondent pas.",
       "short": "8 caractères minimum.",
       "generic": "Une erreur est survenue. Réessayez.",
+      "rateLimited": "Trop de tentatives. Patientez quelques minutes avant de réessayer.",
       "samePassword": "Choisissez un mot de passe différent de l’ancien.",
       "weak": "Mot de passe trop faible : allongez-le ou variez les caractères.",
       "linkUsed": "Ce lien a déjà servi ou a été ouvert sur un autre appareil. Si vous venez de confirmer votre adresse, connectez-vous simplement."
@@ -280,6 +281,7 @@
       "validation": "Certaines informations sont incomplètes : vérifiez les étapes précédentes.",
       "insert": "Votre projet n’a pas pu être enregistré. Réessayez.",
       "weak": "Mot de passe trop faible : allongez-le ou variez les caractères.",
+      "rateLimited": "Trop de dépôts en peu de temps. Patientez un moment avant de réessayer.",
       "generic": "Une erreur est survenue. Réessayez."
     },
     "noProject": {
@@ -934,6 +936,7 @@
       "tooLong": "Message trop long (5 000 caractères maximum).",
       "tooMany": "5 fichiers maximum par message.",
       "fileType": "Format non accepté.",
+      "rateLimited": "Trop d’envois en peu de temps. Patientez quelques minutes.",
       "fileSize": "25 Mo maximum par fichier.",
       "fileMissing": "Un fichier n'a pas été reçu. Réessayez.",
       "checkRequired": "Cochez la vérification avant de transmettre.",

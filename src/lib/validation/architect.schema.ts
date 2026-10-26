@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { isArchitectPhotoPath } from "@/lib/storage/architectPhotoPath";
 
 export const SPECIALTIES = [
   "Résidentiel",
@@ -83,28 +84,30 @@ const emptyToUndefined = (v: unknown) => (v === "" || v === null ? undefined : v
 
 export const architectSchema = z
   .object({
-    first_name: z.string().min(1, "Prénom requis"),
-    last_name: z.string().min(1, "Nom requis"),
-    email: z.string().email(),
-    phone: z.string().optional(),
-    phone_country: z.string().optional(),
-    photo_url: z.string().url().optional().or(z.literal("")),
-    country: z.string().min(1, "Pays requis"),
-    city: z.string().min(2, "Ville requise"),
-    ordre_number: z.string().min(1, "Numéro d'ordre requis"),
-    diploma: z.string().optional(),
-    structure: z.string().optional().or(z.literal("")),
+    first_name: z.string().min(1, "Prénom requis").max(80),
+    last_name: z.string().min(1, "Nom requis").max(80),
+    email: z.string().email().max(254),
+    phone: z.string().max(32).optional(),
+    phone_country: z.string().max(4).optional(),
+    // Chemin de l'objet dans le bucket privé (cf. lib/storage/architectPhotoPath).
+    photo_url: z.string().refine(isArchitectPhotoPath, "Photo invalide").optional().or(z.literal("")),
+    country: z.string().min(1, "Pays requis").max(80),
+    city: z.string().min(2, "Ville requise").max(120),
+    ordre_number: z.string().min(1, "Numéro d'ordre requis").max(60),
+    diploma: z.string().max(200).optional(),
+    structure: z.string().max(160).optional().or(z.literal("")),
     legal_status: z.enum(LEGAL_STATUSES).default("individual"),
-    company_name: z.string().optional(),
-    legal_form: z.string().optional(),
-    registration_number: z.string().optional(),
-    legal_representative: z.string().optional(),
-    specialties: z.array(z.enum(SPECIALTIES)).min(1, "Au moins 1 spécialité"),
-    languages: z.array(z.string()).min(1, "Au moins 1 langue"),
-    project_types: z.array(z.enum(PROJECT_TYPES)).min(1, "Au moins 1 type"),
+    company_name: z.string().max(160).optional(),
+    legal_form: z.string().max(80).optional(),
+    registration_number: z.string().max(80).optional(),
+    legal_representative: z.string().max(160).optional(),
+    specialties: z.array(z.enum(SPECIALTIES)).min(1, "Au moins 1 spécialité").max(SPECIALTIES.length),
+    languages: z.array(z.string().max(40)).min(1, "Au moins 1 langue").max(12),
+    project_types: z.array(z.enum(PROJECT_TYPES)).min(1, "Au moins 1 type").max(PROJECT_TYPES.length),
     years_experience: z.coerce.number().min(0).max(70),
-    description: z.string().min(80, "≥ 80 caractères"),
-    portfolio_url: z.string().url().optional().or(z.literal("")),
+    description: z.string().min(80, "≥ 80 caractères").max(5000),
+    // https uniquement : un « javascript: » passerait z.url().
+    portfolio_url: z.string().url().max(500).regex(/^https?:\/\//i).optional().or(z.literal("")),
     availability: z.enum(["available", "busy", "unavailable"]),
     fee_currency: z.preprocess(emptyToUndefined, z.enum(FEE_CURRENCIES).optional()),
     fee_amount: z.preprocess(emptyToUndefined, z.coerce.number().int().positive().optional()),
