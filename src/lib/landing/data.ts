@@ -59,3 +59,25 @@ export const getPublishedMedia = cache(async (): Promise<MediaItem[]> => {
     .order("created_at", { ascending: false })) as { data: MediaItem[] | null };
   return data ?? [];
 });
+
+export type Testimonial = {
+  id: string;
+  quote_fr: string;
+  quote_en: string;
+  author: string;
+  role_fr: string | null;
+  role_en: string | null;
+  location: string | null;
+};
+
+// Tant que la migration 0019 n'est pas appliquée, la requête échoue : data vaut
+// null et la section Avis reste sur son état d'attente.
+export const getPublishedTestimonials = cache(async (): Promise<Testimonial[]> => {
+  const { data } = (await createServiceClient()
+    .from("testimonials")
+    .select("id, quote_fr, quote_en, author, role_fr, role_en, location")
+    .eq("published", true)
+    .order("sort_order", { ascending: true })
+    .order("created_at", { ascending: false })) as { data: Testimonial[] | null };
+  return data ?? [];
+});

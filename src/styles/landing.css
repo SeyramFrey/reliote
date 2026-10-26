@@ -2397,3 +2397,251 @@ html.lenis, html.lenis body { height: auto; }
     }
   }
 }
+
+/* ------------------------------------------------------------------ *
+ * Journal — sujets « À paraître » tant qu'aucun article n'est publié.
+ * ------------------------------------------------------------------ */
+@layer components {
+  .j-card.is-soon { cursor: default; }
+  .j-soon { color: var(--color-gold-deep); }
+  .j-soon::before {
+    content: "";
+    display: inline-block;
+    width: 6px; height: 6px;
+    margin-right: 8px;
+    border-radius: 50%;
+    background: var(--accent-gold);
+    vertical-align: 1px;
+    animation: rl-pulse 2.4s ease-in-out infinite;
+  }
+}
+
+/* ------------------------------------------------------------------ *
+ * Avis (.avis-*) — index des auteurs à gauche, citation en très grand,
+ * entrée mot à mot sous masque. La barre dorée de l'auteur actif tient
+ * le minutage : sa fin d'animation passe à l'avis suivant (AvisStage).
+ * ------------------------------------------------------------------ */
+@layer components {
+  .avis-sect { background: var(--paper); color: var(--ink); }
+
+  .avis-stage {
+    --avis-dwell: 9s;
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    column-gap: var(--gutter);
+    padding: 0 var(--edge);
+    align-items: start;
+  }
+
+  /* Index des auteurs */
+  .avis-index {
+    grid-column: 1 / span 3;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-bottom: 1px solid var(--hairline);
+  }
+  .avis-who {
+    position: relative;
+    display: grid;
+    grid-template-columns: 34px 1fr;
+    row-gap: 4px;
+    width: 100%;
+    padding: 18px 0;
+    border: 0;
+    border-top: 1px solid var(--hairline);
+    background: none;
+    text-align: left;
+    color: var(--concrete-2);
+    cursor: pointer;
+    transition: color 320ms ease;
+  }
+  .avis-who:hover, .avis-who.is-active { color: var(--ink); }
+  .avis-who-num {
+    font-family: var(--f-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.16em;
+    padding-top: 6px;
+  }
+  .avis-who.is-active .avis-who-num { color: var(--color-gold-deep); }
+  .avis-who-name {
+    font-family: var(--f-display);
+    font-size: 22px;
+    line-height: 1.15;
+  }
+  .avis-who-role {
+    grid-column: 2;
+    font-family: var(--f-mono);
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--concrete-2);
+  }
+  .avis-who-bar {
+    position: absolute;
+    left: 0; top: -1px;
+    height: 1px;
+    background: var(--accent-gold);
+    animation: rl-pgFill var(--avis-dwell) linear forwards;
+  }
+  .avis-stage.is-paused .avis-who-bar { animation-play-state: paused; }
+  .avis-count {
+    display: block;
+    padding: 18px 0;
+    border-top: 1px solid var(--hairline);
+    font-family: var(--f-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--concrete-2);
+  }
+
+  /* Citation */
+  .avis-quote {
+    grid-column: 5 / span 8;
+    position: relative;
+    margin: 0;
+    /* Hauteur stable d'un avis à l'autre, sans trou sous les citations courtes. */
+    min-height: clamp(260px, 27vw, 380px);
+  }
+  .avis-mark {
+    display: block;
+    height: 0.4em;
+    font-family: var(--f-display);
+    font-size: clamp(110px, 12vw, 190px);
+    line-height: 0.8;
+    color: var(--accent-gold);
+  }
+  .avis-text {
+    margin: 0;
+    font-family: var(--f-display);
+    font-weight: 300;
+    font-size: clamp(28px, 3.7vw, 58px);
+    line-height: 1.08;
+    letter-spacing: -0.015em;
+    text-wrap: pretty;
+  }
+  .avis-text em { font-style: italic; color: var(--color-gold-deep); }
+  .avis-word {
+    display: inline-block;
+    overflow: hidden;
+    vertical-align: top;
+    padding-bottom: 0.1em;
+    margin-bottom: -0.1em;
+  }
+  .avis-word > span {
+    display: inline-block;
+    transform: translateY(105%);
+  }
+  .avis-stage.is-in .avis-word > span {
+    animation: avis-rise 900ms cubic-bezier(0.2, 0.7, 0.1, 1) forwards;
+    animation-delay: calc(var(--i) * 28ms + 80ms);
+  }
+  .avis-cite {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 28px;
+    margin-top: 44px;
+    font-family: var(--f-mono);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--concrete-2);
+    opacity: 0;
+  }
+  .avis-cite > span:first-child { color: var(--ink); }
+  .avis-stage.is-in .avis-cite { animation: rl-scrimIn 700ms ease 500ms forwards; }
+
+  /* Contrôles */
+  .avis-ctrl {
+    grid-column: 5 / span 8;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 48px;
+  }
+  .avis-counter {
+    flex: 1;
+    font-family: var(--f-mono);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    color: var(--concrete-2);
+  }
+  .avis-counter b { font-weight: 400; color: var(--ink); }
+  .avis-arrow {
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    border: 1px solid var(--hairline);
+    background: none;
+    color: var(--ink);
+    font-size: 18px;
+    cursor: pointer;
+    transition: background 280ms ease, color 280ms ease, border-color 280ms ease;
+  }
+  .avis-arrow:hover { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+  .avis-who:focus-visible, .avis-arrow:focus-visible {
+    outline: 2px solid var(--green);
+    outline-offset: 3px;
+  }
+
+  /* Attente : aucun avis publié */
+  .avis-empty-body {
+    max-width: 52ch;
+    margin: 28px 0 0;
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--concrete-1);
+  }
+  .avis-empty-cta { margin-top: 32px; }
+  .avis-stage.is-empty .avis-quote { min-height: 0; }
+  @supports (animation-timeline: view()) {
+    .avis-stage.is-empty .avis-text {
+      animation: avis-lift linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 35%;
+    }
+  }
+
+  .avis-note {
+    margin: clamp(56px, 7vw, 96px) 0 0;
+    padding: 0 var(--edge);
+    max-width: calc(70ch + 2 * var(--edge));
+    font-family: var(--f-mono);
+    font-size: 10.5px;
+    line-height: 1.7;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--concrete-2);
+  }
+
+  @media (max-width: 900px) {
+    .avis-stage { grid-template-columns: 1fr; row-gap: 40px; }
+    .avis-index, .avis-quote, .avis-ctrl { grid-column: 1; }
+    .avis-index {
+      display: flex;
+      gap: 0 24px;
+      overflow-x: auto;
+      border-bottom: 0;
+      scrollbar-width: none;
+    }
+    .avis-index > li { flex: none; }
+    .avis-who { width: auto; grid-template-columns: 28px auto; }
+    .avis-who-role { display: none; }
+    .avis-quote { min-height: 0; }
+    .avis-ctrl { margin-top: 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    /* Sans animation de barre, pas de défilement automatique : on change
+       d'avis à la main. */
+    .avis-who-bar { animation: none; width: 100%; }
+    .avis-word > span, .avis-stage.is-in .avis-word > span { animation: none; transform: none; }
+    .avis-cite, .avis-stage.is-in .avis-cite { animation: none; opacity: 1; }
+    .avis-stage.is-empty .avis-text { animation: none; }
+    .j-soon::before { animation: none; }
+  }
+}
+
+@keyframes avis-rise { to { transform: none; } }
+/* Opacité seule : un décalage vertical ferait chevaucher le paragraphe. */
+@keyframes avis-lift { from { opacity: 0.15; } to { opacity: 1; } }

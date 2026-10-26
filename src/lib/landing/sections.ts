@@ -1,7 +1,6 @@
 // Numérotation des sections de la landing (« 01 — », « 02 — »…). Calculée à
-// partir des sections réellement affichées : l'étude de cas et le Journal
-// disparaissent tant que rien n'est publié, et la suite ne doit pas sauter de
-// numéro pour autant.
+// partir des sections réellement affichées : l'étude de cas disparaît tant que
+// rien n'est publié, et la suite ne doit pas sauter de numéro pour autant.
 
 export type LandingSection =
   | "pillars"
@@ -11,6 +10,7 @@ export type LandingSection =
   | "territoire"
   | "featured"
   | "journal"
+  | "avis"
   | "cta";
 
 export function numberSections(

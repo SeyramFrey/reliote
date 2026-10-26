@@ -3,13 +3,12 @@ import Link from "next/link";
 import { BrandMark } from "@/components/shared/BrandMark";
 import type { LegalSlug } from "@/lib/legal/page";
 import { getPublishedLegalSlugs } from "@/lib/legal/published";
-import { getPublishedMedia } from "@/lib/landing/data";
 
 type FooterLink = { key: string; href: string };
 
 // Uniquement des liens qui mènent quelque part : les ancres de la landing et
-// les routes publiques. Le Journal n'est cité que s'il a du contenu publié
-// (sinon la section n'est pas rendue et l'ancre ne mène nulle part).
+// les routes publiques. Le Journal est toujours rendu (articles publiés, ou ses
+// sujets « à paraître ») : son ancre mène quelque part.
 const PLATFORM: FooterLink[] = [
   { key: "selection", href: "#architectes" },
   { key: "approach", href: "#approche" },
@@ -39,10 +38,10 @@ export async function Footer() {
   // On ne cite que les pages effectivement publiées : la policy « legal public
   // read » de 0012 filtre les brouillons, donc un texte encore en relecture
   // juridique n'apparaît pas — plutôt que d'annoncer un lien qui renvoie 404.
-  const [publishedSlugs, media] = await Promise.all([getPublishedLegalSlugs(), getPublishedMedia()]);
+  const publishedSlugs = await getPublishedLegalSlugs();
 
   const cols = [
-    { h: f("platform"), links: PLATFORM.filter((l) => l.key !== "journal" || media.length > 0) },
+    { h: f("platform"), links: PLATFORM },
     { h: f("start"), links: START },
   ];
 

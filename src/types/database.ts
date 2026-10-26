@@ -789,6 +789,46 @@ export type Database = {
         }
         Relationships: []
       }
+      testimonials: {
+        Row: {
+          author: string
+          created_at: string
+          id: string
+          location: string | null
+          published: boolean
+          quote_en: string
+          quote_fr: string
+          role_en: string | null
+          role_fr: string | null
+          sort_order: number
+        }
+        ComputedFields: never
+        Insert: {
+          author: string
+          created_at?: string
+          id?: string
+          location?: string | null
+          published?: boolean
+          quote_en: string
+          quote_fr: string
+          role_en?: string | null
+          role_fr?: string | null
+          sort_order?: number
+        }
+        Update: {
+          author?: string
+          created_at?: string
+          id?: string
+          location?: string | null
+          published?: boolean
+          quote_en?: string
+          quote_fr?: string
+          role_en?: string | null
+          role_fr?: string | null
+          sort_order?: number
+        }
+        Relationships: []
+      }
     }
     Views: {
       architect_profiles_anon: {
