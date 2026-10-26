@@ -15,6 +15,7 @@ export function AdminShell({ children, unread = 0 }: { children: React.ReactNode
     { href: `/${locale}/admin/matches`, label: "Matches" },
     { href: `/${locale}/admin/medias`, label: "Médias" },
     { href: `/${locale}/admin/featured`, label: "Mis en lumière" },
+    { href: `/${locale}/admin/avis`, label: "Avis" },
     { href: `/${locale}/admin/legal`, label: "Pages légales" },
   ];
   return (

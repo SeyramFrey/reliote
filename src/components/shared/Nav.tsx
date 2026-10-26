@@ -7,15 +7,7 @@ import { LangSwitch } from "./LangSwitch";
 import { NavAccount, NavAccountMobile, useSignedIn } from "./NavAccount";
 import { cn } from "@/lib/utils";
 
-export function Nav({
-  dark = false,
-  showJournal = false,
-}: {
-  dark?: boolean;
-  /** Seule la landing sait si le Journal a du contenu publié ; ailleurs le
-   *  lien est masqué plutôt que de mener vers une section absente. */
-  showJournal?: boolean;
-}) {
+export function Nav({ dark = false }: { dark?: boolean }) {
   const locale = useLocale();
   const t = useTranslations("nav");
   const [scrolled, setScrolled] = useState(false);
@@ -35,7 +27,7 @@ export function Nav({
     { id: "projects",   href: `/${locale}#projets` },
     { id: "journal",    href: `/${locale}#journal` },
     { id: "about",      href: `/${locale}#apropos` },
-  ].filter((l) => showJournal || l.id !== "journal");
+  ];
 
   return (
     <header className={cn(

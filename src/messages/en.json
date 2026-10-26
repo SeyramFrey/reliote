@@ -495,7 +495,43 @@
       "titlePre": "Journal & ",
       "titleItalic": "readings.",
       "kicker": "Method, positions and site studies.",
-      "more": "Read →"
+      "more": "Read →",
+      "soon": "Coming soon",
+      "topics": [
+        {
+          "tag": "Method",
+          "pre": "The brief in eight questions — ",
+          "italic": "why these ones.",
+          "excerpt": "Breaking a project down without shrinking it: the grid we use to turn intent into a brief."
+        },
+        {
+          "tag": "Site",
+          "pre": "Building by the lagoon — ",
+          "italic": "the truths of climate.",
+          "excerpt": "Humidity, salt, raking light: three variables that quietly decide the quality of a coastal villa."
+        },
+        {
+          "tag": "Practice",
+          "pre": "Fees & milestones — ",
+          "italic": "transparency as a tool.",
+          "excerpt": "How Reliote sequences payments to protect the commission, the project and the relationship alike."
+        }
+      ]
+    },
+    "avis": {
+      "label": "Reviews",
+      "titlePre": "In their ",
+      "titleItalic": "words.",
+      "kicker": "Clients and architects who carried out a project with Reliote. Their words, not ours.",
+      "count": "{n, plural, =0 {No reviews published} one {# review published} other {# reviews published}}",
+      "emptyPre": "The first reviews ",
+      "emptyItalic": "are being written right now.",
+      "emptyBody": "We will publish the words of our first clients and architects here once their project is done: as written, with their consent. Not before.",
+      "emptyCta": "Write the first one",
+      "prev": "Previous review",
+      "next": "Next review",
+      "show": "Show {author}'s review",
+      "note": "Reviews published with their authors' consent, after checking that the project was carried out through Reliote. Neither paid for nor rewritten."
     },
     "ctaBand": {
       "begin": "Begin",

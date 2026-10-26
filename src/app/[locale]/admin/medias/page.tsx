@@ -35,8 +35,8 @@ export default async function AdminMedias() {
 
       {rows.length === 0 ? (
         <p className="text-concrete-1 text-sm mt-10 max-w-[60ch]">
-          Aucun média. La section Journal de la landing utilise le contenu i18n par défaut tant
-          qu&apos;aucun média n&apos;est publié.
+          Aucun média. Tant qu&apos;aucun n&apos;est publié, la section Journal de la landing
+          affiche ses trois sujets « À paraître ».
         </p>
       ) : (
         <div className="mt-10 overflow-x-auto">

@@ -11,12 +11,13 @@ import { MapTerritoire } from "@/components/landing/MapTerritoire";
 import { FeaturedCaseView } from "@/components/landing/FeaturedCaseView";
 import { Audiences } from "@/components/landing/Audiences";
 import { Journal } from "@/components/landing/Journal";
+import { Avis } from "@/components/landing/Avis";
 import { CtaBand } from "@/components/landing/CtaBand";
 import { PartnersOrbit } from "@/components/landing/PartnersOrbit";
 import { Footer } from "@/components/landing/Footer";
 import { SmoothScroll } from "@/components/landing/SmoothScroll";
 import { IntroGate } from "@/components/landing/intro/IntroGate";
-import { getFeaturedRow, getPublishedMedia } from "@/lib/landing/data";
+import { getFeaturedRow, getPublishedMedia, getPublishedTestimonials } from "@/lib/landing/data";
 import { toFeaturedContent } from "@/lib/landing/featured";
 import { numberSections, type LandingSection } from "@/lib/landing/sections";
 import { safeLocale } from "@/lib/auth/safeRedirect";
@@ -46,11 +47,16 @@ export async function generateMetadata({
 
 export default async function Page() {
   const locale = safeLocale(await getLocale());
-  const [featuredRow, media] = await Promise.all([getFeaturedRow(), getPublishedMedia()]);
+  const [featuredRow, media, testimonials] = await Promise.all([
+    getFeaturedRow(),
+    getPublishedMedia(),
+    getPublishedTestimonials(),
+  ]);
   const featured = toFeaturedContent(featuredRow, locale);
 
-  // Étude de cas et Journal n'apparaissent qu'avec du contenu publié ; la
-  // numérotation suit ce qui est réellement affiché.
+  // L'étude de cas n'apparaît qu'avec du contenu publié ; le Journal et les
+  // Avis restent visibles (sujets à paraître, état d'attente). La numérotation
+  // suit ce qui est réellement affiché.
   const shown: LandingSection[] = [
     "pillars",
     "audiences",
@@ -58,7 +64,8 @@ export default async function Page() {
     "process",
     "territoire",
     ...(featured ? (["featured"] as const) : []),
-    ...(media.length > 0 ? (["journal"] as const) : []),
+    "journal",
+    "avis",
     "cta",
   ];
   const num = numberSections(shown) as Record<LandingSection, string>;
@@ -69,7 +76,7 @@ export default async function Page() {
       {/* La hero n'est pas dupliquée : le carré qui grandit à la fin de la
           séquence, c'est cette page même, mise à l'échelle. */}
       <div id="page-zoom">
-        <Nav dark showJournal={media.length > 0} />
+        <Nav dark />
         <SmoothScroll />
         <main>
           <Hero />
@@ -81,8 +88,9 @@ export default async function Page() {
           <Process num={num.process} />
           <MapTerritoire num={num.territoire} />
           {featured && <FeaturedCaseView content={featured} num={num.featured} />}
-          {media.length > 0 && <Journal items={media} num={num.journal} />}
+          <Journal items={media} num={num.journal} />
           <PartnersOrbit />
+          <Avis items={testimonials} num={num.avis} />
           <CtaBand num={num.cta} />
         </main>
         <Footer />

@@ -495,7 +495,43 @@
       "titlePre": "Journal & ",
       "titleItalic": "regards.",
       "kicker": "Méthode, prises de position et études de site.",
-      "more": "Lire →"
+      "more": "Lire →",
+      "soon": "À paraître",
+      "topics": [
+        {
+          "tag": "Méthode",
+          "pre": "Le brief en huit questions — ",
+          "italic": "pourquoi celles-là.",
+          "excerpt": "Décomposer un projet sans le réduire : la grille que nous utilisons pour traduire l'intention en cahier des charges."
+        },
+        {
+          "tag": "Site",
+          "pre": "Construire en bord de lagune — ",
+          "italic": "les vérités du climat.",
+          "excerpt": "Humidité, sel, lumière rasante : trois variables qui décident silencieusement de la qualité d'une villa côtière."
+        },
+        {
+          "tag": "Pratique",
+          "pre": "Honoraires & jalons — ",
+          "italic": "la transparence comme outil.",
+          "excerpt": "Comment Reliote séquence les paiements pour protéger à la fois la mission, le projet et la relation."
+        }
+      ]
+    },
+    "avis": {
+      "label": "Avis",
+      "titlePre": "Ce qu'ils en ",
+      "titleItalic": "disent.",
+      "kicker": "Des clients et des architectes qui ont mené un projet avec Reliote. Leurs mots, pas les nôtres.",
+      "count": "{n, plural, =0 {Aucun avis publié} one {# avis publié} other {# avis publiés}}",
+      "emptyPre": "Les premiers avis ",
+      "emptyItalic": "s'écrivent en ce moment.",
+      "emptyBody": "Nous publierons ici les mots de nos premiers clients et architectes, une fois leur projet mené : tels quels, avec leur accord. Pas avant.",
+      "emptyCta": "Écrire le premier",
+      "prev": "Avis précédent",
+      "next": "Avis suivant",
+      "show": "Afficher l'avis de {author}",
+      "note": "Avis publiés avec l'accord de leurs auteurs, après vérification que le projet a été mené via Reliote. Ni rémunérés, ni réécrits."
     },
     "ctaBand": {
       "begin": "Commencer",
