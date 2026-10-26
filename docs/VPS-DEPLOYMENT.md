@@ -263,6 +263,78 @@ SITE_URL=https://reliote.com
 (c'est l'URL vers laquelle GoTrue redirige les emails de confirmation et
 les reset password).
 
+### 3.5 E-mails (Resend) — à faire avant d'ouvrir au public
+
+Tant que Resend n'est pas configuré, **aucun e-mail ne part** : le client
+`src/lib/email/client.ts` ignore les envois sans `RESEND_API_KEY` (pour ne pas
+faire planter le site). Au 26/10/2026, ni Vercel ni le VPS n'ont de clé :
+accusés de projet, alertes admin, rendez-vous, messages et newsletter sont
+donc muets.
+
+Deux circuits d'envoi, à brancher tous les deux sur Resend :
+
+| Circuit | Qui envoie | Exemples | Où se configure |
+|---|---|---|---|
+| E-mails de l'app | Next.js, API Resend | accusé de projet, alertes admin, RDV, messages, newsletter | variables de l'app Next.js |
+| E-mails de compte | GoTrue (Supabase Auth), SMTP | confirmation d'inscription, mot de passe oublié | `supabase/.env` + `docker-compose.yml` |
+
+**1. Domaine chez Resend.** Sur resend.com : *Domains → Add domain* →
+`reliote.com` (ou un sous-domaine d'envoi, p. ex. `mail.reliote.com`). Copier
+chez le registrar les enregistrements DNS proposés (SPF, DKIM, et le MX de
+retour). Ajouter un DMARC si le domaine n'en a pas :
+
+| Type | Nom      | Valeur                                      |
+|------|----------|---------------------------------------------|
+| TXT  | `_dmarc` | `v=DMARC1; p=none; rua=mailto:<votre-adresse>` |
+
+Attendre le statut *Verified*. Sans domaine vérifié, Resend n'écrit qu'à
+l'adresse du titulaire du compte.
+
+**2. Clé API.** *API Keys → Create* avec « Sending access », limitée au
+domaine. Une clé pour la prod, jamais commitée.
+
+**3. App Next.js** (Vercel tant qu'il sert, puis l'hébergement du front) :
+
+```
+RESEND_API_KEY=<clé Resend>            # secrète
+RESEND_FROM=Reliote <notifications@reliote.com>
+RELIOTE_ADMIN_EMAIL=<adresse qui reçoit les alertes admin>
+SITE_URL=https://reliote.com           # liens des e-mails (confirmer, se désinscrire…)
+```
+
+Redéployer ensuite : les variables ne sont lues qu'au démarrage.
+
+**4. GoTrue (e-mails de compte).** Le `docker-compose.yml` actuel est réglé
+pour le dev : `GOTRUE_MAILER_AUTOCONFIRM: "true"` (comptes confirmés sans
+e-mail) et aucun SMTP. Pour la prod, dans le service `auth` :
+
+```yaml
+      GOTRUE_MAILER_AUTOCONFIRM: "false"
+      GOTRUE_SMTP_HOST: smtp.resend.com
+      GOTRUE_SMTP_PORT: "465"
+      GOTRUE_SMTP_USER: resend
+      GOTRUE_SMTP_PASS: ${RESEND_API_KEY}
+      GOTRUE_SMTP_ADMIN_EMAIL: notifications@reliote.com
+      GOTRUE_SMTP_SENDER_NAME: Reliote
+```
+
+et `RESEND_API_KEY=<clé Resend>` dans `supabase/.env`. Le modèle
+`supabase/templates/recovery.html` (mot de passe oublié) ne s'applique
+qu'avec ce SMTP personnalisé.
+
+**5. Volume.** L'offre gratuite de Resend plafonne à 100 e-mails/jour et
+3 000/mois. Une lettre envoyée à plus de 100 abonnés le même jour exige
+l'offre payante (~20 $/mois).
+
+**6. Vérifier.** S'inscrire avec une vraie adresse (confirmation reçue),
+déposer un projet test (accusé + alerte admin), « M'envoyer un test » dans
+*Admin → Newsletter*, puis s'inscrire à la newsletter depuis le pied de page
+(lien de confirmation reçu). Contrôler l'onglet *Logs* de Resend.
+
+**7. Juridique.** Avant la première lettre, ajouter à la politique de
+confidentialité (*Admin → Pages légales*) un paragraphe newsletter : données
+gardées (adresse, langue, dates), finalité, durée, désinscription en un clic.
+
 ---
 
 ## 4. Sécurité production
@@ -524,6 +596,11 @@ directement** :
 - [ ] Studio derrière basic auth (§4.2)
 - [ ] Ports Docker non exposés en public (§4.4)
 - [ ] App Next.js déployée avec URLs prod (§3.4)
+- [ ] Domaine vérifié chez Resend (SPF, DKIM, DMARC) (§3.5)
+- [ ] `RESEND_API_KEY`, `RESEND_FROM`, `RELIOTE_ADMIN_EMAIL`, `SITE_URL` sur l'app Next.js, redéployée (§3.5)
+- [ ] GoTrue : SMTP Resend branché, `GOTRUE_MAILER_AUTOCONFIRM` à `false` (§3.5)
+- [ ] E-mails testés : inscription, mot de passe oublié, projet, newsletter (§3.5)
+- [ ] Politique de confidentialité complétée pour la newsletter (§3.5)
 - [ ] Backup cron actif, premier backup vérifié restauré (§6)
 - [ ] Health check externe configuré (§7.2)
 - [ ] NerveOps connecté au VPS (recommandé)
