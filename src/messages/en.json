@@ -1,6 +1,6 @@
 {
   "nav": {
-    "architects": "Selection",
+    "territory": "Territory",
     "approach": "Approach",
     "projects": "Projects",
     "journal": "Journal",
@@ -22,7 +22,7 @@
     "titleRest": "with method.",
     "sub": "Reliote connects project owners worldwide with the most rigorous architects across Africa — for a project always built on the continent. Verified profiles, structured introductions, framed collaboration — for the decisions that deserve care.",
     "primary": "Start a project",
-    "secondary": "How we select"
+    "secondary": "How it works"
   },
   "stats": {
     "architects": {

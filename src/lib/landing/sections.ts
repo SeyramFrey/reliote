@@ -5,7 +5,6 @@
 export type LandingSection =
   | "pillars"
   | "audiences"
-  | "method"
   | "process"
   | "territoire"
   | "featured"

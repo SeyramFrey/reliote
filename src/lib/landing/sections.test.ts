@@ -3,10 +3,10 @@ import { numberSections } from "./sections";
 
 describe("numberSections", () => {
   it("numbers sections in display order, two digits, starting at 01", () => {
-    expect(numberSections(["pillars", "audiences", "method"])).toEqual({
+    expect(numberSections(["pillars", "territoire", "process"])).toEqual({
       pillars: "01",
-      audiences: "02",
-      method: "03",
+      territoire: "02",
+      process: "03",
     });
   });
 

@@ -5,7 +5,6 @@ import { Hero } from "@/components/landing/Hero";
 import { StatsBar } from "@/components/landing/StatsBar";
 import { TrustRail } from "@/components/landing/TrustRail";
 import { Pillars } from "@/components/landing/Pillars";
-import { MethodProof } from "@/components/landing/MethodProof";
 import { Process } from "@/components/landing/Process";
 import { MapTerritoire } from "@/components/landing/MapTerritoire";
 import { FeaturedCaseView } from "@/components/landing/FeaturedCaseView";
@@ -65,13 +64,12 @@ export default async function Page() {
   // suit ce qui est réellement affiché.
   const shown: LandingSection[] = [
     "pillars",
-    "audiences",
-    "method",
-    "process",
     "territoire",
+    "process",
+    "audiences",
     ...(featured ? (["featured"] as const) : []),
-    "journal",
     "avis",
+    "journal",
     "cta",
   ];
   const num = numberSections(shown) as Record<LandingSection, string>;
@@ -89,14 +87,13 @@ export default async function Page() {
           <StatsBar />
           <TrustRail />
           <Pillars num={num.pillars} />
-          <Audiences num={num.audiences} />
-          <MethodProof num={num.method} />
-          <Process num={num.process} />
           <MapTerritoire num={num.territoire} />
-          {featured && <FeaturedCaseView content={featured} num={num.featured} />}
-          <Journal items={media} num={num.journal} />
           <PartnersOrbit logos={partners.logos} placeholders={partners.placeholders} />
+          <Process num={num.process} />
+          <Audiences num={num.audiences} />
+          {featured && <FeaturedCaseView content={featured} num={num.featured} />}
           <Avis items={testimonials} num={num.avis} />
+          <Journal items={media} num={num.journal} />
           <CtaBand num={num.cta} />
         </main>
         <Footer />

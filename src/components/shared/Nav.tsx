@@ -19,14 +19,12 @@ export function Nav({ dark = false }: { dark?: boolean }) {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // "Architectes" est désormais "Sélection" — la section publique présente la
-  // méthode + preuves agrégées, pas un catalogue.
   const links: { id: string; href: string }[] = [
-    { id: "architects", href: `/${locale}#architectes` },
     { id: "approach",   href: `/${locale}#approche` },
+    { id: "territory",  href: `/${locale}#territoire` },
     { id: "projects",   href: `/${locale}#projets` },
-    { id: "journal",    href: `/${locale}#journal` },
     { id: "about",      href: `/${locale}#apropos` },
+    { id: "journal",    href: `/${locale}#journal` },
   ];
 
   return (

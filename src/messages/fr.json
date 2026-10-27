@@ -1,6 +1,6 @@
 {
   "nav": {
-    "architects": "Sélection",
+    "territory": "Territoire",
     "approach": "Approche",
     "projects": "Projets",
     "journal": "Journal",
@@ -22,7 +22,7 @@
     "titleRest": "choisis avec méthode.",
     "sub": "Reliote relie les porteurs de projets du monde entier aux meilleurs architectes d'Afrique — pour un chantier toujours situé sur le continent. Profils vérifiés, mise en relation structurée, collaboration sous cadre — pour les décisions qui méritent du soin.",
     "primary": "Initier un projet",
-    "secondary": "Notre méthode de sélection"
+    "secondary": "Comment ça marche"
   },
   "stats": {
     "architects": {
