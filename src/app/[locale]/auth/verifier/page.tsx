@@ -1,3 +1,4 @@
+import { Turnstile } from "@/components/security/Turnstile";
 import { resendConfirmation } from "../actions";
 import { getTranslations, getLocale } from "next-intl/server";
 import { pageMetadata } from "@/lib/seo/metadata";
@@ -10,11 +11,11 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 export default async function VerifyPage({
   searchParams,
 }: {
-  searchParams: Promise<{ email?: string; resent?: string }>;
+  searchParams: Promise<{ email?: string; resent?: string; error?: string }>;
 }) {
   const locale = await getLocale();
   const t = await getTranslations("auth");
-  const { email, resent } = await searchParams;
+  const { email, resent, error } = await searchParams;
   return (
     <main className="page-edge py-32 max-w-[520px] mx-auto">
       <p className="eyebrow">{t("verifyEyebrow")}</p>
@@ -23,10 +24,12 @@ export default async function VerifyPage({
         {email ? t("verifyBody", { email }) : t("verifyBodyNoEmail")}
       </p>
       {resent && <p role="status" className="mt-4 text-sm text-green">{t("resent")}</p>}
+      {error === "captcha" && <p role="alert" className="mt-4 text-sm text-red-700">{t("errors.captcha")}</p>}
       {email && (
         <form action={resendConfirmation} className="mt-8">
           <input type="hidden" name="locale" value={locale} />
           <input type="hidden" name="email" value={email} />
+          <Turnstile action="resend" />
           <button className="inline-flex items-center gap-2 px-5 py-3 border border-[var(--hairline)] text-sm hover:border-ink">
             {t("resend")}
           </button>

@@ -3,6 +3,8 @@ import { getTranslations, getLocale } from "next-intl/server";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { displayAuthError } from "@/lib/auth/authError";
+import { hasVerifiedFactor, mfaPath } from "@/lib/auth/mfa";
+import { sessionAal } from "@/lib/auth/mfaSession";
 import { pageMetadata } from "@/lib/seo/metadata";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
@@ -19,6 +21,10 @@ export default async function ResetPage({ searchParams }: { searchParams: Promis
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) redirect(`/${locale}/auth/forgot?error=expired`);
+  // Compte protégé par la double authentification : le code d'abord.
+  if (hasVerifiedFactor(user.factors) && (await sessionAal(supabase)) !== "aal2") {
+    redirect(mfaPath("challenge", locale, `/${locale}/auth/reset`));
+  }
   const { error } = await searchParams;
   const errorCode = displayAuthError(error);
   const errorText = errorCode ? t(`errors.${errorCode}`) : null;

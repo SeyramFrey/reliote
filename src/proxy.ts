@@ -5,6 +5,7 @@ import { updateSession } from "@/lib/supabase/middleware";
 import { safeLocale } from "@/lib/auth/safeRedirect";
 import { dashboardPathFor } from "@/lib/auth/roles";
 import { cspEnv, pageCsp } from "@/lib/security/csp";
+import { mfaPath, mfaStep } from "@/lib/auth/mfa";
 
 const intlMiddleware = createIntlMiddleware({
   locales: [...locales],
@@ -16,12 +17,14 @@ const intlMiddleware = createIntlMiddleware({
 });
 
 // Espace protégé → rôle attendu (null = tout utilisateur connecté, renvoyé
-// vers son propre espace).
-const PROTECTED: { pattern: RegExp; role: "admin" | "architect" | "client" | null }[] = [
+// vers son propre espace ; "any" = tout utilisateur connecté, sur place).
+const PROTECTED: { pattern: RegExp; role: "admin" | "architect" | "client" | null | "any" }[] = [
   { pattern: /^\/(fr|en)\/admin(?:\/|$)/, role: "admin" },
   { pattern: /^\/(fr|en)\/dashboard\/architecte(?:\/|$)/, role: "architect" },
   { pattern: /^\/(fr|en)\/dashboard\/client(?:\/|$)/, role: "client" },
   { pattern: /^\/(fr|en)\/dashboard\/?$/, role: null },
+  // Réglages de la double authentification : avant elle, par définition.
+  { pattern: /^\/(fr|en)\/compte\/securite(?:\/|$)/, role: "any" },
 ];
 
 export async function proxy(request: NextRequest) {
@@ -63,6 +66,7 @@ export async function proxy(request: NextRequest) {
       new URL(`/${locale}/auth/login?next=${encodeURIComponent(pathname)}`, request.url),
     );
   }
+  if (guard.role === "any") return response;
 
   const { data: profile } = await supabase
     .from("profiles")
@@ -75,6 +79,14 @@ export async function proxy(request: NextRequest) {
   const role = profile?.role === "admin" || profile?.role === "architect" ? profile.role : "client";
   if (guard.role === null || role !== guard.role) {
     return NextResponse.redirect(new URL(dashboardPathFor(role, locale), request.url));
+  }
+
+  // 5) Double authentification : l'espace ne s'ouvre qu'une fois l'étape
+  //    franchie (facteurs lus sur l'utilisateur validé par getUser()).
+  const { data: aal } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
+  const step = mfaStep({ role, aal: aal?.currentLevel, factors: user.factors });
+  if (step !== "ok") {
+    return NextResponse.redirect(new URL(mfaPath(step, locale, pathname + request.nextUrl.search), request.url));
   }
 
   return response;

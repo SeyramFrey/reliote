@@ -24,19 +24,22 @@ function supabaseOrigins(supabaseUrl?: string): { http: string; ws: string } {
   }
 }
 
+// Captcha Turnstile : script, iframe du défi et appels.
+const TURNSTILE = "https://challenges.cloudflare.com";
+
 function directives(scriptSrc: string, { supabaseUrl, dev }: Env): string {
   const sb = supabaseOrigins(supabaseUrl);
   return [
     "default-src 'self'",
-    `script-src ${scriptSrc}${dev ? " 'unsafe-eval'" : ""}`,
+    `script-src ${scriptSrc} ${TURNSTILE}${dev ? " 'unsafe-eval'" : ""}`,
     "style-src 'self' 'unsafe-inline' https://use.typekit.net https://p.typekit.net",
     // https: — logos et visuels saisis par l'admin peuvent être hébergés ailleurs.
     "img-src 'self' data: blob: https:",
     "font-src 'self' data: https://use.typekit.net",
-    `connect-src 'self' ${sb.http} ${sb.ws}${dev ? " ws: http://localhost:*" : ""}`,
+    `connect-src 'self' ${sb.http} ${sb.ws} ${TURNSTILE}${dev ? " ws: http://localhost:*" : ""}`,
     `media-src 'self' blob: ${sb.http}`,
     "worker-src 'self' blob:",
-    "frame-src 'none'",
+    `frame-src ${TURNSTILE}`,
     "object-src 'none'",
     "base-uri 'self'",
     "form-action 'self'",

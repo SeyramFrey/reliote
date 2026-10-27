@@ -13,6 +13,8 @@ type PageKey =
   | "forgot"
   | "reset"
   | "verify"
+  | "mfa"
+  | "security"
   | "confirmation"
   | "dashboard"
   | "admin"

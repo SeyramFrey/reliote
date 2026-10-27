@@ -1,10 +1,11 @@
 "use client";
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import {
   subscribeFromFooter,
   type FooterSubscribeState,
 } from "@/app/[locale]/newsletter/actions";
+import { Turnstile } from "@/components/security/Turnstile";
 
 // Inscription du pied de page. Double opt-in : l'inscription n'est active
 // qu'après le clic dans l'e-mail de confirmation — le message le dit.
@@ -15,6 +16,16 @@ export function NewsletterForm() {
     subscribeFromFooter,
     { status: "idle" },
   );
+  // Le captcha ne se charge qu'à l'intention d'écrire : pas de script tiers sur
+  // chaque page vue de la landing.
+  const [armed, setArmed] = useState(false);
+  // Un jeton ne sert qu'une fois : nouveau widget après chaque réponse du serveur.
+  const [answered, setAnswered] = useState(state);
+  const [round, setRound] = useState(0);
+  if (state !== answered) {
+    setAnswered(state);
+    setRound(round + 1);
+  }
 
   return (
     <div className="footer-news">
@@ -47,15 +58,21 @@ export function NewsletterForm() {
               autoComplete="email"
               placeholder={t("emailPlaceholder")}
               defaultValue={state.email}
+              onFocus={() => setArmed(true)}
               aria-invalid={state.status === "invalid" || undefined}
             />
           </label>
           <button type="submit" disabled={pending}>
             {pending ? "…" : t("footerSubmit")}
           </button>
-          {(state.status === "invalid" || state.status === "error") && (
+          {(armed || state.status === "captcha") && <Turnstile key={round} action="newsletter" />}
+          {(state.status === "invalid" || state.status === "error" || state.status === "captcha") && (
             <p role="alert" className="footer-news-err">
-              {state.status === "invalid" ? t("invalidEmail") : t("genericError")}
+              {state.status === "invalid"
+                ? t("invalidEmail")
+                : state.status === "captcha"
+                  ? t("captchaError")
+                  : t("genericError")}
             </p>
           )}
           <p className="footer-news-legal">{t("footerLegal")}</p>

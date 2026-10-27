@@ -1,6 +1,7 @@
 "use server";
 import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
+import { mfaStepFor } from "@/lib/auth/mfaSession";
 import { projectSchemaFor, type ProjectInput, type ProjectMode } from "@/lib/validation/project.schema";
 import {
   rankArchitects,
@@ -15,6 +16,7 @@ import { signUpOutcome } from "@/lib/auth/signUpOutcome";
 import { subscribe } from "@/lib/newsletter/subscriptions";
 import { appOrigin } from "@/lib/auth/origin";
 import { clientIp, rateLimitAll } from "@/lib/security/rateLimit";
+import { authCaptcha } from "@/lib/security/captcha.server";
 import { sendEmail, adminEmail } from "@/lib/email/client";
 import { projectReceivedEmail, newProjectAdminEmail } from "@/lib/email/templates";
 
@@ -30,7 +32,7 @@ type InsertedProject = {
 // Codes d'erreur traduits par le formulaire (wizardClient.errors.*), plus
 // « exists » et « wrongRole » qui ont un affichage dédié.
 export type SubmitProjectResult =
-  | { error: "exists" | "wrongRole" | "validation" | "insert" | "weak" | "rateLimited" | "generic" }
+  | { error: "exists" | "wrongRole" | "validation" | "insert" | "weak" | "rateLimited" | "mfa" | "captcha" | "generic" }
   | { needsConfirmation: true; email: string };
 
 // Dépôt d'un projet. Le porteur a toujours un compte : soit il est connecté,
@@ -38,6 +40,7 @@ export type SubmitProjectResult =
 export async function submitProject(
   input: ProjectInput,
   mode: ProjectMode,
+  captchaToken?: string | null,
 ): Promise<SubmitProjectResult | void> {
   const parsed = projectSchemaFor(mode).safeParse(input);
   if (!parsed.success) {
@@ -71,15 +74,22 @@ export async function submitProject(
       .eq("id", user.id)
       .single()) as { data: { role: string; first_name: string | null; last_name: string | null } | null };
     if (profile?.role !== "client") return { error: "wrongRole" };
+    // Un compte qui a activé la double authentification doit l'avoir validée.
+    // Sans facteur encore, on le laisse déposer : l'activation est demandée à
+    // l'entrée de son espace, juste après.
+    if ((await mfaStepFor(supabase, user, profile.role)) === "challenge") return { error: "mfa" };
     userId = user.id;
     email = user.email ?? "";
     clientName = [profile.first_name, profile.last_name].filter(Boolean).join(" ") || email;
   } else {
     if (mode !== "guest" || !data.email || !data.password) return { error: "validation" };
+    const captcha = await authCaptcha(captchaToken);
+    if (!captcha.ok) return { error: "captcha" };
     const res = await supabase.auth.signUp({
       email: data.email,
       password: data.password,
       options: {
+        captchaToken: captcha.captchaToken,
         data: {
           role: "client",
           first_name: data.first_name?.trim(),

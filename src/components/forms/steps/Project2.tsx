@@ -5,6 +5,18 @@ import { FieldError } from "../FieldError";
 import { Checkboxes } from "../Checkboxes";
 import { SPECIALTIES } from "@/lib/validation/architect.schema";
 
+// Coordonnées repérées dans le descriptif : les architectes proposés le lisent
+// avant la révélation, qui n'a lieu qu'au rendez-vous confirmé.
+const EMAIL_RE = /[^\s@]+@[^\s@]+\.[a-z]{2,}/i;
+function mentionsContact(text: string): boolean {
+  if (EMAIL_RE.test(text)) return true;
+  // Un numéro : au moins neuf chiffres d'affilée, séparateurs compris ; une
+  // plage d'années (« 2025-2026 ») n'en est pas un.
+  return (text.match(/\+?\d[\d\s().-]{6,}\d/g) ?? []).some(
+    (m) => m.replace(/\D/g, "").length >= 9 && !/^\d{4}\s*-\s*\d{4}$/.test(m.trim()),
+  );
+}
+
 export default function Project2() {
   const {
     register,
@@ -24,6 +36,10 @@ export default function Project2() {
           rows={6}
           className="w-full mt-1 bg-transparent border border-[var(--hairline)] p-3 outline-none focus:border-green"
         />
+        <p className="mt-2 text-xs text-concrete-1">{t("fields.descriptionPrivacy")}</p>
+        {mentionsContact(desc ?? "") && (
+          <p role="status" className="mt-1 text-xs text-[#806b3b]">{t("fields.descriptionContact")}</p>
+        )}
         <FieldError message={errors.project_description?.message} />
       </label>
       <div>

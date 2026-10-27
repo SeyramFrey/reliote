@@ -1,5 +1,6 @@
 import "server-only";
 import { createClient } from "@/lib/supabase/server";
+import { mfaStepFor } from "@/lib/auth/mfaSession";
 
 type ProfileRole = { role: string };
 
@@ -21,6 +22,9 @@ export async function requireAdmin(): Promise<{ userId: string }> {
     .single()) as { data: ProfileRole | null };
 
   if (prof?.role !== "admin") throw new Error("Forbidden");
+  // Les actions admin passent en clé service : la RLS (0024) ne les voit pas,
+  // la double authentification se vérifie donc ici.
+  if ((await mfaStepFor(supabase, user, prof.role)) !== "ok") throw new Error("MFA required");
 
   return { userId: user.id };
 }

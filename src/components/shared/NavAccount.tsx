@@ -74,6 +74,9 @@ export function NavAccount({ signedIn }: { signedIn: boolean | null }) {
         {t("mySpace")}
         <UnreadDot count={unread} label={tm("unread", { count: unread })} />
       </Link>
+      <Link href={`/${locale}/compte/securite`} className={textLink}>
+        {t("security")}
+      </Link>
       <form action={signOut.bind(null, locale)}>
         <button className={textLink}>{t("signOut")}</button>
       </form>
@@ -96,6 +99,16 @@ export function NavAccountMobile() {
       >
         {t("mySpace")}
         <UnreadDot count={unread} label={tm("unread", { count: unread })} />
+      </Link>
+      <Link
+        href={`/${locale}/compte/securite`}
+        aria-label={t("security")}
+        title={t("security")}
+        className="p-2 opacity-80 hover:opacity-100"
+      >
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
+          <path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z" />
+        </svg>
       </Link>
       <form action={signOut.bind(null, locale)}>
         <button aria-label={t("signOut")} title={t("signOut")} className="p-2 opacity-80 hover:opacity-100">

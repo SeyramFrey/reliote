@@ -268,6 +268,8 @@ les reset password).
 
 ### 3.5 E-mails (Resend) — à faire avant d'ouvrir au public
 
+Pas à pas DNS chez Hostinger : `docs/RESEND-DOMAINE.md`.
+
 Tant que Resend n'est pas configuré, **aucun e-mail ne part** : le client
 `src/lib/email/client.ts` ignore les envois sans `RESEND_API_KEY` (pour ne pas
 faire planter le site). Au 26/10/2026, ni Vercel ni le VPS n'ont de clé :
@@ -614,7 +616,9 @@ directement** :
 - [ ] Studio derrière basic auth (§4.2)
 - [ ] Ports Docker non exposés en public (§4.4)
 - [ ] App Next.js déployée avec URLs prod (§3.4)
-- [ ] Domaine vérifié chez Resend (SPF, DKIM, DMARC) (§3.5)
+- [ ] Domaine vérifié chez Resend (SPF, DKIM, DMARC) (§3.5, `docs/RESEND-DOMAINE.md`)
+- [ ] Turnstile : `NEXT_PUBLIC_TURNSTILE_SITE_KEY` + `TURNSTILE_SECRET_KEY` sur l'app, `GOTRUE_SECURITY_CAPTCHA_ENABLED=true` + `TURNSTILE_SECRET_KEY` dans `supabase/.env`, puis `SUPABASE_AUTH_CAPTCHA=true` sur l'app
+- [ ] Migration 0024 (double authentification en RLS) appliquée ; compte admin avec deux appareils enregistrés
 - [ ] `RESEND_API_KEY`, `RESEND_FROM`, `RELIOTE_ADMIN_EMAIL`, `SITE_URL` sur l'app Next.js, redéployée (§3.5)
 - [ ] GoTrue : SMTP Resend branché, `GOTRUE_MAILER_AUTOCONFIRM` à `false` (§3.5)
 - [ ] E-mails testés : inscription, mot de passe oublié, projet, newsletter (§3.5)

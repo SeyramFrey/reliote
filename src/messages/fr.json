@@ -9,7 +9,8 @@
     "account": "Espace client",
     "signIn": "Se connecter",
     "mySpace": "Mon espace",
-    "signOut": "Se déconnecter"
+    "signOut": "Se déconnecter",
+    "security": "Sécurité"
   },
   "lang": {
     "fr": "FR",
@@ -214,6 +215,8 @@
       "short": "8 caractères minimum.",
       "generic": "Une erreur est survenue. Réessayez.",
       "rateLimited": "Trop de tentatives. Patientez quelques minutes avant de réessayer.",
+      "mfaCode": "Code incorrect ou expiré.",
+      "captcha": "La vérification anti-robot a échoué. Rechargez la page et réessayez.",
       "samePassword": "Choisissez un mot de passe différent de l’ancien.",
       "weak": "Mot de passe trop faible : allongez-le ou variez les caractères.",
       "linkUsed": "Ce lien a déjà servi ou a été ouvert sur un autre appareil. Si vous venez de confirmer votre adresse, connectez-vous simplement."
@@ -237,6 +240,8 @@
     "fields": {
       "project_type": "Type de projet",
       "project_description": "Décrivez votre projet en quelques lignes",
+      "descriptionPrivacy": "N’indiquez ni téléphone, ni e-mail, ni nom complet : les architectes proposés lisent ce texte avant de connaître votre identité, révélée seulement au rendez-vous confirmé.",
+      "descriptionContact": "Votre texte semble contenir un téléphone ou un e-mail : retirez-le, Reliote vous met en contact au bon moment.",
       "required_specialties": "Spécialités recherchées",
       "notes": "Notes complémentaires",
       "project_country": "Pays du chantier",
@@ -282,6 +287,8 @@
       "insert": "Votre projet n’a pas pu être enregistré. Réessayez.",
       "weak": "Mot de passe trop faible : allongez-le ou variez les caractères.",
       "rateLimited": "Trop de dépôts en peu de temps. Patientez un moment avant de réessayer.",
+      "mfa": "Votre compte a activé la double authentification : reconnectez-vous et saisissez votre code avant de déposer un projet.",
+      "captcha": "La vérification anti-robot a échoué. Patientez une seconde puis réessayez.",
       "generic": "Une erreur est survenue. Réessayez."
     },
     "noProject": {
@@ -841,6 +848,12 @@
       "verify": {
         "title": "Confirmez votre adresse e-mail"
       },
+      "mfa": {
+        "title": "Double authentification"
+      },
+      "security": {
+        "title": "Sécurité du compte"
+      },
       "confirmation": {
         "title": "Projet reçu"
       },
@@ -989,6 +1002,38 @@
     "dashboardOff": "Recevez la newsletter Reliote : architecture en Afrique, méthode et nouvelles de la plateforme.",
     "dashboardSubscribe": "M'inscrire",
     "dashboardUnsubscribe": "Me désinscrire",
-    "genericError": "L'inscription n'a pas abouti. Réessayez dans un instant."
+    "genericError": "L'inscription n'a pas abouti. Réessayez dans un instant.",
+    "captchaError": "La vérification anti-robot a échoué. Réessayez."
+  },
+  "mfa": {
+    "eyebrow": "Double authentification",
+    "challengeTitle": "Votre code de sécurité",
+    "challengeBody": "Ouvrez votre application d'authentification (Google Authenticator, Microsoft Authenticator, 1Password…) et saisissez le code à six chiffres affiché pour Reliote.",
+    "code": "Code à six chiffres",
+    "verify": "Valider",
+    "signOut": "Se déconnecter",
+    "lost": "Plus accès à votre téléphone ? Écrivez à l'équipe Reliote : après vérification de votre identité, nous réinitialisons votre double authentification.",
+    "securityTitle": "Sécurité du compte",
+    "required": "La double authentification est obligatoire pour votre compte : elle protège vos projets et vos échanges même si votre mot de passe fuite. Activez-la pour accéder à votre espace.",
+    "optional": "La double authentification est facultative pour les architectes, mais vivement recommandée : elle protège votre dossier même si votre mot de passe fuite.",
+    "active": "Double authentification active.",
+    "devices": "Appareils enregistrés",
+    "addedOn": "ajouté le {date}",
+    "remove": "Retirer",
+    "removeLastRequired": "Ajoutez un autre appareil avant de retirer celui-ci : la double authentification est obligatoire pour votre compte.",
+    "addDevice": "Ajouter un autre appareil",
+    "backupHint": "Conseil : enregistrez Reliote sur un second appareil (tablette, gestionnaire de mots de passe) pour ne jamais perdre l'accès.",
+    "start": "Activer la double authentification",
+    "step1": "1. Installez une application d'authentification sur votre téléphone, puis scannez ce QR code.",
+    "manual": "Impossible de scanner ? Saisissez cette clé dans l'application :",
+    "step2": "2. Saisissez le code à six chiffres affiché par l'application.",
+    "confirm": "Confirmer l'activation",
+    "continue": "Continuer vers mon espace",
+    "qrAlt": "QR code à scanner avec votre application d'authentification",
+    "errors": {
+      "code": "Code incorrect ou expiré. Vérifiez l'heure de votre téléphone et réessayez.",
+      "rateLimited": "Trop d'essais. Patientez quelques minutes.",
+      "generic": "L'opération n'a pas abouti. Réessayez."
+    }
   }
 }

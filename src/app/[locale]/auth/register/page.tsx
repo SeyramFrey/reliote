@@ -1,3 +1,4 @@
+import { Turnstile } from "@/components/security/Turnstile";
 import { signUp } from "../actions";
 import { getTranslations, getLocale } from "next-intl/server";
 import { displayAuthError } from "@/lib/auth/authError";
@@ -118,6 +119,9 @@ export default async function RegisterPage({
               <input type="checkbox" name="newsletter" value="1" className="mt-1 accent-[var(--color-green)]" />
               <span>{t("newsletterOptIn")}</span>
             </label>
+            <div className="md:col-span-2">
+              <Turnstile action="register" />
+            </div>
             <button className="md:col-span-2 mt-4 inline-flex items-center justify-center gap-2 px-5 py-3 bg-green text-paper text-sm hover:bg-green-deep transition-colors">
               {t("createAccount")}
               <span className="inline-block w-[9px] h-[9px] border-r border-t border-current rotate-45" />
