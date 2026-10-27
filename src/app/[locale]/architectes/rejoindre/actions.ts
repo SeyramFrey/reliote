@@ -12,6 +12,14 @@ import { verifyArchitectPhoto } from "@/lib/storage/architectPhoto";
 import { sendEmail, adminEmail } from "@/lib/email/client";
 import { architectApplicationReceivedEmail, newArchitectAdminEmail } from "@/lib/email/templates";
 
+// Compte porteur ou admin arrivé sur « Rejoindre l'index » : on ferme sa
+// session pour qu'il crée un compte architecte (un e-mail = un rôle).
+export async function signOutToRegister(locale: string) {
+  const supabase = await createClient();
+  await supabase.auth.signOut();
+  redirect(`/${safeLocale(locale)}/auth/register?role=architect`);
+}
+
 export async function submitArchitect(input: ArchitectInput) {
   const parsed = architectSchema.safeParse(input);
   if (!parsed.success) {
