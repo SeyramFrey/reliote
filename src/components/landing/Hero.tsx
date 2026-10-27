@@ -72,7 +72,7 @@ export function Hero() {
             >
               {t("primary")} <span className="btn-arrow" />
             </Link>
-            <a href="#architectes" className="btn btn-ghost on-dark">
+            <a href="#projets" className="btn btn-ghost on-dark">
               {t("secondary")} <span className="btn-arrow" />
             </a>
           </div>
