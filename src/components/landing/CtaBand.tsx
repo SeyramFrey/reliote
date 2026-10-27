@@ -48,7 +48,7 @@ export async function CtaBand({ num }: { num: string }) {
             {c("button")} <span className="btn-arrow" />
           </Link>
           <Link
-            href={`/${locale}#projets`}
+            href={`/${locale}/architectes/rejoindre`}
             className="btn btn-ghost on-dark"
             style={{ color: "var(--paper)", borderColor: "rgba(243,241,236,0.3)" }}
           >

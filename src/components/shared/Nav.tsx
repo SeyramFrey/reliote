@@ -20,11 +20,11 @@ export function Nav({ dark = false }: { dark?: boolean }) {
   }, []);
 
   const links: { id: string; href: string }[] = [
-    { id: "approach",   href: `/${locale}#approche` },
-    { id: "territory",  href: `/${locale}#territoire` },
     { id: "projects",   href: `/${locale}#projets` },
+    { id: "approach",   href: `/${locale}#approche` },
     { id: "about",      href: `/${locale}#apropos` },
-    { id: "journal",    href: `/${locale}#journal` },
+    { id: "territory",  href: `/${locale}#territoire` },
+    { id: "faq",        href: `/${locale}#faq` },
   ];
 
   return (

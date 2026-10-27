@@ -249,9 +249,13 @@ html.lenis, html.lenis body { height: auto; }
   }
   .stat-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    /* minmax(0, …) : sans lui, un chiffre long (« Sur dossier ») élargit sa
+       colonne au-delà de l'écran sur mobile. */
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
   .stat-cell {
+    min-width: 0;
+    overflow-wrap: break-word;
     padding: 28px var(--edge);
     border-right: 1px solid var(--hairline);
     display: flex;
@@ -261,7 +265,8 @@ html.lenis, html.lenis body { height: auto; }
   .stat-cell:last-child { border-right: none; }
   .stat-num {
     font-family: var(--f-display);
-    font-size: 44px;
+    /* Plus petit sur mobile : « Protégées » doit tenir dans une demi-largeur. */
+    font-size: clamp(28px, 8.5vw, 44px);
     line-height: 1;
     font-weight: 400;
     letter-spacing: -0.02em;
@@ -1065,7 +1070,7 @@ html.lenis, html.lenis body { height: auto; }
     .nav-links { display: none; }
     .nav-right .mono:nth-child(2) { display: none; }
     .grid-12 { grid-template-columns: 1fr; }
-    .stat-grid { grid-template-columns: repeat(2, 1fr); }
+    .stat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .pillar-row, .process-grid { grid-template-columns: 1fr 1fr; }
     .pillar, .process-step { border-bottom: 1px solid var(--hairline); }
     .archi-grid { grid-template-columns: 1fr 1fr; }
@@ -2078,8 +2083,10 @@ html.lenis, html.lenis body { height: auto; }
     .pin-arc-num { font-size: calc((1 - var(--d)) * 10px + 16px); }
   }
 
-  /* Sans animation : la pile redevient une liste, rien n'est épinglé. */
-  @media (prefers-reduced-motion: reduce) {
+  /* Sans animation, et sur mobile (cinq écrans épinglés y allongent trop la
+     page) : la pile redevient une liste, rien n'est épinglé. Même requête
+     que dans Pillars.tsx. */
+  @media (prefers-reduced-motion: reduce), (max-width: 760px) {
     .pin-track { height: auto; }
     .pin-stage { position: static; height: auto; overflow: visible; padding-top: 16px; }
     .pin-arc { display: none; }
