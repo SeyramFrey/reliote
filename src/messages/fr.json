@@ -380,6 +380,14 @@
       "body": "Notre comité étudie chaque dossier en profondeur. Vous recevrez une réponse motivée sous dix jours ouvrés.",
       "cta": "Retour à l'accueil"
     },
+    "wrongRole": {
+      "eyebrow": "Rejoindre l'index",
+      "title": "Ce compte ne peut pas rejoindre l'index.",
+      "bodyClient": "Vous êtes connecté(e) avec un compte porteur de projet. L'index est réservé aux architectes : pour candidater, créez un compte architecte avec une autre adresse e-mail.",
+      "bodyAdmin": "Vous êtes connecté(e) avec le compte administrateur. L'index est réservé aux architectes : pour candidater, créez un compte architecte avec une autre adresse e-mail.",
+      "signOut": "Me déconnecter et créer un compte architecte",
+      "back": "Retour à mon espace"
+    },
     "legalFormOther": "Autre",
     "legalStatus": {
       "individual": {

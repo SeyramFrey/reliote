@@ -380,6 +380,14 @@
       "body": "Our committee reviews every application in depth. You will receive a considered reply within ten business days.",
       "cta": "Back to home"
     },
+    "wrongRole": {
+      "eyebrow": "Join the index",
+      "title": "This account cannot join the index.",
+      "bodyClient": "You are signed in with a project owner account. The index is for architects only: to apply, create an architect account with another email address.",
+      "bodyAdmin": "You are signed in with the administrator account. The index is for architects only: to apply, create an architect account with another email address.",
+      "signOut": "Sign out and create an architect account",
+      "back": "Back to my space"
+    },
     "legalFormOther": "Other",
     "legalStatus": {
       "individual": {
