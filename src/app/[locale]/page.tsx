@@ -14,6 +14,9 @@ import { Avis } from "@/components/landing/Avis";
 import { CtaBand } from "@/components/landing/CtaBand";
 import { PartnersOrbit } from "@/components/landing/PartnersOrbit";
 import { Footer } from "@/components/landing/Footer";
+import { Faq } from "@/components/landing/Faq";
+import { ProcessCta } from "@/components/landing/ProcessCta";
+import { MobileCtaBar } from "@/components/landing/MobileCtaBar";
 import { SmoothScroll } from "@/components/landing/SmoothScroll";
 import { IntroGate } from "@/components/landing/intro/IntroGate";
 import {
@@ -62,11 +65,14 @@ export default async function Page() {
   // L'étude de cas n'apparaît qu'avec du contenu publié ; le Journal et les
   // Avis restent visibles (sujets à paraître, état d'attente). La numérotation
   // suit ce qui est réellement affiché.
+  // Ordre : promesse, mécanisme, confiance, double audience, puis la vitrine
+  // (carte, partenaires) et les questions avant la preuve et la relance finale.
   const shown: LandingSection[] = [
-    "pillars",
-    "territoire",
     "process",
+    "pillars",
     "audiences",
+    "territoire",
+    "faq",
     ...(featured ? (["featured"] as const) : []),
     "avis",
     "journal",
@@ -86,17 +92,20 @@ export default async function Page() {
           <Hero />
           <StatsBar />
           <TrustRail />
+          <Process num={num.process} />
+          <ProcessCta />
           <Pillars num={num.pillars} />
+          <Audiences num={num.audiences} />
           <MapTerritoire num={num.territoire} />
           <PartnersOrbit logos={partners.logos} placeholders={partners.placeholders} />
-          <Process num={num.process} />
-          <Audiences num={num.audiences} />
+          <Faq num={num.faq} />
           {featured && <FeaturedCaseView content={featured} num={num.featured} />}
           <Avis items={testimonials} num={num.avis} />
           <Journal items={media} num={num.journal} />
           <CtaBand num={num.cta} />
         </main>
         <Footer />
+        <MobileCtaBar />
       </div>
     </>
   );

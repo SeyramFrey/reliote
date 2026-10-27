@@ -2,15 +2,16 @@
   "nav": {
     "territory": "Territory",
     "approach": "Approach",
-    "projects": "Projects",
+    "projects": "How it works",
     "journal": "Journal",
-    "about": "About",
+    "about": "Who it's for",
     "cta": "Start a project",
     "account": "Client area",
     "signIn": "Sign in",
     "mySpace": "My space",
     "signOut": "Sign out",
-    "security": "Security"
+    "security": "Security",
+    "faq": "FAQ"
   },
   "lang": {
     "fr": "FR",
@@ -21,7 +22,7 @@
     "titlePre": "Exceptional architects, ",
     "titleItalic": "chosen",
     "titleRest": "with method.",
-    "sub": "Reliote connects project owners worldwide with the most rigorous architects across Africa — for a project always built on the continent. Verified profiles, structured introductions, framed collaboration — for the decisions that deserve care.",
+    "sub": "Reliote connects project owners worldwide with Africa's finest architects, for a build located on the continent. You describe your project; we present verified architects to you without their names. Their identity, like yours, is revealed only at a confirmed meeting.",
     "primary": "Start a project",
     "secondary": "How it works"
   },
@@ -64,33 +65,33 @@
       "n": "02",
       "t": "Verification",
       "b": "Diplomas, professional registration, references and delivered projects are checked before any profile goes live.",
-      "statNum": "100",
-      "statDenom": "%",
-      "statLabel": "diplomas verified"
+      "statNum": "7",
+      "statDenom": " checks",
+      "statLabel": "before any admission"
     },
     "p3": {
       "n": "03",
       "t": "Method",
-      "b": "Structured brief, scope of work, milestones and deliverables are written into the platform from the first exchange.",
+      "b": "Structured brief, specifications, milestones and deliverables are set on the platform from the first exchange. Fees and the Reliote commission are stated before any commitment.",
       "statNum": "8",
       "statDenom": " steps",
       "statLabel": "structured brief"
     },
     "p4": {
       "n": "04",
-      "t": "Transparency",
-      "b": "Fees, timelines, scope and clauses are stated clearly — no cost is surfaced halfway through.",
+      "t": "Discretion",
+      "b": "Proposed architects are presented to you without their names, and your identity is protected the same way. Both are revealed at the confirmed meeting, not before.",
       "statNum": "0",
-      "statDenom": " surprise",
-      "statLabel": "fixed fees"
+      "statDenom": " names",
+      "statLabel": "before the confirmed meeting"
     },
     "p5": {
       "n": "05",
       "t": "Stewardship",
       "b": "A Reliote duo follows the engagement through handover. Mediation included, on-site or remote.",
-      "statNum": "365d",
-      "statDenom": "",
-      "statLabel": "dedicated duo"
+      "statNum": "1",
+      "statDenom": " duo",
+      "statLabel": "from brief to handover"
     }
   },
   "process": {
@@ -113,34 +114,34 @@
       "n": "02",
       "t": "Selection",
       "days": "Day 3 — 7",
-      "verb": "We shortlist, we compare, we argue.",
-      "b": "Up to three architects, picked on fit, availability and experience. Each shortlist is argued, never random.",
+      "verb": "We shortlist and argue our choices, without revealing names.",
+      "b": "Three architects at most, chosen for fit, availability and experience, presented without their names. Every proposal is argued.",
       "deliverables": [
-        "Three portfolios",
-        "Reasoned shortlist",
-        "Availabilities"
+        "Unnamed profiles",
+        "Rationale note",
+        "Availability"
       ]
     },
     "s3": {
       "n": "03",
       "t": "Conversations",
       "days": "Day 7 — 21",
-      "verb": "We orchestrate, you decide, in full knowledge.",
-      "b": "Video interviews, method samples, client references. You compare on equal footing.",
+      "verb": "You meet, you decide: identities are revealed at the meeting.",
+      "b": "Video interview with the chosen architect. Their identity and yours are revealed at the confirmed meeting, once the charter is accepted.",
       "deliverables": [
-        "Framed video calls",
-        "Client references",
-        "Fees estimate"
+        "Confirmed meeting",
+        "Identities revealed",
+        "Fee estimate"
       ]
     },
     "s4": {
       "n": "04",
       "t": "Engagement",
       "days": "Month 1 +",
-      "verb": "We protect, we hold milestones, until handover.",
-      "b": "Reliote-framed contract, shared milestones, sequenced payments. Continuous mediation through delivery.",
+      "verb": "We support you and keep the milestones, through to delivery.",
+      "b": "You contract directly with the architect, within a mission framework proposed by Reliote: shared milestones, follow-up and mediation through to delivery.",
       "deliverables": [
-        "Framed contract",
+        "Mission framework",
         "Shared milestones",
         "Reliote mediation"
       ]
@@ -445,8 +446,8 @@
           "sub": "Revealed at the confirmed meeting"
         },
         {
-          "strong": "Protected fees",
-          "sub": "Milestone-sequenced"
+          "strong": "Commission stated",
+          "sub": "Before any commitment"
         },
         {
           "strong": "Mediation included",
@@ -471,7 +472,7 @@
         "specialties": "Specialties covered",
         "cities": "Cities of practice"
       },
-      "ctaLead": "Present your project in under 6 minutes. We reply within 48 business hours with up to three argued architects.",
+      "ctaLead": "Present your project in under 6 minutes. A first human reply reaches you within 48 business hours.",
       "cta": "Start a project"
     },
     "process": {
@@ -508,10 +509,10 @@
         "titleItalic": "same rigour",
         "titleRest": " you'd want next door.",
         "list": [
-          "Verified profiles, prior interviews",
+          "Verified profiles and prior interviews",
           "Structured brief written with you",
-          "Framed contracts, milestones, payments",
-          "Reliote mediation throughout"
+          "Identity protected until the confirmed meeting",
+          "Reliote mediation throughout the mission"
         ],
         "foot": "World ⇄ Africa",
         "say": { "pre": "Welcome", "script": "to the", "word": "project" }
@@ -521,10 +522,10 @@
         "titleItalic": "professional frame.",
         "titleRest": "",
         "list": [
-          "Qualified inbound only",
-          "Structured client brief",
-          "Protected fees, sequenced payments",
-          "Visibility into a premium market"
+          "Qualified applications only",
+          "Structured client brief, no vagueness",
+          "Free registration during the launch",
+          "Visibility with a premium market"
         ],
         "foot": "Africa · 2026",
         "say": { "pre": "Welcome", "script": "to the", "word": "studio" }
@@ -553,7 +554,7 @@
           "tag": "Practice",
           "pre": "Fees & milestones — ",
           "italic": "transparency as a tool.",
-          "excerpt": "How Reliote sequences payments to protect the commission, the project and the relationship alike."
+          "excerpt": "What a project run with Reliote costs, who pays what, and why the commission is stated before any commitment."
         }
       ]
     },
@@ -574,8 +575,8 @@
     },
     "ctaBand": {
       "begin": "Begin",
-      "sub": "Present your project in under 6 minutes. A human reply will reach you within 48 business hours.",
-      "secondary": "How it works"
+      "sub": "Present your project in under 6 minutes. A human reply reaches you within 48 business hours.",
+      "secondary": "Join the index"
     },
     "footer": {
       "tag": "Architecture, verified. Collaboration, framed.",
@@ -585,13 +586,14 @@
       "links": {
         "selection": "Selection",
         "approach": "Approach",
-        "process": "Process",
+        "process": "How it works",
         "territory": "Territory",
-        "about": "About",
+        "about": "Who it's for",
         "journal": "Journal",
         "project": "Start a project",
         "join": "Join as an architect",
-        "login": "Sign in"
+        "login": "Sign in",
+        "faq": "FAQ"
       },
       "rights": "All rights reserved",
       "legal": {
@@ -684,6 +686,47 @@
         ]
       },
       "network": "Sending failed (connection lost?). Please try again."
+    },
+    "processCta": {
+      "lead": "Present your project in under 6 minutes. A first human reply reaches you within 48 business hours.",
+      "cta": "Start a project"
+    },
+    "mobileCta": "Start a project",
+    "faq": {
+      "label": "FAQ",
+      "titlePre": "The questions we hear ",
+      "titleItalic": "before you start.",
+      "kicker": "Price, payment, anonymity, countries covered: what to know before submitting a project or an application.",
+      "items": [
+        {
+          "q": "How much does Reliote cost a project owner?",
+          "a": "Submitting a project and receiving architect proposals costs nothing. If you entrust your project to an architect presented by Reliote, Reliote charges a commission: a percentage of the project's total cost, stated in writing before any commitment. No fee appears along the way."
+        },
+        {
+          "q": "How is the architect paid?",
+          "a": "You pay the architect directly, under the contract you sign with them. Reliote does not hold your funds: we help you set clear milestones and remain your point of contact if there is a disagreement."
+        },
+        {
+          "q": "Why are architects presented without their names?",
+          "a": "So that you choose on substance: background, delivered projects, method, fees. The architect's identity, like yours, is revealed at the confirmed meeting, once the charter is accepted. It also protects everyone from off-platform solicitation."
+        },
+        {
+          "q": "What if no architect suits me?",
+          "a": "You are not committed to anything. Tell us what is wrong: we refine the brief with you and present other profiles as soon as the index allows. You can also put the project on hold."
+        },
+        {
+          "q": "Which countries are covered?",
+          "a": "The build must be in Africa: all 54 countries on the continent are eligible, and you can run the project from anywhere in the world. A country opens as soon as a verified architect practises there: the map shows actual, up-to-date coverage."
+        },
+        {
+          "q": "I am an architect: how much does registration cost?",
+          "a": "Registration is free during the launch phase. A monthly or annual subscription may be introduced later; it will be announced in advance, and you will remain free to leave the index."
+        },
+        {
+          "q": "Where does the platform stand?",
+          "a": "The index opens to architects in November 2026, on application. You can already submit your project: we reply within 48 business hours and present architects as admissions come in, ahead of the full opening planned for early 2027."
+        }
+      ]
     }
   },
   "countries": {

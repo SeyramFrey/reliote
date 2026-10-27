@@ -2,15 +2,16 @@
   "nav": {
     "territory": "Territoire",
     "approach": "Approche",
-    "projects": "Projets",
+    "projects": "Comment ça marche",
     "journal": "Journal",
-    "about": "À propos",
+    "about": "Pour qui",
     "cta": "Initier un projet",
     "account": "Espace client",
     "signIn": "Se connecter",
     "mySpace": "Mon espace",
     "signOut": "Se déconnecter",
-    "security": "Sécurité"
+    "security": "Sécurité",
+    "faq": "FAQ"
   },
   "lang": {
     "fr": "FR",
@@ -21,7 +22,7 @@
     "titlePre": "Architectes ",
     "titleItalic": "d'exception,",
     "titleRest": "choisis avec méthode.",
-    "sub": "Reliote relie les porteurs de projets du monde entier aux meilleurs architectes d'Afrique — pour un chantier toujours situé sur le continent. Profils vérifiés, mise en relation structurée, collaboration sous cadre — pour les décisions qui méritent du soin.",
+    "sub": "Reliote relie les porteurs de projets du monde entier aux meilleurs architectes d'Afrique, pour un chantier situé sur le continent. Vous décrivez votre projet ; nous vous présentons des architectes vérifiés, sans leur nom. Leur identité, comme la vôtre, n'est révélée qu'au rendez-vous confirmé.",
     "primary": "Initier un projet",
     "secondary": "Comment ça marche"
   },
@@ -64,33 +65,33 @@
       "n": "02",
       "t": "Vérification",
       "b": "Diplômes, inscription à l'Ordre, références client et projets livrés sont contrôlés avant publication.",
-      "statNum": "100",
-      "statDenom": "%",
-      "statLabel": "diplômes contrôlés"
+      "statNum": "7",
+      "statDenom": " contrôles",
+      "statLabel": "avant toute admission"
     },
     "p3": {
       "n": "03",
       "t": "Méthode",
-      "b": "Brief structuré, cahier des charges, jalons et livrables sont définis sur la plateforme dès le premier échange.",
+      "b": "Brief structuré, cahier des charges, jalons et livrables sont définis sur la plateforme dès le premier échange. Honoraires et commission Reliote sont annoncés avant tout engagement.",
       "statNum": "8",
       "statDenom": " étapes",
       "statLabel": "brief structuré"
     },
     "p4": {
       "n": "04",
-      "t": "Transparence",
-      "b": "Honoraires, délais, périmètre et clauses sont énoncés clairement — aucun coût ne surgit en cours de route.",
+      "t": "Discrétion",
+      "b": "Les architectes proposés vous sont présentés sans leur nom, et votre identité reste protégée de la même façon. Les deux se découvrent au rendez-vous confirmé, pas avant.",
       "statNum": "0",
-      "statDenom": " surprise",
-      "statLabel": "honoraires fixes"
+      "statDenom": " nom",
+      "statLabel": "avant le rendez-vous confirmé"
     },
     "p5": {
       "n": "05",
       "t": "Accompagnement",
       "b": "Un binôme Reliote suit la mission jusqu'à la remise des clés. Médiation incluse, à distance ou sur site.",
-      "statNum": "365j",
-      "statDenom": "",
-      "statLabel": "binôme dédié"
+      "statNum": "1",
+      "statDenom": " binôme",
+      "statLabel": "du brief à la remise des clés"
     }
   },
   "process": {
@@ -113,10 +114,10 @@
       "n": "02",
       "t": "Sélection",
       "days": "Jour 3 — 7",
-      "verb": "Nous présélectionnons, nous comparons, nous argumentons.",
-      "b": "Trois architectes maximum, choisis sur compatibilité, disponibilité et expérience. Chaque proposition est argumentée.",
+      "verb": "Nous présélectionnons, nous argumentons, sans révéler les noms.",
+      "b": "Trois architectes maximum, choisis sur compatibilité, disponibilité et expérience, présentés sans leur nom. Chaque proposition est argumentée.",
       "deliverables": [
-        "Trois portfolios",
+        "Profils sans nom",
         "Note d'argumentation",
         "Disponibilités"
       ]
@@ -125,11 +126,11 @@
       "n": "03",
       "t": "Rencontres",
       "days": "Jour 7 — 21",
-      "verb": "Nous orchestrons, vous décidez, en connaissance de cause.",
-      "b": "Entretiens en visioconférence, échantillons de méthode, références client. Vous comparez sur des bases égales.",
+      "verb": "Vous rencontrez, vous décidez : les identités se révèlent au rendez-vous.",
+      "b": "Entretien en visioconférence avec l'architecte retenu. Son identité et la vôtre sont révélées au rendez-vous confirmé, une fois la charte acceptée.",
       "deliverables": [
-        "Visios cadrées",
-        "Références client",
+        "Rendez-vous confirmé",
+        "Identités révélées",
         "Estimation honoraires"
       ]
     },
@@ -137,10 +138,10 @@
       "n": "04",
       "t": "Mission",
       "days": "Mois 1 +",
-      "verb": "Nous protégeons, nous tenons les jalons, jusqu'à la livraison.",
-      "b": "Contrat encadré par Reliote, jalons partagés, paiements séquencés. Médiation continue jusqu'à la livraison.",
+      "verb": "Nous accompagnons, nous tenons les jalons, jusqu'à la livraison.",
+      "b": "Vous contractez directement avec l'architecte, dans un cadre de mission proposé par Reliote : jalons partagés, suivi et médiation jusqu'à la livraison.",
       "deliverables": [
-        "Contrat encadré",
+        "Cadre de mission",
         "Jalons partagés",
         "Médiation Reliote"
       ]
@@ -445,8 +446,8 @@
           "sub": "Révélée au rendez-vous confirmé"
         },
         {
-          "strong": "Honoraires protégés",
-          "sub": "Séquencés par jalons"
+          "strong": "Commission annoncée",
+          "sub": "Avant tout engagement"
         },
         {
           "strong": "Médiation incluse",
@@ -471,7 +472,7 @@
         "specialties": "Spécialités couvertes",
         "cities": "Villes d'exercice"
       },
-      "ctaLead": "Présentez votre projet en moins de 6 minutes. Nous vous répondons sous 48 heures ouvrées avec jusqu'à trois architectes argumentés.",
+      "ctaLead": "Présentez votre projet en moins de 6 minutes. Une première réponse humaine vous parvient sous 48 heures ouvrées.",
       "cta": "Initier un projet"
     },
     "process": {
@@ -510,7 +511,7 @@
         "list": [
           "Profils vérifiés et entretiens préalables",
           "Brief structuré rédigé avec vous",
-          "Contrats, jalons et paiements encadrés",
+          "Identité protégée jusqu'au rendez-vous confirmé",
           "Médiation Reliote sur toute la mission"
         ],
         "foot": "Monde ⇄ Afrique",
@@ -523,7 +524,7 @@
         "list": [
           "Candidatures qualifiées uniquement",
           "Brief client structuré, sans flou",
-          "Honoraires protégés, paiements séquencés",
+          "Inscription gratuite pendant le lancement",
           "Visibilité auprès d'un marché premium"
         ],
         "foot": "Afrique · 2026",
@@ -553,7 +554,7 @@
           "tag": "Pratique",
           "pre": "Honoraires & jalons — ",
           "italic": "la transparence comme outil.",
-          "excerpt": "Comment Reliote séquence les paiements pour protéger à la fois la mission, le projet et la relation."
+          "excerpt": "Ce que coûte un projet mené avec Reliote, qui paie quoi, et pourquoi la commission est annoncée avant tout engagement."
         }
       ]
     },
@@ -574,8 +575,8 @@
     },
     "ctaBand": {
       "begin": "Commencer",
-      "sub": "Présentez votre projet en moins de 6 minutes. Une réponse humaine vous parviendra sous 48 heures ouvrées.",
-      "secondary": "Comment ça marche"
+      "sub": "Présentez votre projet en moins de 6 minutes. Une réponse humaine vous parvient sous 48 heures ouvrées.",
+      "secondary": "Rejoindre l'index"
     },
     "footer": {
       "tag": "Architecture, vérifiée. Collaboration, structurée.",
@@ -585,13 +586,14 @@
       "links": {
         "selection": "Sélection",
         "approach": "Approche",
-        "process": "Processus",
+        "process": "Comment ça marche",
         "territory": "Territoire",
-        "about": "À propos",
+        "about": "Pour qui",
         "journal": "Journal",
         "project": "Initier un projet",
         "join": "Rejoindre en tant qu'architecte",
-        "login": "Se connecter"
+        "login": "Se connecter",
+        "faq": "FAQ"
       },
       "rights": "Tous droits réservés",
       "legal": {
@@ -684,6 +686,47 @@
         ]
       },
       "network": "L’envoi n’a pas abouti (connexion interrompue ?). Réessayez."
+    },
+    "processCta": {
+      "lead": "Présentez votre projet en moins de 6 minutes. Une première réponse humaine vous parvient sous 48 heures ouvrées.",
+      "cta": "Initier un projet"
+    },
+    "mobileCta": "Initier un projet",
+    "faq": {
+      "label": "FAQ",
+      "titlePre": "Les questions qu'on nous pose ",
+      "titleItalic": "avant de commencer.",
+      "kicker": "Prix, paiement, anonymat, pays couverts : ce qu'il faut savoir avant de déposer un projet ou un dossier.",
+      "items": [
+        {
+          "q": "Combien coûte Reliote pour un porteur de projet ?",
+          "a": "Déposer un projet et recevoir des propositions d'architectes ne coûte rien. Si vous confiez votre projet à un architecte présenté par Reliote, Reliote perçoit une commission : un pourcentage du coût total du projet, annoncé par écrit avant tout engagement. Aucun frais n'apparaît ensuite en cours de route."
+        },
+        {
+          "q": "Comment se passe le paiement de l'architecte ?",
+          "a": "Vous réglez l'architecte directement, selon le contrat que vous signez avec lui. Reliote ne détient pas vos fonds : nous vous aidons à fixer des jalons clairs et restons votre interlocuteur en cas de désaccord."
+        },
+        {
+          "q": "Pourquoi les architectes sont-ils présentés sans leur nom ?",
+          "a": "Pour que vous choisissiez sur le fond : parcours, projets livrés, méthode, honoraires. L'identité de l'architecte, comme la vôtre, est révélée au rendez-vous confirmé, une fois la charte acceptée. Cela protège aussi chacun des sollicitations hors cadre."
+        },
+        {
+          "q": "Et si aucun architecte ne me convient ?",
+          "a": "Vous n'êtes engagé à rien. Dites-nous ce qui ne va pas : nous affinons le brief avec vous et vous présentons d'autres profils dès que l'index le permet. Vous pouvez aussi mettre le projet en pause."
+        },
+        {
+          "q": "Quels pays sont couverts ?",
+          "a": "Le chantier doit se situer en Afrique : les 54 pays du continent sont éligibles, et vous pouvez porter le projet depuis n'importe où dans le monde. Un pays s'ouvre dès qu'un architecte vérifié y exerce : la carte montre la couverture réelle, à jour."
+        },
+        {
+          "q": "Je suis architecte : combien coûte l'inscription ?",
+          "a": "L'inscription est gratuite pendant la phase de lancement. Un abonnement mensuel ou annuel pourra être introduit ensuite ; il sera annoncé à l'avance, et vous resterez libre de quitter l'index."
+        },
+        {
+          "q": "Où en est la plateforme ?",
+          "a": "L'index ouvre aux architectes en novembre 2026, sur dossier. Vous pouvez déjà déposer votre projet : nous vous répondons sous 48 heures ouvrées et vous présentons des architectes au fil des admissions, avant l'ouverture complète prévue début 2027."
+        }
+      ]
     }
   },
   "countries": {

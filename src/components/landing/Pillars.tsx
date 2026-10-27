@@ -44,7 +44,8 @@ export function Pillars({ num }: { num: string }) {
     if (!track || !stage || !arc) return;
 
     const nums = [...arc.querySelectorAll<HTMLElement>(".pin-arc-num")];
-    const doux = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    // Même requête que la liste statique de landing.css (mobile compris).
+    const doux = window.matchMedia("(prefers-reduced-motion: reduce), (max-width: 760px)").matches;
 
     const place = (p: number) => {
       stage.style.setProperty("--p", p.toFixed(4));

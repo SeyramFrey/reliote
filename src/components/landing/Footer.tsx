@@ -11,10 +11,11 @@ type FooterLink = { key: string; href: string };
 // les routes publiques. Le Journal est toujours rendu (articles publiés, ou ses
 // sujets « à paraître ») : son ancre mène quelque part.
 const PLATFORM: FooterLink[] = [
-  { key: "approach", href: "#approche" },
-  { key: "territory", href: "#territoire" },
   { key: "process", href: "#projets" },
+  { key: "approach", href: "#approche" },
   { key: "about", href: "#apropos" },
+  { key: "territory", href: "#territoire" },
+  { key: "faq", href: "#faq" },
   { key: "journal", href: "#journal" },
 ];
 const START: FooterLink[] = [

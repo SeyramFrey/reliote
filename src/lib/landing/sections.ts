@@ -7,6 +7,7 @@ export type LandingSection =
   | "audiences"
   | "process"
   | "territoire"
+  | "faq"
   | "featured"
   | "journal"
   | "avis"
