@@ -1,6 +1,7 @@
 import "server-only";
 import { getTranslations } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
+import { mfaStepFor } from "@/lib/auth/mfaSession";
 import { createServiceClient } from "@/lib/supabase/service";
 import {
   editableUntil as editableUntilFor,
@@ -77,6 +78,8 @@ export async function currentViewer(): Promise<Viewer | null> {
   const s = svc();
   const { data: prof } = await s.from("profiles").select("role").eq("id", user.id).maybeSingle();
   const role = prof?.role === "admin" || prof?.role === "architect" ? prof.role : "client";
+  // Tout le reste passe en clé service : la double authentification se vérifie ici.
+  if ((await mfaStepFor(supabase, user, role)) !== "ok") return null;
   let architectId: string | null = null;
   if (role === "architect") {
     const { data: a } = await s.from("architect_profiles").select("id").eq("user_id", user.id).maybeSingle();

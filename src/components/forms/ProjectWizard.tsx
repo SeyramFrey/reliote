@@ -11,6 +11,7 @@ import Step3 from "./steps/Project3";
 import Step4 from "./steps/Project4";
 import Step5 from "./steps/Project5";
 import { LegalNotice } from "@/components/shared/LegalNotice";
+import { Turnstile } from "@/components/security/Turnstile";
 import { submitProject } from "@/app/[locale]/projets/initier/actions";
 import { ProjectWizardContext, type ProjectWizardAccount } from "./projectWizardContext";
 
@@ -67,6 +68,9 @@ export function ProjectWizard({
   const [step, setStep] = useState(1);
   const [outcome, setOutcome] = useState<Outcome>(null);
   const [submitting, setSubmitting] = useState(false);
+  // Captcha du compte créé avec le projet (visiteur) ; un jeton par envoi.
+  const [captcha, setCaptcha] = useState<string | null>(null);
+  const [captchaRound, setCaptchaRound] = useState(0);
   const fields = stepFields(account.mode);
   const form = useForm<ProjectInput>({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -110,7 +114,7 @@ export function ProjectWizard({
     writeDraft(null);
     let res: Awaited<ReturnType<typeof submitProject>>;
     try {
-      res = await submitProject(values, account.mode);
+      res = await submitProject(values, account.mode, captcha);
     } catch (e) {
       // Une redirection serveur (succès) passe aussi par ici : on la laisse filer.
       if (e && typeof e === "object" && "digest" in e && String(e.digest).startsWith("NEXT_REDIRECT")) throw e;
@@ -121,7 +125,11 @@ export function ProjectWizard({
       setSubmitting(false);
     }
     if (!res) return;
-    if (!("needsConfirmation" in res)) writeDraft(values);
+    if (!("needsConfirmation" in res)) {
+      writeDraft(values);
+      setCaptcha(null);
+      setCaptchaRound((r) => r + 1);
+    }
     if ("needsConfirmation" in res) {
       setOutcome({ kind: "confirm", email: res.email });
     } else if (res.error === "exists") {
@@ -169,7 +177,14 @@ export function ProjectWizard({
           nextLabel={step === 5 ? t("submit") : t("next")}
           backLabel={t("back")}
           submitting={submitting}
-          footnote={step === 5 ? <LegalNotice published={legalSlugs} action="project" /> : undefined}
+          footnote={
+            step === 5 ? (
+              <>
+                {account.mode === "guest" && <Turnstile key={captchaRound} action="project" onToken={setCaptcha} />}
+                <LegalNotice published={legalSlugs} action="project" />
+              </>
+            ) : undefined
+          }
         >
           <Current />
           {outcome?.kind === "exists" && (

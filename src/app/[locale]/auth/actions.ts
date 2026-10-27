@@ -10,6 +10,8 @@ import { authErrorCodeFrom } from "@/lib/auth/authError";
 import { recoveryTokenFrom } from "@/lib/auth/recoveryToken";
 import { subscribe } from "@/lib/newsletter/subscriptions";
 import { clientIp, rateLimitAll } from "@/lib/security/rateLimit";
+import { hasVerifiedFactor, mfaPath, mfaStep } from "@/lib/auth/mfa";
+import { authCaptcha, captchaToken } from "@/lib/security/captcha.server";
 
 const lower = (email: string) => email.trim().toLowerCase();
 
@@ -21,14 +23,20 @@ export async function signIn(formData: FormData) {
   const nextRaw = formData.get("next") as string | null;
   // Anti force brute : par IP et par compte visé.
   const ip = await clientIp();
+  const keepNext = nextRaw ? `&next=${encodeURIComponent(nextRaw)}` : "";
   if (!(await rateLimitAll([[`login:ip:${ip}`, 30, 900], [`login:email:${lower(email)}`, 10, 900]]))) {
-    const keepNext = nextRaw ? `&next=${encodeURIComponent(nextRaw)}` : "";
     redirect(`/${locale}/auth/login?error=rateLimited${keepNext}`);
   }
-  const { error, data } = await supabase.auth.signInWithPassword({ email, password });
+  const captcha = await authCaptcha(captchaToken(formData));
+  if (!captcha.ok) redirect(`/${locale}/auth/login?error=captcha${keepNext}`);
+  const { error, data } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+    options: { captchaToken: captcha.captchaToken },
+  });
   if (error) {
-    const code = error.code === "email_not_confirmed" ? "unconfirmed" : "invalid";
-    const keepNext = nextRaw ? `&next=${encodeURIComponent(nextRaw)}` : "";
+    const code =
+      error.code === "email_not_confirmed" ? "unconfirmed" : error.code === "captcha_failed" ? "captcha" : "invalid";
     redirect(`/${locale}/auth/login?error=${code}${keepNext}`);
   }
   const { data: prof } = await supabase
@@ -36,7 +44,41 @@ export async function signIn(formData: FormData) {
     .select("role")
     .eq("id", data.user.id)
     .single<{ role: string }>();
-  if (prof?.role === "admin") redirect(`/${locale}/admin`);
+  const dest =
+    prof?.role === "admin" ? `/${locale}/admin` : safeRedirectPath(nextRaw, dashboardPathFor(prof?.role, locale));
+  // Session neuve, mot de passe seul (aal1) : code à six chiffres, ou activation
+  // de la double authentification si le rôle l'exige et qu'aucun facteur n'existe.
+  const step = mfaStep({ role: prof?.role, aal: "aal1", factors: data.user.factors });
+  redirect(step === "ok" ? dest : mfaPath(step, locale, dest));
+}
+
+// Deuxième étape de la connexion : le code de l'application d'authentification.
+export async function verifyMfa(formData: FormData) {
+  const locale = safeLocale(formData.get("locale"));
+  const nextRaw = String(formData.get("next") ?? "");
+  const code = String(formData.get("code") ?? "").replace(/\s+/g, "");
+  const retry = (error: string) =>
+    redirect(`/${locale}/auth/2fa?error=${error}${nextRaw ? `&next=${encodeURIComponent(nextRaw)}` : ""}`);
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) redirect(`/${locale}/auth/login`);
+  // Six chiffres, un million de combinaisons : on borne les essais par compte.
+  if (!(await rateLimitAll([[`mfa:user:${user.id}`, 10, 900]]))) retry("rateLimited");
+  if (!/^\d{6}$/.test(code)) retry("mfaCode");
+
+  const factor = (user.factors ?? []).find((f) => f.status === "verified" && f.factor_type === "totp");
+  if (!factor) redirect(mfaPath("enroll", locale, nextRaw || `/${locale}/dashboard`));
+  const { error } = await supabase.auth.mfa.challengeAndVerify({ factorId: factor.id, code });
+  if (error) retry("mfaCode");
+
+  const { data: prof } = await supabase
+    .from("profiles")
+    .select("role")
+    .eq("id", user.id)
+    .single<{ role: string }>();
   redirect(safeRedirectPath(nextRaw, dashboardPathFor(prof?.role, locale)));
 }
 
@@ -57,14 +99,17 @@ export async function signUp(formData: FormData) {
       : accountOnly
         ? `/${locale}/dashboard/client`
         : `/${locale}/projets/initier`;
-  if (!(await rateLimitAll([[`signup:ip:${await clientIp()}`, 10, 3600]]))) {
-    redirect(`/${locale}/auth/register?role=${role}${accountOnly ? "&intent=account" : ""}&error=rateLimited`);
-  }
+  const back = (error: string) =>
+    redirect(`/${locale}/auth/register?role=${role}${accountOnly ? "&intent=account" : ""}&error=${error}`);
+  if (!(await rateLimitAll([[`signup:ip:${await clientIp()}`, 10, 3600]]))) back("rateLimited");
+  const captcha = await authCaptcha(captchaToken(formData));
+  if (!captcha.ok) back("captcha");
   const origin = await appOrigin();
   const res = await supabase.auth.signUp({
     email,
     password,
     options: {
+      captchaToken: captcha.captchaToken,
       data: { role, first_name, last_name, locale },
       emailRedirectTo: `${origin}/${locale}/auth/callback?next=${encodeURIComponent(resume)}`,
     },
@@ -108,6 +153,8 @@ export async function forgot(formData: FormData) {
   if (!(await rateLimitAll([[`forgot:ip:${await clientIp()}`, 10, 3600], [`forgot:email:${lower(email)}`, 3, 3600]]))) {
     redirect(`/${locale}/auth/login?sent=1`);
   }
+  const captcha = await authCaptcha(captchaToken(formData));
+  if (!captcha.ok) redirect(`/${locale}/auth/forgot?error=captcha`);
   const supabase = createSupabaseClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -115,6 +162,7 @@ export async function forgot(formData: FormData) {
   );
   await supabase.auth.resetPasswordForEmail(email, {
     redirectTo: `${await appOrigin()}/${locale}/auth/login`,
+    captchaToken: captcha.captchaToken,
   });
   redirect(`/${locale}/auth/login?sent=1`);
 }
@@ -147,6 +195,12 @@ export async function updatePassword(formData: FormData) {
   } = await supabase.auth.getUser();
   if (!user) redirect(`/${locale}/auth/forgot?error=expired`);
 
+  // Compte protégé par la double authentification : le lien e-mail seul ne
+  // suffit pas à changer le mot de passe (GoTrue l'exige aussi).
+  if (hasVerifiedFactor(user.factors)) {
+    const { data: aal } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
+    if (aal?.currentLevel !== "aal2") redirect(mfaPath("challenge", locale, `/${locale}/auth/reset`));
+  }
   const { error } = await supabase.auth.updateUser({ password });
   if (error) redirect(`/${locale}/auth/reset?error=${encodeURIComponent(authErrorCodeFrom(error))}`);
 
@@ -166,11 +220,13 @@ export async function resendConfirmation(formData: FormData) {
     !!email &&
     (await rateLimitAll([[`resend:ip:${await clientIp()}`, 10, 3600], [`resend:email:${lower(email)}`, 3, 3600]]));
   if (allowed) {
+    const captcha = await authCaptcha(captchaToken(formData));
+    if (!captcha.ok) redirect(`/${locale}/auth/verifier?email=${encodeURIComponent(email)}&error=captcha`);
     const supabase = await createClient();
     await supabase.auth.resend({
       type: "signup",
       email,
-      options: { emailRedirectTo: `${await appOrigin()}/${locale}/auth/callback` },
+      options: { emailRedirectTo: `${await appOrigin()}/${locale}/auth/callback`, captchaToken: captcha.captchaToken },
     });
   }
   redirect(`/${locale}/auth/verifier?email=${encodeURIComponent(email)}&resent=1`);

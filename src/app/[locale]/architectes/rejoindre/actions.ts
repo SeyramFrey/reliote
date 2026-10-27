@@ -1,6 +1,7 @@
 "use server";
 import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
+import { mfaStepFor } from "@/lib/auth/mfaSession";
 import { architectSchema, type ArchitectInput } from "@/lib/validation/architect.schema";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
@@ -31,6 +32,10 @@ export async function submitArchitect(input: ArchitectInput) {
     .maybeSingle()) as { data: { role: string } | null };
   if (profile?.role !== "architect") {
     return { error: "Ce compte n'est pas un compte architecte. Créez un compte architecte pour déposer un dossier." };
+  }
+  // Facultative pour un architecte, mais exigée dès qu'il l'a activée.
+  if ((await mfaStepFor(supabase, user, profile.role)) !== "ok") {
+    return { error: "Validez d'abord votre code de double authentification (reconnectez-vous)." };
   }
 
   // Disallow duplicate profile rows for the same user (one architect profile per user account)

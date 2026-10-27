@@ -12,6 +12,8 @@ export const AUTH_ERROR_CODES = [
   "samePassword",
   "weak",
   "rateLimited",
+  "mfaCode",
+  "captcha",
   "generic",
 ] as const;
 

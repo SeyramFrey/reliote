@@ -6,6 +6,7 @@ import { notFound } from "next/navigation";
 import { setArchitectStatus } from "../actions";
 import { ARCHITECT_STATUS_FR } from "@/lib/workflow/labels";
 import { openAdmissionThread } from "@/lib/messaging/actions";
+import { AccountMfa } from "@/components/admin/AccountMfa";
 
 type Architect = {
   id: string;
@@ -38,6 +39,7 @@ type Architect = {
   charter_version: string | null;
   charter_signed_at: string | null;
   created_at: string;
+  user_id: string | null;
 };
 
 const dateFr = (iso: string | null) => (iso ? new Date(iso).toLocaleDateString("fr-FR") : "—");
@@ -51,7 +53,7 @@ export default async function AdminArchitectDetail({ params }: { params: Promise
   const { data: a } = (await service
     .from("architect_profiles")
     .select(
-      "id, first_name, last_name, structure, legal_status, company_name, legal_form, registration_number, legal_representative, email, phone, country, city, ordre_number, diploma, years_experience, specialties, project_types, languages, fee_currency, fee_amount, portfolio_url, photo_url, description, availability, status, anon_handle, charter_version, charter_signed_at, created_at",
+      "id, user_id, first_name, last_name, structure, legal_status, company_name, legal_form, registration_number, legal_representative, email, phone, country, city, ordre_number, diploma, years_experience, specialties, project_types, languages, fee_currency, fee_amount, portfolio_url, photo_url, description, availability, status, anon_handle, charter_version, charter_signed_at, created_at",
     )
     .eq("id", id)
     .single()) as { data: Architect | null };
@@ -148,6 +150,8 @@ export default async function AdminArchitectDetail({ params }: { params: Promise
         <p className="eyebrow">Présentation</p>
         <p className="mt-2 text-sm text-concrete-1 whitespace-pre-line max-w-[75ch]">{a.description}</p>
       </section>
+
+      <AccountMfa userId={a.user_id} returnTo={`/${locale}/admin/architectes/${a.id}`} />
 
       <div className="mt-10 flex flex-wrap gap-3">
         {a.status !== "verified" && (

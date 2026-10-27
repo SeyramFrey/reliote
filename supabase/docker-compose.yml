@@ -67,6 +67,15 @@ services:
       GOTRUE_RATE_LIMIT_VERIFY: ${GOTRUE_RATE_LIMIT_VERIFY:-30}
       GOTRUE_RATE_LIMIT_TOKEN_REFRESH: ${GOTRUE_RATE_LIMIT_TOKEN_REFRESH:-150}
       GOTRUE_SECURITY_REFRESH_TOKEN_ROTATION_ENABLED: "true"
+      # Double authentification TOTP (imposée par rôle dans l'app et en RLS, 0024).
+      GOTRUE_MFA_TOTP_ENROLL_ENABLED: "true"
+      GOTRUE_MFA_TOTP_VERIFY_ENABLED: "true"
+      GOTRUE_MFA_MAX_ENROLLED_FACTORS: "10"
+      # Captcha Turnstile vérifié par GoTrue (inscription, connexion, mot de passe
+      # oublié). À activer avec SUPABASE_AUTH_CAPTCHA=true côté app Next.js.
+      GOTRUE_SECURITY_CAPTCHA_ENABLED: ${GOTRUE_SECURITY_CAPTCHA_ENABLED:-false}
+      GOTRUE_SECURITY_CAPTCHA_PROVIDER: turnstile
+      GOTRUE_SECURITY_CAPTCHA_SECRET: ${TURNSTILE_SECRET_KEY:-}
 
   rest:
     image: postgrest/postgrest:v12.2.0

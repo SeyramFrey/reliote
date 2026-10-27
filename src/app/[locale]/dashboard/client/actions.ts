@@ -1,6 +1,7 @@
 "use server";
 import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
+import { mfaStepFor } from "@/lib/auth/mfaSession";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { sendEmail, adminEmail } from "@/lib/email/client";
@@ -39,12 +40,15 @@ function back(formData: FormData, query: string): never {
   redirect(`/${safeLocale(formData.get("locale"))}/dashboard/client?${query}`);
 }
 
+// Les actions suivantes passent en clé service : la double authentification
+// (obligatoire pour un porteur) se vérifie ici.
 async function currentUserId(): Promise<string | null> {
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  return user?.id ?? null;
+  if (!user || (await mfaStepFor(supabase, user, "client")) !== "ok") return null;
+  return user.id;
 }
 
 async function ownedProject(s: Svc, projectId: string, userId: string) {

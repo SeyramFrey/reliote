@@ -16,10 +16,12 @@ import {
   closeProject,
 } from "../actions";
 import { openArchitectThread, openClientThread } from "@/lib/messaging/actions";
+import { AccountMfa } from "@/components/admin/AccountMfa";
 import { retainedArchitectId, type EngagementStatus } from "@/lib/messaging/rules";
 
 type Project = {
   id: string;
+  user_id: string | null;
   client_name: string;
   email: string;
   phone: string | null;
@@ -106,7 +108,7 @@ export default async function AdminProjectDetail({
   const { data: project } = (await s
     .from("client_projects")
     .select(
-      "id, client_name, email, phone, project_type, project_country, project_location, project_description, required_specialties, budget_range, timeline, notes, status, created_at",
+      "id, user_id, client_name, email, phone, project_type, project_country, project_location, project_description, required_specialties, budget_range, timeline, notes, status, created_at",
     )
     .eq("id", id)
     .single()) as { data: Project | null };
@@ -208,6 +210,8 @@ export default async function AdminProjectDetail({
           ) : null}
         </div>
       </section>
+
+      <AccountMfa userId={project.user_id} returnTo={`/${locale}/admin/projets/${project.id}`} />
 
       {/* ── Messages ──────────────────────────────────────────────────── */}
       <div className="mt-12">

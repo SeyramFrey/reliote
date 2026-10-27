@@ -1,3 +1,4 @@
+import { Turnstile } from "@/components/security/Turnstile";
 import { forgot } from "../actions";
 import { getTranslations, getLocale } from "next-intl/server";
 import { displayAuthError } from "@/lib/auth/authError";
@@ -20,6 +21,7 @@ export default async function ForgotPage({ searchParams }: { searchParams: Promi
       <form action={forgot} className="mt-8 space-y-4">
         <input type="hidden" name="locale" value={locale} />
         <label className="block"><span className="eyebrow">{t("email")}</span><input name="email" type="email" required autoComplete="email" className="w-full mt-1 bg-transparent border-b border-[var(--hairline)] py-2 outline-none focus:border-green" /></label>
+        <Turnstile action="forgot" />
         <button className="mt-6 inline-flex items-center gap-2 px-5 py-3 bg-green text-paper text-sm">{t("sendLink")}</button>
       </form>
     </main>

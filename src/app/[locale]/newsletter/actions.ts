@@ -11,9 +11,10 @@ import {
   unsubscribeEmail,
 } from "@/lib/newsletter/subscriptions";
 import { clientIp, rateLimitAll } from "@/lib/security/rateLimit";
+import { captchaToken, verifyCaptcha } from "@/lib/security/captcha.server";
 
 export type FooterSubscribeState = {
-  status: "idle" | "pending" | "subscribed" | "invalid" | "error";
+  status: "idle" | "pending" | "subscribed" | "invalid" | "captcha" | "error";
   /** Adresse saisie, rendue au champ quand il faut la corriger. */
   email?: string;
 };
@@ -29,6 +30,9 @@ export async function subscribeFromFooter(
   const email = String(formData.get("email") ?? "").trim().toLowerCase();
   if (!(await rateLimitAll([[`newsletter:ip:${await clientIp()}`, 10, 3600], [`newsletter:email:${email}`, 3, 3600]]))) {
     return { status: "pending" };
+  }
+  if (!(await verifyCaptcha(captchaToken(formData)))) {
+    return { status: "captcha", email: String(formData.get("email") ?? "") };
   }
   const status = await subscribe({
     email: formData.get("email"),

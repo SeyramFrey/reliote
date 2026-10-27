@@ -1,3 +1,4 @@
+import { Turnstile } from "@/components/security/Turnstile";
 import { signIn } from "../actions";
 import { getTranslations, getLocale } from "next-intl/server";
 import { displayAuthError } from "@/lib/auth/authError";
@@ -39,6 +40,7 @@ export default async function LoginPage({
             {t("forgot")}
           </a>
         </p>
+        <Turnstile action="login" />
         <button className="mt-6 inline-flex items-center gap-2 px-5 py-3 bg-green text-paper text-sm">{t("signIn")}</button>
       </form>
       <p className="mt-8 text-sm text-concrete-1">

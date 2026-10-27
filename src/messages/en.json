@@ -9,7 +9,8 @@
     "account": "Client area",
     "signIn": "Sign in",
     "mySpace": "My space",
-    "signOut": "Sign out"
+    "signOut": "Sign out",
+    "security": "Security"
   },
   "lang": {
     "fr": "FR",
@@ -214,6 +215,8 @@
       "short": "At least 8 characters.",
       "generic": "Something went wrong. Please try again.",
       "rateLimited": "Too many attempts. Please wait a few minutes before trying again.",
+      "mfaCode": "Wrong or expired code.",
+      "captcha": "The anti-bot check failed. Reload the page and try again.",
       "samePassword": "Choose a password different from your previous one.",
       "weak": "Password too weak: make it longer or more varied.",
       "linkUsed": "This link was already used or opened on another device. If you have just confirmed your address, simply sign in."
@@ -237,6 +240,8 @@
     "fields": {
       "project_type": "Project type",
       "project_description": "Describe your project in a few lines",
+      "descriptionPrivacy": "Leave out phone numbers, emails and your full name: the proposed architects read this text before they know who you are — your identity is revealed only at a confirmed meeting.",
+      "descriptionContact": "Your text seems to contain a phone number or an email: please remove it, Reliote connects you at the right time.",
       "required_specialties": "Required specialties",
       "notes": "Additional notes",
       "project_country": "Construction country",
@@ -282,6 +287,8 @@
       "insert": "Your project could not be saved. Please try again.",
       "weak": "Password too weak: make it longer or more varied.",
       "rateLimited": "Too many submissions in a short time. Please wait a while before trying again.",
+      "mfa": "Your account uses two-factor authentication: sign in again and enter your code before submitting a project.",
+      "captcha": "The anti-bot check failed. Wait a second and try again.",
       "generic": "Something went wrong. Please try again."
     },
     "noProject": {
@@ -841,6 +848,12 @@
       "verify": {
         "title": "Confirm your email address"
       },
+      "mfa": {
+        "title": "Two-factor authentication"
+      },
+      "security": {
+        "title": "Account security"
+      },
       "confirmation": {
         "title": "Project received"
       },
@@ -989,6 +1002,38 @@
     "dashboardOff": "Get the Reliote newsletter: architecture in Africa, method and platform news.",
     "dashboardSubscribe": "Subscribe",
     "dashboardUnsubscribe": "Unsubscribe",
-    "genericError": "Subscription failed. Please try again in a moment."
+    "genericError": "Subscription failed. Please try again in a moment.",
+    "captchaError": "The anti-bot check failed. Please try again."
+  },
+  "mfa": {
+    "eyebrow": "Two-factor authentication",
+    "challengeTitle": "Your security code",
+    "challengeBody": "Open your authenticator app (Google Authenticator, Microsoft Authenticator, 1Password…) and enter the six-digit code shown for Reliote.",
+    "code": "Six-digit code",
+    "verify": "Verify",
+    "signOut": "Sign out",
+    "lost": "Lost access to your phone? Write to the Reliote team: once we have verified your identity, we will reset your two-factor authentication.",
+    "securityTitle": "Account security",
+    "required": "Two-factor authentication is mandatory for your account: it protects your projects and conversations even if your password leaks. Turn it on to access your space.",
+    "optional": "Two-factor authentication is optional for architects, but strongly recommended: it protects your profile even if your password leaks.",
+    "active": "Two-factor authentication is on.",
+    "devices": "Registered devices",
+    "addedOn": "added on {date}",
+    "remove": "Remove",
+    "removeLastRequired": "Add another device before removing this one: two-factor authentication is mandatory for your account.",
+    "addDevice": "Add another device",
+    "backupHint": "Tip: register Reliote on a second device (tablet, password manager) so you never lose access.",
+    "start": "Turn on two-factor authentication",
+    "step1": "1. Install an authenticator app on your phone, then scan this QR code.",
+    "manual": "Can't scan? Enter this key in the app:",
+    "step2": "2. Enter the six-digit code shown by the app.",
+    "confirm": "Confirm",
+    "continue": "Continue to my space",
+    "qrAlt": "QR code to scan with your authenticator app",
+    "errors": {
+      "code": "Wrong or expired code. Check your phone's clock and try again.",
+      "rateLimited": "Too many attempts. Please wait a few minutes.",
+      "generic": "That didn't work. Please try again."
+    }
   }
 }
