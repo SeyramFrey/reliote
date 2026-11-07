@@ -615,8 +615,8 @@
       }
     },
     "charter": {
-      "eyebrow": "Non-circumvention charter · v1",
-      "version": "Version v1 · June 2026",
+      "eyebrow": "Non-circumvention charter · v2",
+      "version": "Version v2 · November 2026",
       "close": "CLOSE ✕",
       "cancel": "Cancel",
       "accept": "Accept and reveal identity",
@@ -624,36 +624,36 @@
         "titlePre": "Accept the charter before revealing the architect's ",
         "titleItalic": "identity",
         "titleRest": ".",
-        "intro": "Reliote sells a reasoned match and a framed mission. To reveal this architect's identity, you acknowledge the commitments below. This charter is versioned and timestamped at acceptance.",
-        "consent": "I have read the 7 articles of the charter and accept them in full. I authorize the reveal of this architect's identity on the platform.",
+        "intro": "Submitting a project and receiving proposals is free. To confirm the meeting and reveal this architect's identity, you accept the 7 articles below. Your identity is revealed to the architect at the same time. This charter is versioned and timestamped at acceptance.",
+        "consent": "I have read the 7 articles of the charter and accept them. I request the immediate reveal of this architect's identity and of mine.",
         "articles": [
           {
             "t": "Reasoned selection",
-            "b": "Reliote presents up to three architects matching your brief. Each proposal is selected on dossier, skills, availability and fit — and comes with a reasoned note explaining the choice."
+            "b": "Reliote presents up to three architects admitted to the index on application. Each proposal comes with its reasoning. The choice is yours: you may decline them all."
           },
           {
-            "t": "Non-circumvention (18 months)",
-            "b": "For 18 months following the reveal of an architect's identity on the Reliote platform, you commit not to enter into any mission, study or service directly with this architect outside the Reliote framework."
+            "t": "Identity reveal",
+            "b": "Until now, names and contact details stay hidden: exchanges go through Reliote messaging and relay addresses. Your acceptance confirms the meeting, held by video call, and reveals both identities."
           },
           {
-            "t": "Mission framework",
-            "b": "If you engage an architect presented by Reliote, the mission is conducted via the platform: structured brief, framed contract, defined milestones, sequenced payments via Reliote, mediation included for the project's full duration."
+            "t": "Direct contract with the architect",
+            "b": "If you entrust a mission to this architect, you sign your own contract with them and pay them directly. Reliote is not a party to that contract and does not hold your funds. The architect carries out the mission under their own responsibility. Reliote helps you set clear milestones and remains your point of contact if there is a disagreement, with amicable mediation whose opinions bind no one."
           },
           {
-            "t": "Mediated communication",
-            "b": "The architect's personal contact details (direct phone, personal email) are not transmitted to you. All initial communication passes through Reliote channels — anonymized relay addresses and video rooms supervised by your duo."
+            "t": "Reliote's commission",
+            "b": "If you entrust a mission to this architect, Reliote charges a commission: a percentage of the project's total cost, stated in writing before any commitment, with its payment terms. No other fee appears along the way. If you entrust them with no mission, you owe nothing."
           },
           {
-            "t": "Information confidentiality",
-            "b": "You commit not to reproduce, share or publicly disseminate the architect's professional information (portfolio, background, photos, references) outside the direct context of your project."
+            "t": "Non-circumvention (12 months)",
+            "b": "For 12 months after the identity reveal, any mission you entrust to this architect for this project, even if it changes, gives rise to Reliote's commission. This also applies if the contract is signed through another person or through the architect's firm. You inform Reliote of the signature. A relationship with the architect that predates Reliote's introduction, and that you can evidence, is not covered."
           },
           {
-            "t": "Penalty for breach",
-            "b": "Any proven circumvention during the engagement period triggers a fixed penalty of 12% of the mission amount in question (all taxes included), invoiced by Reliote to the breaching party."
+            "t": "In case of circumvention",
+            "b": "If you sign with this architect during this period without informing Reliote, the commission remains due. Reliote invoices it at the stated rate, with no surcharge or penalty. Reliote bears the burden of proving the circumvention."
           },
           {
-            "t": "Duration and termination",
-            "b": "This charter takes effect at acceptance and remains valid for 18 months following identity reveal, regardless of whether the presented project materializes."
+            "t": "Confidentiality",
+            "b": "The architect's information (background, portfolio, references, contact details) is for your project only. You do not reproduce it or share it publicly."
           }
         ]
       },
@@ -661,35 +661,39 @@
         "titlePre": "Accept the Reliote ",
         "titleItalic": "admission charter",
         "titleRest": ".",
-        "intro": "Admission to the Reliote index requires explicit acceptance of the 7 commitments below. The charter is versioned, timestamped at your admission, and remains valid for the entire duration of your presence in the index.",
+        "intro": "Admission to the Reliote index requires acceptance of the 8 articles below. The charter is versioned and timestamped at your application. It applies from your admission.",
         "articles": [
           {
-            "t": "Traced introductions",
-            "b": "Reliote presents you with qualified clients who have submitted a structured brief reviewed by our team. Each introduction is traced and timestamped on the platform."
+            "t": "Admission on application",
+            "b": "Reliote admits architects to the index on application. You certify that the information you provide is accurate, and you keep it up to date."
           },
           {
-            "t": "Collaboration framework",
-            "b": "Any mission engaged with a client introduced by Reliote is conducted via the platform: signed brief, framed contract, shared milestones, payments sequenced via Reliote, mediation included."
+            "t": "Presented without your name",
+            "b": "Reliote presents your profile to project owners without your name. Each presentation is traced and timestamped. Until the meeting is confirmed, names and contact details stay hidden: exchanges go through Reliote messaging and relay addresses, and the meeting is held by video call. Identities are revealed when the owner confirms the meeting."
           },
           {
-            "t": "Non-circumvention (18 months)",
-            "b": "For 18 months following the introduction of a client by Reliote, you commit not to enter into any mission directly with this client outside the Reliote framework — even if they contact you through another channel."
+            "t": "Direct contract with the owner",
+            "b": "If an owner entrusts you with a mission, you sign your contract with them and they pay you directly. Reliote is not a party to that contract and no funds pass through Reliote. You carry out the mission under your own responsibility, in line with your professional obligations. Reliote helps set clear milestones and remains both parties' point of contact if there is a disagreement, with amicable mediation whose opinions bind no one."
           },
           {
-            "t": "Sequenced fees",
-            "b": "Your mission fees flow through Reliote, sequenced by signed milestones. Reliote retains a commission agreed at your admission, withheld at each milestone validation."
+            "t": "No commission on your fees",
+            "b": "Reliote takes nothing from your fees: its commission is paid by the owner. Registration is free during the launch phase. A monthly or annual subscription may be introduced later: it will be announced in advance, never charged without your consent, and you will remain free to leave the index."
           },
           {
-            "t": "Communication via Reliote channels",
-            "b": "Your personal contact details (direct phone, personal email) are never transmitted to clients. All initial communication passes through Reliote relay addresses and supervised video rooms."
+            "t": "Non-circumvention (12 months)",
+            "b": "For 12 months after the identity reveal, or after the project is presented if no meeting takes place, any mission this owner entrusts to you for this project, even if it changes, is declared to Reliote upon signature. This applies even if the owner contacts you through another channel, and even if the contract is signed through your firm or another person. A relationship that predates Reliote's introduction, and that you can evidence, is not covered."
           },
           {
-            "t": "Sanctions for breach",
-            "b": "Any proven circumvention triggers (a) a fixed penalty of 12% of the mission amount in question, (b) your immediate and permanent exclusion from the Reliote index, (c) suspension of all in-progress payments on the platform."
+            "t": "In case of circumvention",
+            "b": "If you sign with this owner during this period without declaring it, you owe Reliote compensation equal to the commission Reliote would have received on this project. It is not due if the owner pays that commission: one project never gives rise to two payments. Reliote may also remove you from the index, by a reasoned decision, after hearing your explanation. Reliote bears the burden of proving the circumvention."
           },
           {
-            "t": "Charter duration",
-            "b": "This charter takes effect at your admission to the Reliote index and remains valid for the entire duration of your presence — it renews tacitly with each introduction."
+            "t": "Confidentiality and data",
+            "b": "An owner's information (identity, contact details, project, plans, budget) is used only to assess and carry out their project. You do not reuse it, in particular for marketing, and you protect it as the law requires."
+          },
+          {
+            "t": "Duration and changes",
+            "b": "The charter applies for as long as you are in the index. You may leave at any time. Articles 5 to 7 continue to apply to owners already presented to you. Any new version of the charter is submitted to you before it applies."
           }
         ]
       },

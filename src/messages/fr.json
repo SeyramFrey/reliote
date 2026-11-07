@@ -615,8 +615,8 @@
       }
     },
     "charter": {
-      "eyebrow": "Charte de non-contournement · v1",
-      "version": "Version v1 · juin 2026",
+      "eyebrow": "Charte de non-contournement · v2",
+      "version": "Version v2 · novembre 2026",
       "close": "FERMER ✕",
       "cancel": "Annuler",
       "accept": "Accepter et voir l'identité",
@@ -624,36 +624,36 @@
         "titlePre": "Acceptez la charte avant de voir ",
         "titleItalic": "l'identité",
         "titleRest": " de l'architecte.",
-        "intro": "Reliote vend une mise en relation argumentée et un cadre de mission encadré. Pour révéler l'identité de cet architecte, vous reconnaissez les engagements ci-dessous. Cette charte est versionnée et horodatée à son acceptation.",
-        "consent": "Je reconnais avoir lu les 7 articles de la charte et je les accepte intégralement. J'autorise la révélation de l'identité de cet architecte sur la plateforme.",
+        "intro": "Déposer un projet et recevoir des propositions est gratuit. Pour confirmer le rendez-vous et révéler l'identité de cet architecte, vous acceptez les 7 articles ci-dessous. Votre identité lui est révélée en même temps. Cette charte est versionnée et horodatée à votre acceptation.",
+        "consent": "J'ai lu les 7 articles de la charte et je les accepte. Je demande la révélation immédiate de l'identité de cet architecte et de la mienne.",
         "articles": [
           {
             "t": "Sélection argumentée",
-            "b": "Reliote vous présente jusqu'à trois architectes correspondant à votre brief. Chaque proposition est sélectionnée sur dossier, compétences, disponibilité et compatibilité — et accompagnée d'une note d'argumentation."
+            "b": "Reliote vous présente jusqu'à trois architectes admis à l'index sur dossier. Chaque proposition est argumentée. Le choix vous appartient : vous pouvez n'en retenir aucune."
           },
           {
-            "t": "Non-contournement (18 mois)",
-            "b": "Pendant 18 mois suivant la révélation d'identité d'un architecte sur la plateforme Reliote, vous vous engagez à ne pas conclure de mission, étude ou prestation directement avec cet architecte en dehors du cadre Reliote."
+            "t": "Révélation des identités",
+            "b": "Jusqu'ici, les noms et les coordonnées restent masqués : les échanges passent par la messagerie Reliote et des adresses relais. Votre acceptation confirme le rendez-vous, en visioconférence, et révèle vos deux identités."
           },
           {
-            "t": "Cadre de mission",
-            "b": "Si vous engagez un architecte présenté par Reliote, la mission est conduite via la plateforme : brief structuré, contrat encadré, jalons définis, paiements séquencés via Reliote, médiation incluse pour toute la durée du projet."
+            "t": "Contrat direct avec l'architecte",
+            "b": "Si vous confiez une mission à cet architecte, vous signez votre contrat avec lui et vous le payez directement. Reliote n'est pas partie à ce contrat et ne détient pas vos fonds. L'architecte conduit sa mission sous sa propre responsabilité. Reliote vous aide à fixer des jalons clairs et reste votre interlocuteur en cas de désaccord, avec une médiation amiable dont les avis ne lient personne."
           },
           {
-            "t": "Communication médiée",
-            "b": "Les coordonnées personnelles de l'architecte (téléphone direct, email personnel) ne vous sont pas transmises. Toute communication initiale passe par les canaux Reliote — adresses relais anonymisées et salles de visioconférence supervisées par votre binôme."
+            "t": "Commission de Reliote",
+            "b": "Si vous confiez une mission à cet architecte, Reliote perçoit une commission : un pourcentage du coût total du projet, annoncé par écrit avant tout engagement, avec ses modalités de paiement. Aucun autre frais n'apparaît en cours de route. Si vous ne lui confiez aucune mission, vous ne devez rien."
           },
           {
-            "t": "Confidentialité des informations",
-            "b": "Vous vous engagez à ne pas reproduire, partager ni diffuser publiquement les informations professionnelles de l'architecte (portfolio, parcours, photos, références) en dehors du cadre direct de votre projet."
+            "t": "Non-contournement (12 mois)",
+            "b": "Pendant 12 mois après la révélation des identités, toute mission que vous confiez à cet architecte pour ce projet, même modifié, donne lieu à la commission de Reliote. Cela vaut aussi si le contrat est signé par une autre personne ou par la structure de l'architecte. Vous informez Reliote de la signature. Une relation avec l'architecte antérieure à sa présentation par Reliote, dont vous justifiez, n'est pas concernée."
           },
           {
-            "t": "Indemnité en cas de manquement",
-            "b": "Tout contournement avéré pendant la durée d'engagement entraîne une indemnité forfaitaire de 12 % du montant de la mission concernée (toutes taxes comprises), facturée par Reliote au manquant."
+            "t": "En cas de contournement",
+            "b": "Si vous signez avec cet architecte pendant cette période sans en informer Reliote, la commission reste due. Reliote vous la facture au taux annoncé, sans majoration ni pénalité. C'est à Reliote de prouver le contournement."
           },
           {
-            "t": "Durée et résiliation",
-            "b": "Cette charte prend effet à son acceptation et reste valable pendant 18 mois suivant la révélation d'identité, indépendamment de la concrétisation ou non du projet présenté."
+            "t": "Confidentialité",
+            "b": "Les informations de l'architecte (parcours, portfolio, références, coordonnées) servent uniquement à votre projet. Vous ne les reproduisez pas et ne les diffusez pas publiquement."
           }
         ]
       },
@@ -661,35 +661,39 @@
         "titlePre": "Acceptez la charte d'admission ",
         "titleItalic": "Reliote",
         "titleRest": ".",
-        "intro": "L'admission à l'index Reliote suppose l'acceptation explicite des 7 engagements suivants. La charte est versionnée, horodatée à votre admission, et reste valable pendant toute la durée de votre présence à l'index.",
+        "intro": "L'admission à l'index Reliote suppose l'acceptation des 8 articles ci-dessous. La charte est versionnée et horodatée à votre candidature. Elle s'applique dès votre admission.",
         "articles": [
           {
-            "t": "Mise en relation tracée",
-            "b": "Reliote vous présente des commanditaires qualifiés ayant déposé un brief structuré et qualifié par notre équipe. Chaque mise en relation est tracée et horodatée sur la plateforme."
+            "t": "Admission sur dossier",
+            "b": "Reliote admet les architectes à l'index sur dossier. Vous certifiez l'exactitude des informations transmises et vous les tenez à jour."
           },
           {
-            "t": "Cadre de collaboration",
-            "b": "Toute mission engagée avec un commanditaire présenté par Reliote est conduite via la plateforme : brief signé, contrat encadré, jalons partagés et paiements séquencés via Reliote, médiation incluse."
+            "t": "Présentation sans votre nom",
+            "b": "Reliote présente votre profil aux porteurs de projet sans votre nom. Chaque présentation est tracée et horodatée. Jusqu'au rendez-vous confirmé, les noms et les coordonnées restent masqués : les échanges passent par la messagerie Reliote et des adresses relais, et le rendez-vous se tient en visioconférence. Les identités sont révélées quand le porteur confirme le rendez-vous."
           },
           {
-            "t": "Non-contournement (18 mois)",
-            "b": "Pendant 18 mois suivant la mise en relation d'un commanditaire par Reliote, vous vous engagez à ne pas conclure de mission directement avec ce commanditaire en dehors du cadre Reliote — même s'il vous contacte par un autre canal."
+            "t": "Contrat direct avec le porteur",
+            "b": "Si un porteur vous confie une mission, vous signez votre contrat avec lui et il vous paie directement. Reliote n'est pas partie à ce contrat et ne fait transiter aucun fonds. Vous conduisez la mission sous votre propre responsabilité, dans le respect de vos obligations professionnelles. Reliote aide à fixer des jalons clairs et reste l'interlocuteur des deux parties en cas de désaccord, avec une médiation amiable dont les avis ne lient personne."
           },
           {
-            "t": "Honoraires séquencés",
-            "b": "Vos honoraires de mission transitent par Reliote, séquencés en jalons signés. Reliote retient une commission convenue lors de votre admission, prélevée à chaque validation de jalon."
+            "t": "Aucune commission sur vos honoraires",
+            "b": "Reliote ne prélève rien sur vos honoraires : sa commission est payée par le porteur. L'inscription est gratuite pendant le lancement. Un abonnement mensuel ou annuel pourra être introduit ensuite : il sera annoncé à l'avance, ne vous sera jamais facturé sans votre accord, et vous resterez libre de quitter l'index."
           },
           {
-            "t": "Communication via canaux Reliote",
-            "b": "Vos coordonnées personnelles (téléphone direct, email personnel) ne sont jamais transmises aux commanditaires. Toute communication initiale passe par les adresses relais Reliote et les salles de visioconférence supervisées."
+            "t": "Non-contournement (12 mois)",
+            "b": "Pendant 12 mois après la révélation des identités, ou après la présentation du projet si le rendez-vous n'a pas lieu, toute mission que ce porteur vous confie pour ce projet, même modifié, est déclarée à Reliote dès la signature. Cela vaut même si le porteur vous contacte par un autre canal, et même si le contrat est signé par votre structure ou par une autre personne. Une relation antérieure à la présentation par Reliote, dont vous justifiez, n'est pas concernée."
           },
           {
-            "t": "Sanctions en cas de manquement",
-            "b": "Tout contournement avéré entraîne (a) une indemnité forfaitaire de 12 % du montant de la mission concernée, (b) votre exclusion immédiate et définitive de l'index Reliote, (c) la suspension de tous les paiements en cours sur la plateforme."
+            "t": "En cas de contournement",
+            "b": "Si vous signez avec ce porteur pendant cette période sans le déclarer, vous devez à Reliote une indemnité égale à la commission que Reliote aurait perçue sur ce projet. Elle n'est pas due si le porteur paie cette commission : un même projet ne donne jamais lieu à deux paiements. Reliote peut aussi vous retirer de l'index, par une décision motivée, après avoir recueilli vos explications. C'est à Reliote de prouver le contournement."
           },
           {
-            "t": "Durée de la charte",
-            "b": "Cette charte prend effet à votre admission à l'index Reliote et reste valable pendant toute la durée de votre présence — elle se reconduit tacitement à chaque mise en relation."
+            "t": "Confidentialité et données",
+            "b": "Les informations d'un porteur (identité, coordonnées, projet, plans, budget) servent uniquement à étudier et conduire son projet. Vous ne les réutilisez pas, notamment pour de la prospection, et vous les protégez comme la loi l'exige."
+          },
+          {
+            "t": "Durée et évolution",
+            "b": "La charte s'applique tant que vous êtes à l'index. Vous pouvez le quitter à tout moment. Les articles 5 à 7 continuent de s'appliquer aux porteurs qui vous ont déjà été présentés. Toute nouvelle version de la charte vous est soumise avant de s'appliquer."
           }
         ]
       },

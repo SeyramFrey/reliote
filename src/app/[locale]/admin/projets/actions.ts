@@ -11,6 +11,7 @@ import {
   projectTypeLabel,
 } from "@/lib/email/templates";
 import { appOrigin } from "@/lib/auth/origin";
+import { CURRENT_CHARTER_VERSION } from "@/types/anon";
 import { safeAdminReturn } from "@/lib/auth/safeRedirect";
 import { countryTimeZone, zonedWallTimeToUtc, TIMEZONE_CHOICES } from "@/lib/time/meetingTime";
 import { advanceProject, ACTIVE_MEETING_STATUSES } from "@/lib/workflow/projectState";
@@ -135,6 +136,9 @@ export async function proposeArchitect(formData: FormData): Promise<void> {
         project_id: projectId,
         architect_id: architectId,
         status: "proposed",
+        // Version de la charte que le porteur verra à la confirmation du RDV :
+        // le trigger d'engagement ne la remplace que si elle est vide.
+        charter_version: CURRENT_CHARTER_VERSION,
       }),
       projectId,
     );
@@ -146,6 +150,7 @@ export async function proposeArchitect(formData: FormData): Promise<void> {
           proposed_at: new Date().toISOString(),
           engaged_at: null,
           charter_accepted: false,
+          charter_version: CURRENT_CHARTER_VERSION,
         })
         .eq("id", existing.id),
       projectId,
