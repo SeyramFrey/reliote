@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 
 // Modal de charte de non-contournement (côté porteur).
-// Affiche les articles de la charte v1, demande une coche explicite, puis
+// Affiche les articles de la charte en vigueur, demande une coche explicite, puis
 // exécute `onAccept` — la confirmation du rendez-vous, qui révèle les
 // identités. Le parent ne monte la modale que lorsqu'elle est ouverte : son
 // état repart donc à zéro à chaque ouverture.

@@ -38,4 +38,4 @@ export type EngagementRelay = {
   created_at: string;
 };
 
-export const CURRENT_CHARTER_VERSION = "v1";
+export const CURRENT_CHARTER_VERSION = "v2";

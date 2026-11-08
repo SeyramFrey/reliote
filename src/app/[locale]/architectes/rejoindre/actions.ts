@@ -8,6 +8,7 @@ import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 import { safeLocale } from "@/lib/auth/safeRedirect";
 import { appOrigin } from "@/lib/auth/origin";
+import { CURRENT_CHARTER_VERSION } from "@/types/anon";
 import { verifyArchitectPhoto } from "@/lib/storage/architectPhoto";
 import { sendEmail, adminEmail } from "@/lib/email/client";
 import { architectApplicationReceivedEmail, newArchitectAdminEmail } from "@/lib/email/templates";
@@ -101,10 +102,10 @@ export async function submitArchitect(input: ArchitectInput) {
     diploma: diploma || null,
     fee_currency: fee_currency ?? null,
     fee_amount: fee_amount ?? null,
-    // Charte de non-contournement v1 — l'architecte l'a acceptée en cochant
+    // Charte de non-contournement — l'architecte l'a acceptée en cochant
     // la case `terms` au step 6 (la case cumule confirmation des infos +
     // acceptation de la charte). On horodate côté serveur, pas côté client.
-    charter_version: "v1",
+    charter_version: CURRENT_CHARTER_VERSION,
     charter_signed_at: new Date().toISOString(),
   };
 
